@@ -11,7 +11,7 @@ export type Branding = {
 // (or env variables) to change them at build time.
 
 const branding: Branding = {
-  headerTitle: AS Ilmomasiina,
+  headerTitle: BRANDING_HEADER_TITLE_TEXT,
   footerGdprText: BRANDING_FOOTER_GDPR_TEXT,
   footerGdprLink: BRANDING_FOOTER_GDPR_LINK,
   footerHomeText: BRANDING_FOOTER_HOME_TEXT,
