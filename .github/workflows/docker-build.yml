@@ -5,7 +5,7 @@ env:
   docker_tag: 'ghcr.io/AS-kilta/ilmomasiina-v2'
 
   # Change these to customize your build.
-  branding_header_title_text: 'AS Ilmomasiina'
+  branding_header_title_text: 'AS Ilmokone'
   branding_footer_gdpr_text: 'Tietosuoja'
   branding_footer_gdpr_link: 'https://as.fi/guild/legal/privacy-policy-ilmomasiina'
   branding_footer_home_text: 'as.fi'
@@ -84,31 +84,20 @@ jobs:
             VERSION=${{steps.get-version.outputs.version}}
 
   # This is disabled on forks, you'll most likely need to modify it anyway for your usage
-  deploy:
-    name: Push update to App Service
-    needs: docker
-    if: github.ref_type == 'branch' && github.repository == 'AS-kilta/ilmomasiina-v2'
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-
-    - name: Login via Azure CLI
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - uses: azure/webapps-deploy@v3
-      with:
-        app-name: tik-ilmo-${{ github.ref_name }}-app
-        images: '${{ env.docker_tag }}:${{ github.ref_name }}'
-
-  # This is disabled on forks since you probably don't need to upload your own packages
-  npm:
-    name: Publish JS packages
-    needs: lint
-    permissions:
-      packages: write
-      contents: read
-    if: github.ref_type == 'tag' && github.repository == 'Tietokilta/ilmomasiina'
-    uses: ./.github/workflows/npm-build.yml
-    secrets: inherit
+#  deploy:
+#    name: Push update to App Service
+#    needs: docker
+#    if: github.ref_type == 'branch' && github.repository == 'AS-kilta/ilmomasiina-v2'
+#    runs-on: ubuntu-latest
+#    environment: production
+#    steps:
+#
+#    - name: Login via Azure CLI
+#      uses: azure/login@v1
+#      with:
+#        creds: ${{ secrets.AZURE_CREDENTIALS }}
+#
+#    - uses: azure/webapps-deploy@v3
+#      with:
+#        app-name: tik-ilmo-${{ github.ref_name }}-app
+#        images: '${{ env.docker_tag }}:${{ github.ref_name }}'
