@@ -10,9 +10,6 @@ const mailTransporter: Transporter = (() => {
       throw new Error('Invalid email config: GOOGLE_APPLICATION_CREDENTIALS must be set correctly.');
     }
     return nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
       auth: {
         type: 'OAuth2',
         user: config.googleUser,
