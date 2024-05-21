@@ -5,19 +5,19 @@ import mailgun from 'nodemailer-mailgun-transport';
 import config from '../config';
 
 const mailTransporter: Transporter = (() => {
-  if (config.googleCredentials) {
-    if (!config.googleUser || !config.googleClientId || !config.googlePrivateKey) {
-      throw new Error('Invalid email config: GOOGLE_APPLICATION_CREDENTIALS must be set correctly.');
-    }
-    return nodemailer.createTransport({
-      auth: {
-        type: 'OAuth2',
-        user: config.googleUser,
-        serviceClient: config.googleClientId,
-        privateKey: config.googlePrivateKey,
-      },
-    });
-  }
+//  if (config.googleCredentials) {
+//    if (!config.googleUser || !config.googleClientId || !config.googlePrivateKey) {
+//      throw new Error('Invalid email config: GOOGLE_APPLICATION_CREDENTIALS must be set correctly.');
+//    }
+//    return nodemailer.createTransport({
+//      host: 'smtp.gmail.com',
+//      secure: true,
+//      auth: {
+//        user: config.mailFrom,
+//        pass: config.mailPass,
+//      },
+//    });
+//  }
 
   if (config.mailgunApiKey) {
     if (!config.mailgunDomain) {
@@ -40,9 +40,14 @@ const mailTransporter: Transporter = (() => {
       host: config.smtpHost,
       port: config.smtpPort ?? undefined,
       secure: config.smtpTls,
+      pool: true,
       auth: {
+        type: 'OAuth2',
         user: config.smtpUser,
         pass: config.smtpPassword,
+        clientId: config.googleClientId,
+        clientSecret: config.googleClientSecret,
+        refreshToken: config.googleRefreshToken,
       },
     } as SMTPTransport.Options);
   }
