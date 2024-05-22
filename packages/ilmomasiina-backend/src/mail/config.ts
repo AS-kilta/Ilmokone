@@ -5,20 +5,6 @@ import mailgun from 'nodemailer-mailgun-transport';
 import config from '../config';
 
 const mailTransporter: Transporter = (() => {
-//  if (config.googleCredentials) {
-//    if (!config.googleUser || !config.googleClientId || !config.googlePrivateKey) {
-//      throw new Error('Invalid email config: GOOGLE_APPLICATION_CREDENTIALS must be set correctly.');
-//    }
-//    return nodemailer.createTransport({
-//      host: 'smtp.gmail.com',
-//      secure: true,
-//      auth: {
-//        user: config.mailFrom,
-//        pass: config.mailPass,
-//      },
-//    });
-//  }
-
   if (config.mailgunApiKey) {
     if (!config.mailgunDomain) {
       throw new Error('Invalid email config: MAILGUN_DOMAIN must be set with MAILGUN_API_KEY.');
