@@ -1,0 +1,37 @@
+# AS Ilmokone production docker-compose file.
+# Starts Ilmokone and database associated with it.
+
+services:
+  database:
+    image: mariadb:10.11
+    restart: always
+    environment:
+      - MARIADB_PASSWORD=$DB_PASSWORD
+      - MARIADB_USER=$DB_USER
+      - MARIADB_DATABASE=$DB_DATABASE
+      - MARIADB_ROOT_PASSWORD=$ROOT_PASSWORD
+    volumes:
+      - ilmokone_data:/var/lib/mysql
+    ports:
+      - "5432:5432"
+
+  ilmokone:
+    image: "ghcr.io/as-kilta/ilmokone:latest"
+    restart: always
+    depends_on:
+      - database
+    environment:
+      - DB_HOST=database
+      - NODE_ENV=production
+      - ENFORCE_HTTPS=false
+      - HOST=0.0.0.0
+      - DB_DIALECT=mysql
+      # When deploying to production, either set ENFORCE_HTTPS true (default) or
+      # configure the reverse proxy to enforce HTTPS communication with the clients.
+    env_file:
+      - .env
+    ports:
+      - "8000:3000"
+
+volumes:
+  ilmokone_data:
