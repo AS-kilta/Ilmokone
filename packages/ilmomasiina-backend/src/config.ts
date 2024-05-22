@@ -122,6 +122,12 @@ const config = {
   mailgunDomain: envString('MAILGUN_DOMAIN', null),
   /** Host for Mailgun API server. */
   mailgunHost: envString('MAILGUN_HOST', 'api.eu.mailgun.net'),
+  /** Google OAuth Client ID */
+  googleClientId: envString('GOOGLE_CLIENT_ID', null),
+  /** Google OAuth Client ID secret */
+  googleClientSecret: envString('GOOGLE_CLIENT_SECRET', null),
+  /** Google OAuth refresh token */
+  googleRefreshToken: envString('GOOGLE_REFRESH_TOKEN', null),
 
   /** How long after an event's date to remove signup details. */
   anonymizeAfterDays: envInteger('ANONYMIZE_AFTER_DAYS', 180),

@@ -26,9 +26,14 @@ const mailTransporter: Transporter = (() => {
       host: config.smtpHost,
       port: config.smtpPort ?? undefined,
       secure: config.smtpTls,
+      pool: true,
       auth: {
+        type: 'OAuth2',
         user: config.smtpUser,
         pass: config.smtpPassword,
+        clientId: config.googleClientId,
+        clientSecret: config.googleClientSecret,
+        refreshToken: config.googleRefreshToken,
       },
     } as SMTPTransport.Options);
   }
