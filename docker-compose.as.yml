@@ -2,6 +2,7 @@
 # Starts Ilmokone and database associated with it.
 
 services:
+  # Create/restart container named 'database'
   database:
     image: mariadb:10.11
     restart: always
@@ -12,26 +13,44 @@ services:
       - MARIADB_ROOT_PASSWORD=$ROOT_PASSWORD
     volumes:
       - ilmokone_data:/var/lib/mysql
-    ports:
-      - "5432:5432"
+    networks:
+      - back-tier
 
   ilmokone:
     image: "ghcr.io/as-kilta/ilmokone:latest"
     restart: always
     depends_on:
       - database
+    networks:
+      - front-tier
+      - back-tier
     environment:
-      - DB_HOST=database
       - NODE_ENV=production
       - ENFORCE_HTTPS=false
-      - HOST=0.0.0.0
-      - DB_DIALECT=mysql
+      - PORT=$ILMOKONE_PORT
       # When deploying to production, either set ENFORCE_HTTPS true (default) or
       # configure the reverse proxy to enforce HTTPS communication with the clients.
     env_file:
       - .env
+
+  reverse-proxy:
+    image: caddy:2.8
+    restart: always
     ports:
-      - "8000:3000"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      front-tier:
+
+networks:
+  front-tier: {}
+  back-tier: {}
 
 volumes:
   ilmokone_data:
+  caddy_data:
+  caddy_config:
