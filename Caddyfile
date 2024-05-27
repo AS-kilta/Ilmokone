@@ -1,6 +1,6 @@
 {
   email hallitus@as.fi
-  acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+  acme_ca https://acme-v02.api.letsencrypt.org/directory
 }
 
 :80 {
@@ -9,8 +9,4 @@
 
 ilmo.as.fi {
   reverse_proxy ilmokone:3000
-}
-
-www.ilmo.as.fi {
-  redir https://ilmo.as.fi
 }
