@@ -19,6 +19,7 @@ services:
   ilmokone:
     image: "ghcr.io/as-kilta/ilmokone:latest"
     restart: always
+    pull_policy: always
     depends_on:
       - database
     networks:
@@ -32,6 +33,10 @@ services:
       # configure the reverse proxy to enforce HTTPS communication with the clients.
     env_file:
       - .env
+    volumes:
+      - type: bind
+        source: .env
+        target: /opt/ilmomasiina/.env
 
   reverse-proxy:
     image: caddy:2.8
