@@ -5,6 +5,12 @@ import {
   envBoolean, envEnum, envInteger, envString, frontendFilesPath,
 } from './util/config';
 
+// Vite/Vitest sets BASE_URL. This conflicts with our config, but isn't used
+// in tests, so just overwrite it.
+if (process.env.VITEST) {
+  process.env.BASE_URL = 'http://localhost:3000/';
+}
+
 // Load environment variables from .env files (from the root of repository)
 dotenvFlow.config({ path: path.resolve(__dirname, '../../..') });
 
@@ -19,7 +25,7 @@ if (!process.env.BASE_URL && process.env.EMAIL_BASE_URL) {
 }
 
 const config = {
-  nodeEnv: envEnum('NODE_ENV', ['production', 'development', 'test'], 'development'),
+  nodeEnv: envEnum('NODE_ENV', ['production', 'development', 'test', 'bench'], 'development'),
   /** Whether to log SQL queries from Sequelize. */
   debugDbLogging: envBoolean('DEBUG_DB_LOGGING', false),
 
