@@ -17,7 +17,13 @@ services:
       - back-tier
 
   ilmokone:
-    image: "ghcr.io/as-kilta/ilmokone:latest"
+    # Use 'image: "ghcr.io/as-kilta/ilmokone:latest"' in production instead of build.
+    # Here build is used to test the prod setup.
+    build:
+      context: .
+      dockerfile: "Dockerfile"
+      # As build ARGs are not defined here, they default to TiK one's.
+      # In prod, Github Actions file has the correct AS-guild build ARGs.
     restart: always
     pull_policy: always
     depends_on:
