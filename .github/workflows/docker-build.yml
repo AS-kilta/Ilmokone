@@ -23,7 +23,7 @@ on:
 jobs:
   lint:
     name: Lint & type-check
-    uses: ./.github/workflows/lint.yml
+    uses: ./.github/workflows/lint-test.yml
 
   docker:
     name: Push Docker image to GitHub Packages

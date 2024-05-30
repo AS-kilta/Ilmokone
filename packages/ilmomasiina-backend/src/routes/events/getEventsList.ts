@@ -10,8 +10,8 @@ import { Event } from '../../models/event';
 import { Quota } from '../../models/quota';
 import { Signup } from '../../models/signup';
 import { ascNullsFirst } from '../../models/util';
-import { InitialSetupNeeded } from '../admin/users/createInitialUser';
-import { stringifyDates } from '../utils';
+import { InitialSetupNeeded, isInitialSetupDone } from '../admin/users/createInitialUser';
+import { StringifyApi } from '../utils';
 
 function eventOrder(): Order {
   return [
@@ -29,7 +29,7 @@ export async function getEventsListForUser(
   reply: FastifyReply,
 ): Promise<UserEventListResponse> {
   // When the application hasn't been set up for the first time, throw an error.
-  if (!this.initialSetupDone) {
+  if (!this.initialSetupDone && !(await isInitialSetupDone())) {
     throw new InitialSetupNeeded('Initial setup of Ilmomasiina is needed.');
   }
 
@@ -60,7 +60,7 @@ export async function getEventsListForUser(
   });
 
   const res = events.map((event) => ({
-    ...stringifyDates(event.get({ plain: true })),
+    ...event.get({ plain: true }),
     quotas: event.quotas!.map((quota) => ({
       ...quota.get({ plain: true }),
       signupCount: Number(quota.signupCount),
@@ -68,7 +68,7 @@ export async function getEventsListForUser(
   }));
 
   reply.status(200);
-  return res;
+  return res as StringifyApi<typeof res>;
 }
 export async function getEventsListForAdmin(
   request: FastifyRequest<{ Querystring: EventListQuery }>,
@@ -103,7 +103,7 @@ export async function getEventsListForAdmin(
   });
 
   const res = events.map((event) => ({
-    ...stringifyDates(event.get({ plain: true })),
+    ...event.get({ plain: true }),
     quotas: event.quotas!.map((quota) => ({
       ...quota.get({ plain: true }),
       signupCount: Number(quota.signupCount!),
@@ -111,5 +111,5 @@ export async function getEventsListForAdmin(
   }));
 
   reply.status(200);
-  return res;
+  return res as StringifyApi<typeof res>;
 }
