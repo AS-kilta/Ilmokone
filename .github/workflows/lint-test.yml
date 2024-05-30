@@ -64,15 +64,19 @@ jobs:
     timeout-minutes: 5
 
     services:
-      mariadb:
-        image: mariadb:10.11
+      postgres:
+        image: postgres:16
         env:
-          MARIADB_PASSWORD: testpass
-          MARIADB_DATABASE: testdb
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: testdb
         ports:
           - 5432:5432
         # https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers
-
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
 
@@ -96,9 +100,9 @@ jobs:
         npm run test
       # Non-database test variables are kept in a separate file
       env:
-        DB_DIALECT: mysql
+        DB_DIALECT: postgres
         DB_HOST: localhost
-        DB_USER: mariadb
+        DB_USER: postgres
         DB_PASSWORD: testpass
         DB_DATABASE: testdb
         THIS_IS_A_TEST_DB_AND_CAN_BE_WIPED: 1
