@@ -52,6 +52,9 @@ services:
         source: ./packages/ilmomasiina-frontend/index.html
         target: /opt/ilmomasiina/packages/ilmomasiina-frontend/index.html
       - type: bind
+        source: ./packages/ilmomasiina-frontend/rollupMomentPlugin.ts
+        target: /opt/ilmomasiina/packages/ilmomasiina-frontend/rollupMomentPlugin.ts
+      - type: bind
         source: ./packages/ilmomasiina-components/src
         target: /opt/ilmomasiina/packages/ilmomasiina-components/src
       - type: bind
