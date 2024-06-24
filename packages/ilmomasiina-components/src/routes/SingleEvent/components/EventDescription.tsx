@@ -11,6 +11,7 @@ import { linkComponent } from '../../../config/router';
 import AuthContext from '../../../contexts/auth';
 import { usePaths } from '../../../contexts/paths';
 import { useSingleEventContext } from '../../../modules/singleEvent';
+import CCText from '../defaultCCText';
 
 const EventDescription = () => {
   const event = useSingleEventContext().event!;
@@ -42,7 +43,9 @@ const EventDescription = () => {
           <p>
             <strong>{event.endDate ? t('singleEvent.info.startDate') : t('singleEvent.info.date')}</strong>
             {' '}
-            {moment(event.date).tz(timezone()).format(`D.M.Y [${t('dateFormat.dateTimeSep')}] HH:mm`)}
+            {moment(event.date)
+              .tz(timezone())
+              .format(`D.M.Y [${t('dateFormat.dateTimeSep')}] HH:mm`)}
           </p>
         )}
         {event.endDate && (
@@ -51,7 +54,9 @@ const EventDescription = () => {
               {t('singleEvent.info.endDate')}
             </strong>
             {' '}
-            {moment(event.endDate).tz(timezone()).format(`D.M.Y [${t('dateFormat.dateTimeSep')}] HH:mm`)}
+            {moment(event.endDate)
+              .tz(timezone())
+              .format(`D.M.Y [${t('dateFormat.dateTimeSep')}] HH:mm`)}
           </p>
         )}
         {event.location && (
@@ -98,6 +103,11 @@ const EventDescription = () => {
       <div className="ilmo--event-description">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>
           {event.description || ''}
+        </ReactMarkdown>
+      </div>
+      <div className="ilmo--cc-text">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {CCText}
         </ReactMarkdown>
       </div>
     </>
