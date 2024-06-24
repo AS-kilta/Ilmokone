@@ -23,6 +23,23 @@
   }
 }
 
+.ilmo--cc-text {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding: 1.5em;
+  border: 2px solid $primary;
+  border-radius: $border-radius;
+  background-color: $info-box-background;
+
+  hr {
+    border: 0.5px solid $primary;
+  }
+
+  :last-child {
+    margin-bottom: 0;
+  }
+}
+
 .ilmo--quota-signups {
   margin: $spacer 0 3 * $spacer;
   overflow-x: scroll;
