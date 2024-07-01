@@ -170,6 +170,192 @@ const BasicDetailsTab = () => {
         as={Textarea}
         rows={8}
       />
+      <div>
+        <h1>Nopea Markdown ohje</h1>
+        <p>
+          Markdown on helppo syntaksi nopeaan tekstin muotoiluun. Voit tarkasta tulokset julkaisemalla
+          ilmottautuminen ylhäältä ja klikkaamalla 'Julkaistu'. Kannattaa piilottaa ilmottautuminen
+          ellet halua sen näkyvän julkisessa listauksessa.
+        </p>
+        <h2>Perusteksti</h2>
+        <p>
+          Normaali teksti tulkitaan samaksi kappaleeksi yhdestä rivinvaihdosta huolimatta. Uuden kappaleen
+          saat kahdella rivinvaihdolla. Yleisesti toivottava tapa on jättää tyhjä rivi jokaisen
+          Markdown elementin väliin, sillä jotkin syntaksit saattavat tuottaa yllättäviä yhteisvaikutuksia.
+          Esimerkiksi teksti ja seuraavalle riville kirjoitettu --- (Väliviiva) tuottaakin tekstista Otsikko 2.
+        </p>
+        <h2>Cheat Sheet</h2>
+        <table className="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Kirjoita</th>
+              <th>…saadaksesi</th>
+              <th>Huomioitavaa</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>*Italic*</td>
+              <td><em>Italic</em></td>
+              <td>Voit käyttää myös _Italic_</td>
+            </tr>
+            <tr>
+              <td>**Bold**</td>
+              <td><strong>Bold</strong></td>
+              <td>Voit käyttää myös __Bold__</td>
+            </tr>
+            <tr>
+              <td>~Yliviivaus~</td>
+              <td>
+                <s>Yliviivaus</s>
+              </td>
+              <td />
+            </tr>
+            <tr>
+              <td># Otsikko 1</td>
+              <td><h1>Otsikko 1</h1></td>
+              <td />
+            </tr>
+            <tr>
+              <td>## Otsikko 2</td>
+              <td><h2>Otsikko 2</h2></td>
+              <td />
+            </tr>
+            <tr>
+              <td>### Otsikko 3</td>
+              <td><h3>Otsikko 3</h3></td>
+              <td />
+            </tr>
+            <tr>
+              <td>[Linkki](https://ilmo.as.fi/)</td>
+              <td><a href="https://ilmo.as.fi/">Linkki</a></td>
+              <td />
+            </tr>
+            <tr>
+              <td>![AS-Ilmokone](ilmo.as.fi)</td>
+              <td><img src="https://ilmo.as.fi/public/favicon-32x32.png" alt="AS-Ilmokone" /></td>
+              <td />
+            </tr>
+            <tr>
+              <td>
+                {'>'}
+                {' '}
+                Lainaus
+              </td>
+              <td>
+                <blockquote>Lainaus</blockquote>
+              </td>
+              <td />
+            </tr>
+            <tr>
+              <td>
+                * Lista
+                <br />
+                * Lista
+                <br />
+                * Lista
+              </td>
+              <td>
+                <ul>
+                  <li>Lista</li>
+                  <li>Lista</li>
+                  <li>Lista</li>
+                </ul>
+              </td>
+              <td />
+            </tr>
+            <tr>
+              <td>
+                1. Lista
+                <br />
+                2. Lista
+                <br />
+                3. Lista
+              </td>
+              <td>
+                <ol>
+                  <li>Lista</li>
+                  <li>Lista</li>
+                  <li>Lista</li>
+                </ol>
+              </td>
+              <td />
+            </tr>
+            <tr>
+              <td>---</td>
+              <td>
+                <hr />
+              </td>
+              <td>Sisällönjakaja</td>
+            </tr>
+            <tr>
+              <td>
+                `Koodi`
+              </td>
+              <td>
+                <code>Koodi tekstin sisällä</code>
+              </td>
+              <td>Taakse taittuva aksentti (backtick)</td>
+            </tr>
+            <tr>
+              <td>
+                ```
+                <br />
+                Koodipalikka
+                <br />
+                ```
+              </td>
+              <td><code>Koodipalikka</code></td>
+              <td/>
+            </tr>
+            <tr>
+              <td>https://ilmo.as.fi</td>
+              <td><a href="https://ilmo.as.fi/">https://ilmo.as.fi</a></td>
+              <td>URL-osotteet muuttuvat linkeiksi</td>
+            </tr>
+
+            <tr>
+              <td>Alaviite [^1]<br/>[^1]: Tämä on alaviite</td>
+              <td />
+              <td />
+            </tr>
+            <tr>
+              <td>
+                | Syntaksi | Tulos |
+                <br />
+                {' '}
+                |–––|–––|
+                <br />
+                | ** | Italic |
+                <br />
+                | **** | Bold |
+              </td>
+              <td>
+                <table>
+                  <thead>
+                    <tr>
+                      <td>Syntaksi</td>
+                      <td>Tulos</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>**</td>
+                      <td>Italic</td>
+                    </tr>
+                    <tr>
+                      <td>****</td>
+                      <td>Bold</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+              <td>Taulukon kokoa voi lisätä lisäämällä rivejä ja </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
