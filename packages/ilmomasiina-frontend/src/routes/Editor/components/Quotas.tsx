@@ -19,8 +19,10 @@ type QuotaRowProps = {
   remove: FieldArrayRenderProps<EditorQuota, HTMLElement>['fields']['remove'];
 };
 
-const numberConfig: UseFieldConfig<number> = {
-  parse: (value) => Number(value),
+const numberConfig: UseFieldConfig<number | null> = {
+  allowNull: true,
+  parse: (value) => (Number(value) > 0 ? Number(value) : null),
+  format: (value) => (value === null ? '' : value),
 };
 
 const QuotaRow = ({
@@ -50,7 +52,6 @@ const QuotaRow = ({
           type="number"
           min={1}
           config={numberConfig}
-          required
         />
       </Col>
       {index > 0 && (
