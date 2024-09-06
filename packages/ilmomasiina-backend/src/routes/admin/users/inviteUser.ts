@@ -1,15 +1,15 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { Conflict } from "http-errors";
-import { Transaction } from "sequelize";
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { Conflict } from 'http-errors';
+import { Transaction } from 'sequelize';
 
-import type { UserCreateSchema, UserInviteSchema, UserSchema } from "@tietokilta/ilmomasiina-models";
-import { AuditEvent } from "@tietokilta/ilmomasiina-models";
-import { AuditLogger } from "../../../auditlog";
-import AdminPasswordAuth from "../../../authentication/adminPasswordAuth";
-import EmailService from "../../../mail";
-import { getSequelize } from "../../../models";
-import { User } from "../../../models/user";
-import generatePassword from "./generatePassword";
+import type { UserCreateSchema, UserInviteSchema, UserSchema } from '@tietokilta/ilmomasiina-models';
+import { AuditEvent } from '@tietokilta/ilmomasiina-models';
+import { AuditLogger } from '../../../auditlog';
+import AdminPasswordAuth from '../../../authentication/adminPasswordAuth';
+import EmailService from '../../../mail';
+import { getSequelize } from '../../../models';
+import { User } from '../../../models/user';
+import generatePassword from './generatePassword';
 
 /**
  * Private helper function to create a new user and save it to the database
@@ -27,7 +27,7 @@ export async function createUser(
     transaction,
   });
 
-  if (existing) throw new Conflict("User with given email already exists");
+  if (existing) throw new Conflict('User with given email already exists');
 
   // Create new user with hashed password
   const user = await User.create(

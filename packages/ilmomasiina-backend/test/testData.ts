@@ -1,16 +1,16 @@
-import { faker } from "@faker-js/faker";
-import { range } from "lodash";
-import moment from "moment";
-import { UniqueConstraintError } from "sequelize";
+import { faker } from '@faker-js/faker';
+import { range } from 'lodash';
+import moment from 'moment';
+import { UniqueConstraintError } from 'sequelize';
 
-import { QuestionType, QuotaID } from "@tietokilta/ilmomasiina-models";
-import { EventAttributes, SignupAttributes } from "@tietokilta/ilmomasiina-models/dist/models";
-import { Answer, AnswerCreationAttributes } from "../src/models/answer";
-import { Event } from "../src/models/event";
-import { Question, QuestionCreationAttributes } from "../src/models/question";
-import { Quota } from "../src/models/quota";
-import { Signup, SignupCreationAttributes } from "../src/models/signup";
-import { User } from "../src/models/user";
+import { QuestionType, QuotaID } from '@tietokilta/ilmomasiina-models';
+import { EventAttributes, SignupAttributes } from '@tietokilta/ilmomasiina-models/dist/models';
+import { Answer, AnswerCreationAttributes } from '../src/models/answer';
+import { Event } from '../src/models/event';
+import { Question, QuestionCreationAttributes } from '../src/models/question';
+import { Quota } from '../src/models/quota';
+import { Signup, SignupCreationAttributes } from '../src/models/signup';
+import { User } from '../src/models/user';
 
 export function testUser() {
   return User.create({
@@ -23,7 +23,7 @@ type TestEventOptions = {
   hasDate?: boolean;
   inPast?: boolean;
   hasSignup?: boolean;
-  signupState?: "not-open" | "open" | "closed";
+  signupState?: 'not-open' | 'open' | 'closed';
   questionCount?: number;
   quotaCount?: number;
   signupCount?: number;
@@ -41,7 +41,7 @@ export async function testEvent(
     hasDate = true,
     inPast = false,
     hasSignup = true,
-    signupState = inPast ? "closed" : "open",
+    signupState = inPast ? 'closed' : 'open',
     questionCount = faker.number.int({ min: 1, max: 5 }),
     quotaCount = faker.number.int({ min: 1, max: 4 }),
   }: TestEventOptions = {},
@@ -52,7 +52,7 @@ export async function testEvent(
     title,
     slug: faker.helpers.slugify(title),
     description: faker.lorem.paragraphs({ min: 1, max: 5 }),
-    price: faker.finance.amount({ symbol: "€" }),
+    price: faker.finance.amount({ symbol: '€' }),
     location: faker.location.streetAddress(),
     facebookUrl: faker.internet.url(),
     webpageUrl: faker.internet.url(),
@@ -63,7 +63,7 @@ export async function testEvent(
   if (hasDate) {
     if (inPast) {
       event.endDate = faker.date.recent({
-        refDate: moment().subtract(14, "days").toDate(),
+        refDate: moment().subtract(14, 'days').toDate(),
       });
       event.date = faker.date.recent({ refDate: event.endDate });
     } else {
@@ -72,19 +72,19 @@ export async function testEvent(
     }
   }
   if (hasSignup) {
-    if (inPast && signupState === "closed") {
+    if (inPast && signupState === 'closed') {
       event.registrationEndDate = faker.date.recent({
-        refDate: moment().subtract(14, "days").toDate(),
+        refDate: moment().subtract(14, 'days').toDate(),
       });
       event.registrationStartDate = faker.date.recent({
         refDate: event.registrationEndDate,
       });
-    } else if (signupState === "closed") {
+    } else if (signupState === 'closed') {
       event.registrationEndDate = faker.date.recent();
       event.registrationStartDate = faker.date.recent({
         refDate: event.registrationEndDate,
       });
-    } else if (signupState === "not-open") {
+    } else if (signupState === 'not-open') {
       event.registrationStartDate = faker.date.soon();
       event.registrationEndDate = faker.date.soon({
         refDate: event.registrationStartDate,
@@ -156,10 +156,10 @@ export async function testSignups(
   overrides: Partial<SignupAttributes> = {},
 ) {
   if (!event.quotas || !event.questions) {
-    throw new Error("testSignups() expects event.quotas and event.questions to be populated");
+    throw new Error('testSignups() expects event.quotas and event.questions to be populated');
   }
   if (!event.quotas.length) {
-    throw new Error("testSignups() needs at least one existing quota");
+    throw new Error('testSignups() needs at least one existing quota');
   }
   const signups = await Signup.bulkCreate(
     range(count).map(() => {
@@ -169,13 +169,13 @@ export async function testSignups(
       if (expired) {
         // Expired signup (never confirmed)
         signup.createdAt = faker.date.recent({
-          refDate: moment().subtract(30, "minutes").toDate(),
+          refDate: moment().subtract(30, 'minutes').toDate(),
         });
       } else if (confirmed ?? faker.datatype.boolean({ probability: 0.8 })) {
         // Confirmed signup
         signup.confirmedAt = faker.date.recent();
         signup.createdAt = faker.date.between({
-          from: moment(signup.confirmedAt).subtract(30, "minutes").toDate(),
+          from: moment(signup.confirmedAt).subtract(30, 'minutes').toDate(),
           to: signup.confirmedAt,
         });
         if (event.nameQuestion) {
@@ -192,7 +192,7 @@ export async function testSignups(
       } else {
         // Unconfirmed signup
         signup.createdAt = faker.date.between({
-          from: moment().subtract(30, "minutes").toDate(),
+          from: moment().subtract(30, 'minutes').toDate(),
           to: new Date(),
         });
       }
@@ -209,29 +209,29 @@ export async function testSignups(
         const answer: AnswerCreationAttributes = {
           questionId: question.id,
           signupId: signup.id,
-          answer: "",
+          answer: '',
         };
         // Generate answer value based on question type and other constraints
         if (question.type === QuestionType.TEXT) {
           answer.answer =
             faker.helpers.maybe(() => faker.lorem.words({ min: 1, max: 3 }), {
               probability: question.required ? 1 : 0.5,
-            }) ?? "";
+            }) ?? '';
         } else if (question.type === QuestionType.TEXT_AREA) {
           answer.answer =
             faker.helpers.maybe(() => faker.lorem.sentences({ min: 1, max: 2 }), {
               probability: question.required ? 1 : 0.5,
-            }) ?? "";
+            }) ?? '';
         } else if (question.type === QuestionType.NUMBER) {
           answer.answer =
             faker.helpers.maybe(() => faker.number.int().toString(), {
               probability: question.required ? 1 : 0.5,
-            }) ?? "";
+            }) ?? '';
         } else if (question.type === QuestionType.SELECT) {
           answer.answer =
             faker.helpers.maybe(() => faker.helpers.arrayElement(question.options!), {
               probability: question.required ? 1 : 0.5,
-            }) ?? "";
+            }) ?? '';
         } else if (question.type === QuestionType.CHECKBOX) {
           answer.answer = faker.helpers.arrayElements(question.options!, {
             min: question.required ? 1 : 0,
@@ -249,10 +249,10 @@ export async function testSignups(
 
 export async function fetchSignups(event: Event) {
   if (!event.quotas) {
-    throw new Error("fetchSignups() expects event.quotas and event.questions to be populated");
+    throw new Error('fetchSignups() expects event.quotas and event.questions to be populated');
   }
   if (!event.quotas.length) {
-    throw new Error("fetchSignups() needs at least one existing quota");
+    throw new Error('fetchSignups() needs at least one existing quota');
   }
   await Promise.all(
     event.quotas.map(async (quota) => {

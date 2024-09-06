@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
 /** Returns an AbortSignal and a function that aborts the signal. */
 export function abortable(): [AbortSignal, () => void] {
@@ -40,7 +40,7 @@ export type PromiseState<R> =
 export function ignoreAbort<R>(promise: Promise<R>): Promise<R> {
   return new Promise((resolve, reject) => {
     promise.then(resolve, (error) => {
-      if (error instanceof DOMException && error.name === "AbortError") return;
+      if (error instanceof DOMException && error.name === 'AbortError') return;
       reject(error);
     });
   });
@@ -83,7 +83,7 @@ export function useAbortablePromise<R>(effect: (signal: AbortSignal) => Promise<
         });
       },
     );
-    signal.addEventListener("abort", () => {
+    signal.addEventListener('abort', () => {
       if (pendingPromise.current !== promise) return;
       pendingPromise.current = undefined;
       setState({

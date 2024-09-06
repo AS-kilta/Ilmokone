@@ -1,13 +1,13 @@
-import type { ApiError } from "@tietokilta/ilmomasiina-components";
+import type { ApiError } from '@tietokilta/ilmomasiina-components';
 import type {
   UserChangePasswordSchema,
   UserID,
   UserInviteSchema,
   UserListResponse,
-} from "@tietokilta/ilmomasiina-models";
-import adminApiFetch from "../../api";
-import type { DispatchAction, GetState } from "../../store/types";
-import { RESET, USERS_LOAD_FAILED, USERS_LOADED } from "./actionTypes";
+} from '@tietokilta/ilmomasiina-models';
+import adminApiFetch from '../../api';
+import type { DispatchAction, GetState } from '../../store/types';
+import { RESET, USERS_LOAD_FAILED, USERS_LOADED } from './actionTypes';
 
 export const resetState = () =>
   <const>{
@@ -34,7 +34,7 @@ export type AdminUsersActions =
 export const getUsers = () => async (dispatch: DispatchAction, getState: GetState) => {
   const { accessToken } = getState().auth;
   try {
-    const response = await adminApiFetch<UserListResponse>("admin/users", { accessToken }, dispatch);
+    const response = await adminApiFetch<UserListResponse>('admin/users', { accessToken }, dispatch);
     dispatch(usersLoaded(response));
   } catch (e) {
     dispatch(usersLoadFailed(e as ApiError));
@@ -45,10 +45,10 @@ export const createUser = (data: UserInviteSchema) => async (dispatch: DispatchA
   const { accessToken } = getState().auth;
 
   await adminApiFetch(
-    "admin/users",
+    'admin/users',
     {
       accessToken,
-      method: "POST",
+      method: 'POST',
       body: data,
     },
     dispatch,
@@ -62,7 +62,7 @@ export const deleteUser = (id: UserID) => async (dispatch: DispatchAction, getSt
     `admin/users/${id}`,
     {
       accessToken,
-      method: "DELETE",
+      method: 'DELETE',
     },
     dispatch,
   );
@@ -75,7 +75,7 @@ export const resetUserPassword = (id: UserID) => async (dispatch: DispatchAction
     `admin/users/${id}/resetpassword`,
     {
       accessToken,
-      method: "POST",
+      method: 'POST',
     },
     dispatch,
   );
@@ -86,10 +86,10 @@ export const changePassword =
     const { accessToken } = getState().auth;
 
     await adminApiFetch(
-      "admin/users/self/changepassword",
+      'admin/users/self/changepassword',
       {
         accessToken,
-        method: "POST",
+        method: 'POST',
         body: data,
       },
       dispatch,

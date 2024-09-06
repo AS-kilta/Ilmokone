@@ -1,8 +1,8 @@
-import { Static, Type } from "@sinclair/typebox";
+import { Static, Type } from '@sinclair/typebox';
 
-import { questionAttributes, questionID, questionIdentity } from "./attributes";
+import { questionAttributes, questionID, questionIdentity } from './attributes';
 
-export { questionID } from "./attributes";
+export { questionID } from './attributes';
 
 /** Schema for a question. */
 export const question = Type.Intersect([questionIdentity, questionAttributes]);
@@ -12,7 +12,7 @@ export const questionCreate = questionAttributes;
 
 /** Schema for updating a question. */
 export const questionUpdate = Type.Intersect([Type.Partial(questionIdentity), questionCreate], {
-  description: "Set id to reuse an existing question, or leave it empty to create a new one.",
+  description: 'Set id to reuse an existing question, or leave it empty to create a new one.',
 });
 
 /** Question ID type. Randomly generated alphanumeric string. */

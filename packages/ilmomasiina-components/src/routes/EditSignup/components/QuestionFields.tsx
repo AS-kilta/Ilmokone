@@ -1,18 +1,18 @@
-import React, { ChangeEvent, ReactNode, useMemo } from "react";
+import React, { ChangeEvent, ReactNode, useMemo } from 'react';
 
-import find from "lodash-es/find";
-import reject from "lodash-es/reject";
-import without from "lodash-es/without";
-import { Form } from "react-bootstrap";
-import { useField } from "react-final-form";
-import { useTranslation } from "react-i18next";
+import find from 'lodash-es/find';
+import reject from 'lodash-es/reject';
+import without from 'lodash-es/without';
+import { Form } from 'react-bootstrap';
+import { useField } from 'react-final-form';
+import { useTranslation } from 'react-i18next';
 
-import type { Question, SignupUpdateBody } from "@tietokilta/ilmomasiina-models";
-import { QuestionType } from "@tietokilta/ilmomasiina-models";
-import FieldRow from "../../../components/FieldRow";
-import { useEditSignupContext } from "../../../modules/editSignup";
-import { stringifyAnswer } from "../../../utils/signupUtils";
-import useEvent from "../../../utils/useEvent";
+import type { Question, SignupUpdateBody } from '@tietokilta/ilmomasiina-models';
+import { QuestionType } from '@tietokilta/ilmomasiina-models';
+import FieldRow from '../../../components/FieldRow';
+import { useEditSignupContext } from '../../../modules/editSignup';
+import { stringifyAnswer } from '../../../utils/signupUtils';
+import useEvent from '../../../utils/useEvent';
 
 type QuestionFieldProps = {
   name: string;
@@ -23,8 +23,8 @@ type QuestionFieldProps = {
 const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
   const {
     input: { value, onChange },
-  } = useField<SignupUpdateBody["answers"]>(name);
-  const answerValue = find(value, { questionId: question.id })?.answer || "";
+  } = useField<SignupUpdateBody['answers']>(name);
+  const answerValue = find(value, { questionId: question.id })?.answer || '';
   const currentAnswerString = stringifyAnswer(answerValue);
   const currentAnswerArray = useMemo(() => (Array.isArray(answerValue) ? answerValue : []), [answerValue]);
 
@@ -49,7 +49,7 @@ const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
     updateAnswer(newAnswers);
   });
 
-  const help = question.public ? t("editSignup.publicQuestion") : null;
+  const help = question.public ? t('editSignup.publicQuestion') : null;
 
   let input: ReactNode;
   let isCheckboxes = false;
@@ -120,7 +120,7 @@ const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
             onChange={onFieldChange}
           >
             <option value="" disabled={question.required}>
-              {t("editSignup.fields.select.placeholder")}
+              {t('editSignup.fields.select.placeholder')}
             </option>
             {question.options?.map((option, optIndex) => (
               // eslint-disable-next-line react/no-array-index-key

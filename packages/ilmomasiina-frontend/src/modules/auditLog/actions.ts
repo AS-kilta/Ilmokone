@@ -1,8 +1,8 @@
-import type { ApiError } from "@tietokilta/ilmomasiina-components";
-import type { AuditLogResponse, AuditLoqQuery } from "@tietokilta/ilmomasiina-models";
-import adminApiFetch from "../../api";
-import type { DispatchAction, GetState } from "../../store/types";
-import { AUDIT_LOG_LOAD_FAILED, AUDIT_LOG_LOADED, AUDIT_LOG_QUERY, RESET } from "./actionTypes";
+import type { ApiError } from '@tietokilta/ilmomasiina-components';
+import type { AuditLogResponse, AuditLoqQuery } from '@tietokilta/ilmomasiina-models';
+import adminApiFetch from '../../api';
+import type { DispatchAction, GetState } from '../../store/types';
+import { AUDIT_LOG_LOAD_FAILED, AUDIT_LOG_LOADED, AUDIT_LOG_QUERY, RESET } from './actionTypes';
 
 export const resetState = () =>
   <const>{
@@ -68,7 +68,7 @@ export const setAuditLogQueryField =
       [key]: value,
     };
     // reset pagination when touching non-pagination fields
-    if (key !== "offset" && key !== "limit") {
+    if (key !== 'offset' && key !== 'limit') {
       delete newQuery.offset;
     }
     await dispatch(getAuditLogs(newQuery));

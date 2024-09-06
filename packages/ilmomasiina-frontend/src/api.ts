@@ -1,8 +1,8 @@
-import { ApiError, apiFetch, FetchOptions } from "@tietokilta/ilmomasiina-components";
-import { ErrorCode } from "@tietokilta/ilmomasiina-models";
-import { loginExpired, renewLogin } from "./modules/auth/actions";
-import { AccessToken } from "./modules/auth/types";
-import type { DispatchAction } from "./store/types";
+import { ApiError, apiFetch, FetchOptions } from '@tietokilta/ilmomasiina-components';
+import { ErrorCode } from '@tietokilta/ilmomasiina-models';
+import { loginExpired, renewLogin } from './modules/auth/actions';
+import { AccessToken } from './modules/auth/types';
+import type { DispatchAction } from './store/types';
 
 interface AdminApiFetchOptions extends FetchOptions {
   accessToken?: AccessToken;

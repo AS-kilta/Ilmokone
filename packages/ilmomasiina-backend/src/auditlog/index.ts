@@ -1,10 +1,10 @@
-import { FastifyInstance } from "fastify";
-import { Transaction } from "sequelize";
+import { FastifyInstance } from 'fastify';
+import { Transaction } from 'sequelize';
 
-import type { AuditEvent } from "@tietokilta/ilmomasiina-models";
-import { AuditLog } from "../models/auditlog";
-import type { Event } from "../models/event";
-import type { Signup } from "../models/signup";
+import type { AuditEvent } from '@tietokilta/ilmomasiina-models';
+import { AuditLog } from '../models/auditlog';
+import type { Event } from '../models/event';
+import type { Signup } from '../models/signup';
 
 /**
  * Creates an {@link AuditLogger}
@@ -21,7 +21,7 @@ function eventLogger(ipAddress: string, user?: () => string | null) {
       signup,
       extra,
     }: {
-      event?: Pick<Event, "id" | "title">;
+      event?: Pick<Event, 'id' | 'title'>;
       signup?: Signup;
       transaction?: Transaction;
       extra?: object;
@@ -50,20 +50,20 @@ function eventLogger(ipAddress: string, user?: () => string | null) {
  * Using this method, user and ip address information will be automatically inferred into audit log event.
  */
 export function addLogEventHook(fastify: FastifyInstance): void {
-  fastify.decorateRequest("logEvent", () => {
-    throw new Error("Not initialized");
+  fastify.decorateRequest('logEvent', () => {
+    throw new Error('Not initialized');
   });
-  fastify.addHook("onRequest", async (req) => {
+  fastify.addHook('onRequest', async (req) => {
     (req.logEvent as AuditLogger) = eventLogger(req.ip, () => req.sessionData?.email || null);
   });
 }
 
 /** Use to log internally triggered actions to the audit log (actions run by cron jobs for example) */
-export const internalAuditLogger = eventLogger("internal");
+export const internalAuditLogger = eventLogger('internal');
 
 export type AuditLogger = ReturnType<typeof eventLogger>;
 
-declare module "fastify" {
+declare module 'fastify' {
   interface FastifyRequest {
     readonly logEvent: AuditLogger;
   }

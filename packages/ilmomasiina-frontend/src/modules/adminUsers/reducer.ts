@@ -1,5 +1,5 @@
-import { RESET, USERS_LOAD_FAILED, USERS_LOADED } from "./actionTypes";
-import type { AdminUsersActions, AdminUsersState } from "./types";
+import { RESET, USERS_LOAD_FAILED, USERS_LOADED } from './actionTypes';
+import type { AdminUsersActions, AdminUsersState } from './types';
 
 const initialState: AdminUsersState = {
   users: null,

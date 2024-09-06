@@ -1,35 +1,35 @@
-import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
-import { Type } from "@sinclair/typebox";
-import { FastifyInstance } from "fastify";
+import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+import { Type } from '@sinclair/typebox';
+import { FastifyInstance } from 'fastify';
 
-import * as schema from "@tietokilta/ilmomasiina-models";
-import { addLogEventHook } from "../auditlog";
-import AdminAuthSession from "../authentication/adminAuthSession";
-import getAuditLogItems from "./admin/auditlog/getAuditLogs";
-import getCategoriesList from "./admin/categories/getCategoriesList";
-import createEvent from "./admin/events/createEvent";
-import deleteEvent from "./admin/events/deleteEvent";
-import updateEvent from "./admin/events/updateEvent";
-import checkSlugAvailability from "./admin/slugs/checkSlugAvailability";
-import changePassword from "./admin/users/changePassword";
-import createInitialUser from "./admin/users/createInitialUser";
-import deleteUser from "./admin/users/deleteUser";
-import inviteUser from "./admin/users/inviteUser";
-import listUsers from "./admin/users/listUsers";
-import resetPassword from "./admin/users/resetPassword";
-import { adminLogin, renewAdminToken, requireAdmin } from "./authentication/adminLogin";
-import { getEventDetailsForAdmin, getEventDetailsForUser } from "./events/getEventDetails";
-import { getEventsListForAdmin, getEventsListForUser } from "./events/getEventsList";
-import { sendICalFeed } from "./ical";
-import createSignup from "./signups/createNewSignup";
-import { deleteSignupAsAdmin, deleteSignupAsUser } from "./signups/deleteSignup";
-import { requireValidEditToken } from "./signups/editTokens";
-import getSignupForEdit from "./signups/getSignupForEdit";
-import updateSignup from "./signups/updateSignup";
+import * as schema from '@tietokilta/ilmomasiina-models';
+import { addLogEventHook } from '../auditlog';
+import AdminAuthSession from '../authentication/adminAuthSession';
+import getAuditLogItems from './admin/auditlog/getAuditLogs';
+import getCategoriesList from './admin/categories/getCategoriesList';
+import createEvent from './admin/events/createEvent';
+import deleteEvent from './admin/events/deleteEvent';
+import updateEvent from './admin/events/updateEvent';
+import checkSlugAvailability from './admin/slugs/checkSlugAvailability';
+import changePassword from './admin/users/changePassword';
+import createInitialUser from './admin/users/createInitialUser';
+import deleteUser from './admin/users/deleteUser';
+import inviteUser from './admin/users/inviteUser';
+import listUsers from './admin/users/listUsers';
+import resetPassword from './admin/users/resetPassword';
+import { adminLogin, renewAdminToken, requireAdmin } from './authentication/adminLogin';
+import { getEventDetailsForAdmin, getEventDetailsForUser } from './events/getEventDetails';
+import { getEventsListForAdmin, getEventsListForUser } from './events/getEventsList';
+import { sendICalFeed } from './ical';
+import createSignup from './signups/createNewSignup';
+import { deleteSignupAsAdmin, deleteSignupAsUser } from './signups/deleteSignup';
+import { requireValidEditToken } from './signups/editTokens';
+import getSignupForEdit from './signups/getSignupForEdit';
+import updateSignup from './signups/updateSignup';
 
 const errorResponses = {
-  "4XX": schema.errorResponse,
-  "5XX": schema.errorResponse,
+  '4XX': schema.errorResponse,
+  '5XX': schema.errorResponse,
 };
 
 export interface RouteOptions {
@@ -49,7 +49,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
   server.get<{
     /* Params: types.UserID */
   }>(
-    "/categories",
+    '/categories',
     {
       schema: {
         response: {
@@ -63,7 +63,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
 
   /** Admin routes for events */
   server.post<{ Body: schema.EventCreateBody }>(
-    "/events",
+    '/events',
     {
       schema: {
         body: schema.eventCreateBody,
@@ -77,7 +77,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
   );
 
   server.get(
-    "/events",
+    '/events',
     {
       schema: {
         querystring: schema.eventListQuery,
@@ -91,7 +91,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
   );
 
   server.get<{ Params: schema.AdminEventPathParams }>(
-    "/events/:id",
+    '/events/:id',
     {
       schema: {
         params: schema.adminEventPathParams,
@@ -108,7 +108,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
     Params: schema.AdminEventPathParams;
     Body: schema.EventUpdateBody;
   }>(
-    "/events/:id",
+    '/events/:id',
     {
       schema: {
         params: schema.adminEventPathParams,
@@ -124,7 +124,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
   );
 
   server.delete<{ Params: schema.AdminEventPathParams }>(
-    "/events/:id",
+    '/events/:id',
     {
       schema: {
         params: schema.adminEventPathParams,
@@ -139,7 +139,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
 
   /** Admin routes for signups */
   server.delete<{ Params: schema.SignupPathParams }>(
-    "/signups/:id",
+    '/signups/:id',
     {
       schema: {
         params: schema.signupPathParams,
@@ -154,7 +154,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
 
   /** Admin routes for event slugs */
   server.get<{ Params: schema.CheckSlugParams }>(
-    "/slugs/:slug",
+    '/slugs/:slug',
     {
       schema: {
         params: schema.checkSlugParams,
@@ -169,7 +169,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
 
   /** Admin routes for audit logs */
   server.get<{ Querystring: schema.AuditLoqQuery }>(
-    "/auditlog",
+    '/auditlog',
     {
       schema: {
         querystring: schema.auditLoqQuery,
@@ -184,7 +184,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
 
   /** Admin routes for user management */
   server.get(
-    "/users",
+    '/users',
     {
       schema: {
         response: {
@@ -197,7 +197,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
   );
 
   server.post<{ Body: schema.UserInviteSchema }>(
-    "/users",
+    '/users',
     {
       schema: {
         body: schema.userInviteSchema,
@@ -211,7 +211,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
   );
 
   server.delete<{ Params: schema.UserPathParams }>(
-    "/users/:id",
+    '/users/:id',
     {
       schema: {
         params: schema.userPathParams,
@@ -225,7 +225,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
   );
 
   server.post(
-    "/users/:id/resetpassword",
+    '/users/:id/resetpassword',
     {
       schema: {
         params: schema.userPathParams,
@@ -238,7 +238,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
     resetPassword,
   );
   server.post(
-    "/users/self/changepassword",
+    '/users/self/changepassword',
     {
       schema: {
         body: schema.userChangePasswordSchema,
@@ -258,7 +258,7 @@ async function setupPublicRoutes(fastifyInstance: FastifyInstance, opts: RouteOp
   // Routes that require a signup edit token
 
   server.get<{ Params: schema.SignupPathParams }>(
-    "/signups/:id",
+    '/signups/:id',
     {
       schema: {
         params: schema.signupPathParams,
@@ -277,7 +277,7 @@ async function setupPublicRoutes(fastifyInstance: FastifyInstance, opts: RouteOp
     Params: schema.SignupPathParams;
     Body: schema.SignupUpdateBody;
   }>(
-    "/signups/:id",
+    '/signups/:id',
     {
       schema: {
         params: schema.signupPathParams,
@@ -294,7 +294,7 @@ async function setupPublicRoutes(fastifyInstance: FastifyInstance, opts: RouteOp
   );
 
   server.delete<{ Params: schema.SignupPathParams }>(
-    "/signups/:id",
+    '/signups/:id',
     {
       schema: {
         params: schema.signupPathParams,
@@ -312,7 +312,7 @@ async function setupPublicRoutes(fastifyInstance: FastifyInstance, opts: RouteOp
   // Admin session management routes
 
   server.post<{ Body: schema.AdminLoginBody }>(
-    "/authentication",
+    '/authentication',
     {
       schema: {
         body: schema.adminLoginBody,
@@ -326,7 +326,7 @@ async function setupPublicRoutes(fastifyInstance: FastifyInstance, opts: RouteOp
   );
 
   server.post(
-    "/authentication/renew",
+    '/authentication/renew',
     {
       schema: {
         response: {
@@ -341,7 +341,7 @@ async function setupPublicRoutes(fastifyInstance: FastifyInstance, opts: RouteOp
   // Public routes for events
 
   server.get<{ Querystring: schema.EventListQuery }>(
-    "/events",
+    '/events',
     {
       schema: {
         querystring: schema.eventListQuery,
@@ -355,7 +355,7 @@ async function setupPublicRoutes(fastifyInstance: FastifyInstance, opts: RouteOp
   );
 
   server.get<{ Params: schema.UserEventPathParams }>(
-    "/events/:slug",
+    '/events/:slug',
     {
       schema: {
         params: schema.userEventPathParams,
@@ -370,7 +370,7 @@ async function setupPublicRoutes(fastifyInstance: FastifyInstance, opts: RouteOp
 
   // Public route for signup creation
   server.post<{ Body: schema.SignupCreateBody }>(
-    "/signups",
+    '/signups',
     {
       schema: {
         body: schema.signupCreateBody,
@@ -384,11 +384,11 @@ async function setupPublicRoutes(fastifyInstance: FastifyInstance, opts: RouteOp
   );
 
   // Public route for iCal feed
-  server.get("/ical", {}, sendICalFeed);
+  server.get('/ical', {}, sendICalFeed);
 
   // Public route for initial admin user creation
   server.post<{ Body: schema.UserCreateSchema }>(
-    "/users",
+    '/users',
     {
       schema: {
         body: schema.userCreateSchema,
@@ -405,6 +405,6 @@ async function setupPublicRoutes(fastifyInstance: FastifyInstance, opts: RouteOp
 export default async function setupRoutes(instance: FastifyInstance, opts: RouteOptions): Promise<void> {
   addLogEventHook(instance);
 
-  await instance.register(setupAdminRoutes, { ...opts, prefix: "/admin" });
+  await instance.register(setupAdminRoutes, { ...opts, prefix: '/admin' });
   await instance.register(setupPublicRoutes, { ...opts, prefix: undefined });
 }

@@ -1,6 +1,6 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { NotFound } from "http-errors";
-import { Op } from "sequelize";
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { NotFound } from 'http-errors';
+import { Op } from 'sequelize';
 
 import type {
   AdminEventPathParams,
@@ -9,7 +9,7 @@ import type {
   EventSlug,
   UserEventPathParams,
   UserEventResponse,
-} from "@tietokilta/ilmomasiina-models";
+} from '@tietokilta/ilmomasiina-models';
 import {
   adminEventGetEventAttrs,
   eventGetAnswerAttrs,
@@ -17,17 +17,17 @@ import {
   eventGetQuestionAttrs,
   eventGetQuotaAttrs,
   eventGetSignupAttrs,
-} from "@tietokilta/ilmomasiina-models/dist/attrs/event";
-import { Answer } from "../../models/answer";
-import { Event } from "../../models/event";
-import { Question } from "../../models/question";
-import { Quota } from "../../models/quota";
-import { Signup } from "../../models/signup";
-import { StringifyApi } from "../utils";
+} from '@tietokilta/ilmomasiina-models/dist/attrs/event';
+import { Answer } from '../../models/answer';
+import { Event } from '../../models/event';
+import { Question } from '../../models/question';
+import { Quota } from '../../models/quota';
+import { Signup } from '../../models/signup';
+import { StringifyApi } from '../utils';
 
 export async function eventDetailsForUser(eventSlug: EventSlug): Promise<UserEventResponse> {
   // First query general event information
-  const event = await Event.scope("user").findOne({
+  const event = await Event.scope('user').findOne({
     where: { slug: eventSlug },
     attributes: eventGetEventAttrs,
     include: [
@@ -36,12 +36,12 @@ export async function eventDetailsForUser(eventSlug: EventSlug): Promise<UserEve
         attributes: eventGetQuestionAttrs,
       },
     ],
-    order: [[Question, "order", "ASC"]],
+    order: [[Question, 'order', 'ASC']],
   });
 
   if (!event) {
     // Event not found with id, probably deleted
-    throw new NotFound("No event found with slug");
+    throw new NotFound('No event found with slug');
   }
 
   // Only return answers to public questions
@@ -54,7 +54,7 @@ export async function eventDetailsForUser(eventSlug: EventSlug): Promise<UserEve
     include: [
       // Include all signups for the quota
       {
-        model: Signup.scope("active"),
+        model: Signup.scope('active'),
         attributes: eventGetSignupAttrs,
         required: false,
         include: [
@@ -70,8 +70,8 @@ export async function eventDetailsForUser(eventSlug: EventSlug): Promise<UserEve
     ],
     // First sort by Quota order, then by signup creation date
     order: [
-      ["order", "ASC"],
-      [Signup, "createdAt", "ASC"],
+      ['order', 'ASC'],
+      [Signup, 'createdAt', 'ASC'],
     ],
   });
 
@@ -130,12 +130,12 @@ export async function eventDetailsForAdmin(eventID: EventID): Promise<AdminEvent
         attributes: eventGetQuestionAttrs,
       },
     ],
-    order: [[Question, "order", "ASC"]],
+    order: [[Question, 'order', 'ASC']],
   });
 
   if (event === null) {
     // Event not found with id, probably deleted
-    throw new NotFound("No event found with id");
+    throw new NotFound('No event found with id');
   }
 
   const quotas = await Quota.findAll({
@@ -144,8 +144,8 @@ export async function eventDetailsForAdmin(eventID: EventID): Promise<AdminEvent
     // Include all signups for the quotas
     include: [
       {
-        model: Signup.scope("active"),
-        attributes: [...eventGetSignupAttrs, "id", "email"],
+        model: Signup.scope('active'),
+        attributes: [...eventGetSignupAttrs, 'id', 'email'],
         required: false,
         // ... and answers of signups
         include: [
@@ -159,8 +159,8 @@ export async function eventDetailsForAdmin(eventID: EventID): Promise<AdminEvent
     ],
     // First sort by Quota order, then by signup creation date
     order: [
-      ["order", "ASC"],
-      [Signup, "createdAt", "ASC"],
+      ['order', 'ASC'],
+      [Signup, 'createdAt', 'ASC'],
     ],
   });
 

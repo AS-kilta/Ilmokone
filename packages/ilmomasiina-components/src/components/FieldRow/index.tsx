@@ -1,12 +1,12 @@
-import React, { ComponentType, ReactNode } from "react";
+import React, { ComponentType, ReactNode } from 'react';
 
-import { Form } from "react-bootstrap";
-import { useField, UseFieldConfig } from "react-final-form";
+import { Form } from 'react-bootstrap';
+import { useField, UseFieldConfig } from 'react-final-form';
 
-import BaseFieldRow, { BaseFieldRowProps } from "../BaseFieldRow";
+import BaseFieldRow, { BaseFieldRowProps } from '../BaseFieldRow';
 
-type Props = Omit<BaseFieldRowProps, "error" | "children"> &
-  Pick<UseFieldConfig<any>, "type"> & {
+type Props = Omit<BaseFieldRowProps, 'error' | 'children'> &
+  Pick<UseFieldConfig<any>, 'type'> & {
     /** The name of the field in the data. */
     name: string;
     /** Passed as `controlId` if no `controlId` is separately set. */
@@ -26,7 +26,7 @@ type Props = Omit<BaseFieldRowProps, "error" | "children"> &
 /** react-final-field field row component */
 export default function FieldRow<P = unknown>({
   name,
-  label = "",
+  label = '',
   help,
   required = false,
   alternateError,

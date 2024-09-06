@@ -1,6 +1,6 @@
-import { Dialect, Options, Sequelize } from "sequelize";
+import { Dialect, Options, Sequelize } from 'sequelize';
 
-import appConfig from "../config";
+import appConfig from '../config';
 
 const { clearDbUrl, dbDialect, dbHost, dbPort, dbSsl, dbDatabase, dbUser, dbPassword, debugDbLogging } = appConfig;
 
@@ -30,10 +30,10 @@ if (clearDbUrl) {
     dialectOptions: dbSsl ? { ssl: true } : {},
   };
   if (!dbDatabase || !dbUser) {
-    throw new Error("Invalid database config: DB_HOST, DB_DATABASE and DB_USER must be set with DB_DIALECT.");
+    throw new Error('Invalid database config: DB_HOST, DB_DATABASE and DB_USER must be set with DB_DIALECT.');
   }
 } else {
-  throw new Error("Missing database config: DB_DIALECT or CLEARDB_DATABASE_URL must be set.");
+  throw new Error('Missing database config: DB_DIALECT or CLEARDB_DATABASE_URL must be set.');
 }
 
 // Add extra options

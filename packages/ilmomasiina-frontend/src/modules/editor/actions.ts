@@ -1,4 +1,4 @@
-import { ApiError } from "@tietokilta/ilmomasiina-components";
+import { ApiError } from '@tietokilta/ilmomasiina-components';
 import {
   AdminEventResponse,
   CategoriesResponse,
@@ -8,9 +8,9 @@ import {
   EventID,
   EventUpdateBody,
   SignupID,
-} from "@tietokilta/ilmomasiina-models";
-import adminApiFetch from "../../api";
-import type { DispatchAction, GetState } from "../../store/types";
+} from '@tietokilta/ilmomasiina-models';
+import adminApiFetch from '../../api';
+import type { DispatchAction, GetState } from '../../store/types';
 import {
   CATEGORIES_LOADED,
   EDIT_CONFLICT,
@@ -23,27 +23,27 @@ import {
   MOVE_TO_QUEUE_CANCELED,
   MOVE_TO_QUEUE_WARNING,
   RESET,
-} from "./actionTypes";
-import type { EditorEvent } from "./types";
+} from './actionTypes';
+import type { EditorEvent } from './types';
 
 export enum EditorEventType {
-  ONLY_EVENT = "event",
-  EVENT_WITH_SIGNUP = "event+signup",
-  ONLY_SIGNUP = "signup",
+  ONLY_EVENT = 'event',
+  EVENT_WITH_SIGNUP = 'event+signup',
+  ONLY_SIGNUP = 'signup',
 }
 
 export const defaultEvent = (): EditorEvent => ({
   eventType: EditorEventType.EVENT_WITH_SIGNUP,
-  title: "",
-  slug: "",
+  title: '',
+  slug: '',
   date: undefined,
   endDate: undefined,
-  webpageUrl: "",
-  facebookUrl: "",
-  category: "",
-  location: "",
-  description: "",
-  price: "",
+  webpageUrl: '',
+  facebookUrl: '',
+  category: '',
+  location: '',
+  description: '',
+  price: '',
   signupsPublic: false,
 
   registrationStartDate: undefined,
@@ -53,8 +53,8 @@ export const defaultEvent = (): EditorEvent => ({
   useOpenQuota: false,
   quotas: [
     {
-      key: "new",
-      title: "Kiintiö",
+      key: 'new',
+      title: 'Kiintiö',
       size: 20,
     },
   ],
@@ -63,12 +63,12 @@ export const defaultEvent = (): EditorEvent => ({
   emailQuestion: true,
   questions: [],
 
-  verificationEmail: "",
+  verificationEmail: '',
 
   draft: true,
   listed: true,
 
-  updatedAt: "",
+  updatedAt: '',
 });
 
 export const resetState = () =>
@@ -183,7 +183,7 @@ export const serverEventToEditor = (event: AdminEventResponse): EditorEvent => (
   questions: event.questions.map((question) => ({
     ...question,
     key: question.id,
-    options: question.options || [""],
+    options: question.options || [''],
   })),
 });
 
@@ -199,7 +199,7 @@ const editorEventToServer = (form: EditorEvent): EventUpdateBody => ({
   openQuotaSize: form.useOpenQuota ? form.openQuotaSize : 0,
   questions: form.questions.map((question) => ({
     ...question,
-    options: question.type === "select" || question.type === "checkbox" ? question.options : null,
+    options: question.type === 'select' || question.type === 'checkbox' ? question.options : null,
   })),
 });
 
@@ -236,7 +236,7 @@ export const loadCategories = () => async (dispatch: DispatchAction, getState: G
   const { accessToken } = getState().auth;
 
   try {
-    const response = await adminApiFetch<CategoriesResponse>("admin/categories", { accessToken }, dispatch);
+    const response = await adminApiFetch<CategoriesResponse>('admin/categories', { accessToken }, dispatch);
     dispatch(categoriesLoaded(response));
   } catch (e) {
     dispatch(categoriesLoaded([]));
@@ -251,10 +251,10 @@ export const publishNewEvent = (data: EditorEvent) => async (dispatch: DispatchA
   const { accessToken } = getState().auth;
 
   const response = await adminApiFetch<AdminEventResponse>(
-    "admin/events",
+    'admin/events',
     {
       accessToken,
-      method: "POST",
+      method: 'POST',
       body: cleaned,
     },
     dispatch,
@@ -275,7 +275,7 @@ export const publishEventUpdate =
         `admin/events/${id}`,
         {
           accessToken,
-          method: "PATCH",
+          method: 'PATCH',
           body,
         },
         dispatch,
@@ -303,7 +303,7 @@ export const deleteSignup = (id: SignupID) => async (dispatch: DispatchAction, g
       `admin/signups/${id}`,
       {
         accessToken,
-        method: "DELETE",
+        method: 'DELETE',
       },
       dispatch,
     );

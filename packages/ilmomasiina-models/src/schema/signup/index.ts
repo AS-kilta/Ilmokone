@@ -1,6 +1,6 @@
-import { Static, Type } from "@sinclair/typebox";
+import { Static, Type } from '@sinclair/typebox';
 
-import { quotaID } from "../quota/attributes";
+import { quotaID } from '../quota/attributes';
 import {
   editableSignupAttributes,
   editToken,
@@ -8,7 +8,7 @@ import {
   signupDynamicAttributes,
   signupID,
   signupIdentity,
-} from "./attributes";
+} from './attributes';
 
 /** Request body for creating a signup. */
 export const signupCreateBody = Type.Object({
@@ -28,7 +28,7 @@ export const signupUpdateBody = Type.Partial(
     Type.Object({
       language: Type.String({
         maxLength: 8,
-        description: "The language code used for emails related to this signup",
+        description: 'The language code used for emails related to this signup',
       }),
     }),
   ]),

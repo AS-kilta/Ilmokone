@@ -1,16 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext } from 'react';
 
-import { Button } from "react-bootstrap";
-import { useTranslation } from "react-i18next";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { Button } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
-import { linkComponent } from "../../../config/router";
-import { usePaths } from "../../../contexts";
-import AuthContext from "../../../contexts/auth";
-import { useSingleEventContext } from "../../../modules/singleEvent";
-import { useEventDateTimeFormatter } from "../../../utils/dateFormat";
-import CCText from "../defaultCCText";
+import { linkComponent } from '../../../config/router';
+import { usePaths } from '../../../contexts';
+import AuthContext from '../../../contexts/auth';
+import { useSingleEventContext } from '../../../modules/singleEvent';
+import { useEventDateTimeFormatter } from '../../../utils/dateFormat';
+import CCText from '../defaultCCText';
 
 const EventDescription = () => {
   const event = useSingleEventContext().event!;
@@ -25,56 +25,56 @@ const EventDescription = () => {
         <h1>{event.title}</h1>
         {loggedIn && paths.hasAdmin && (
           <Button as={Link} variant="primary" to={paths.adminEditEvent(event.id)}>
-            {t("singleEvent.editEvent")}
+            {t('singleEvent.editEvent')}
           </Button>
         )}
       </nav>
       <div className="ilmo--event-heading">
         {event.category && (
           <p>
-            <strong>{t("singleEvent.info.category")}</strong> {event.category}
+            <strong>{t('singleEvent.info.category')}</strong> {event.category}
           </p>
         )}
         {event.date && (
           <p>
-            <strong>{event.endDate ? t("singleEvent.info.startDate") : t("singleEvent.info.date")}</strong>{" "}
+            <strong>{event.endDate ? t('singleEvent.info.startDate') : t('singleEvent.info.date')}</strong>{' '}
             {eventDateFormat.format(new Date(event.date))}
           </p>
         )}
         {event.endDate && (
           <p>
-            <strong>{t("singleEvent.info.endDate")}</strong> {eventDateFormat.format(new Date(event.endDate))}
+            <strong>{t('singleEvent.info.endDate')}</strong> {eventDateFormat.format(new Date(event.endDate))}
           </p>
         )}
         {event.location && (
           <p>
-            <strong>{t("singleEvent.info.location")}</strong> {event.location}
+            <strong>{t('singleEvent.info.location')}</strong> {event.location}
           </p>
         )}
         {event.price && (
           <p>
-            <strong>{t("singleEvent.info.price")}</strong> {event.price}
+            <strong>{t('singleEvent.info.price')}</strong> {event.price}
           </p>
         )}
         {event.webpageUrl && (
           <p>
-            <strong>{t("singleEvent.info.website")}</strong>{" "}
-            <a href={event.webpageUrl} title={t("singleEvent.info.website")}>
+            <strong>{t('singleEvent.info.website')}</strong>{' '}
+            <a href={event.webpageUrl} title={t('singleEvent.info.website')}>
               {event.webpageUrl}
             </a>
           </p>
         )}
         {event.facebookUrl && (
           <p>
-            <strong>{t("singleEvent.info.facebookEvent")}</strong>{" "}
-            <a href={event.facebookUrl} title={t("singleEvent.info.facebookEvent")}>
+            <strong>{t('singleEvent.info.facebookEvent')}</strong>{' '}
+            <a href={event.facebookUrl} title={t('singleEvent.info.facebookEvent')}>
               {event.facebookUrl}
             </a>
           </p>
         )}
       </div>
       <div className="ilmo--event-description">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{event.description || ""}</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{event.description || ''}</ReactMarkdown>
       </div>
       <div className="ilmo--cc-text">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{CCText}</ReactMarkdown>

@@ -1,12 +1,12 @@
-import { push } from "connected-react-router";
-import { toast } from "react-toastify";
+import { push } from 'connected-react-router';
+import { toast } from 'react-toastify';
 
-import { ApiError, apiFetch } from "@tietokilta/ilmomasiina-components";
-import { AdminLoginResponse, ErrorCode } from "@tietokilta/ilmomasiina-models";
-import i18n from "../../i18n";
-import appPaths from "../../paths";
-import type { DispatchAction } from "../../store/types";
-import { LOGIN_SUCCEEDED, RESET } from "./actionTypes";
+import { ApiError, apiFetch } from '@tietokilta/ilmomasiina-components';
+import { AdminLoginResponse, ErrorCode } from '@tietokilta/ilmomasiina-models';
+import i18n from '../../i18n';
+import appPaths from '../../paths';
+import type { DispatchAction } from '../../store/types';
+import { LOGIN_SUCCEEDED, RESET } from './actionTypes';
 
 export const loginSucceeded = (payload: AdminLoginResponse) =>
   <const>{
@@ -24,7 +24,7 @@ export type AuthActions = ReturnType<typeof loginSucceeded> | ReturnType<typeof 
 /** ID of latest login/auth related toast shown. Only used by `loginToast`. */
 let loginToastId = 0;
 
-const loginToast = (type: "success" | "error", text: string, autoClose: number) => {
+const loginToast = (type: 'success' | 'error', text: string, autoClose: number) => {
   // If the previous login/auth related toast is still visible, update it instead of spamming a new one.
   // Otherwise, increment the ID and show a new one.
   if (toast.isActive(`loginState${loginToastId}`)) {
@@ -40,8 +40,8 @@ const loginToast = (type: "success" | "error", text: string, autoClose: number) 
 };
 
 export const login = (email: string, password: string) => async (dispatch: DispatchAction) => {
-  const sessionResponse = await apiFetch<AdminLoginResponse>("authentication", {
-    method: "POST",
+  const sessionResponse = await apiFetch<AdminLoginResponse>('authentication', {
+    method: 'POST',
     body: {
       email,
       password,
@@ -49,13 +49,13 @@ export const login = (email: string, password: string) => async (dispatch: Dispa
   });
   dispatch(loginSucceeded(sessionResponse));
   dispatch(push(appPaths.adminEventsList));
-  loginToast("success", i18n.t("auth.loginSuccess"), 2000);
+  loginToast('success', i18n.t('auth.loginSuccess'), 2000);
   return true;
 };
 
 export const createInitialUser = (email: string, password: string) => async (dispatch: DispatchAction) => {
-  const sessionResponse = await apiFetch<AdminLoginResponse>("users", {
-    method: "POST",
+  const sessionResponse = await apiFetch<AdminLoginResponse>('users', {
+    method: 'POST',
     body: {
       email,
       password,
@@ -63,7 +63,7 @@ export const createInitialUser = (email: string, password: string) => async (dis
   });
   dispatch(loginSucceeded(sessionResponse));
   dispatch(push(appPaths.adminEventsList));
-  loginToast("success", i18n.t("initialSetup.success"), 2000);
+  loginToast('success', i18n.t('initialSetup.success'), 2000);
   return true;
 };
 
@@ -75,19 +75,19 @@ export const redirectToLogin = () => (dispatch: DispatchAction) => {
 export const logout = () => async (dispatch: DispatchAction) => {
   dispatch(resetState());
   dispatch(redirectToLogin());
-  loginToast("success", i18n.t("auth.logoutSuccess"), 2000);
+  loginToast('success', i18n.t('auth.logoutSuccess'), 2000);
 };
 
 export const loginExpired = () => (dispatch: DispatchAction) => {
-  loginToast("error", i18n.t("auth.loginExpired"), 10000);
+  loginToast('error', i18n.t('auth.loginExpired'), 10000);
   dispatch(redirectToLogin());
 };
 
 export const renewLogin = (accessToken: string) => async (dispatch: DispatchAction) => {
   try {
     if (accessToken) {
-      const sessionResponse = await apiFetch<AdminLoginResponse>("authentication/renew", {
-        method: "POST",
+      const sessionResponse = await apiFetch<AdminLoginResponse>('authentication/renew', {
+        method: 'POST',
         body: {
           accessToken,
         },

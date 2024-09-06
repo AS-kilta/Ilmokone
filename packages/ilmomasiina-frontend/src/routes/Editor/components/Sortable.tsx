@@ -1,7 +1,7 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
-import { Card } from "react-bootstrap";
-import { Offset, SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
+import { Card } from 'react-bootstrap';
+import { Offset, SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
 const DragHandle = SortableHandle(() => <span className="handler" />);
 

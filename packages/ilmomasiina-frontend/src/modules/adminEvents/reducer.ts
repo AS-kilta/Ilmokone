@@ -1,5 +1,5 @@
-import { EVENTS_LOAD_FAILED, EVENTS_LOADED, RESET } from "./actionTypes";
-import type { AdminEventsActions, AdminState } from "./types";
+import { EVENTS_LOAD_FAILED, EVENTS_LOADED, RESET } from './actionTypes';
+import type { AdminEventsActions, AdminState } from './types';
 
 const initialState: AdminState = {
   events: null,

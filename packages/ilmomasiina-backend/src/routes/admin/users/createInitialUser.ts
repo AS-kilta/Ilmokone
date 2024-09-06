@@ -1,14 +1,14 @@
 /* eslint-disable max-classes-per-file */
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { Transaction } from "sequelize";
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { Transaction } from 'sequelize';
 
-import { AdminLoginResponse, ErrorCode, UserCreateSchema } from "@tietokilta/ilmomasiina-models";
-import AdminAuthSession from "../../../authentication/adminAuthSession";
-import AdminPasswordAuth from "../../../authentication/adminPasswordAuth";
-import { getSequelize } from "../../../models";
-import { User } from "../../../models/user";
-import CustomError from "../../../util/customError";
-import { createUser } from "./inviteUser";
+import { AdminLoginResponse, ErrorCode, UserCreateSchema } from '@tietokilta/ilmomasiina-models';
+import AdminAuthSession from '../../../authentication/adminAuthSession';
+import AdminPasswordAuth from '../../../authentication/adminPasswordAuth';
+import { getSequelize } from '../../../models';
+import { User } from '../../../models/user';
+import CustomError from '../../../util/customError';
+import { createUser } from './inviteUser';
 
 export class InitialSetupNeeded extends CustomError {
   constructor(message: string) {
@@ -42,7 +42,7 @@ export default function createInitialUser(session: AdminAuthSession) {
 
     const user = await getSequelize().transaction(async (transaction) => {
       if (await isInitialSetupDone(transaction)) {
-        throw new InitialSetupAlreadyDone("The initial admin user has already been created.");
+        throw new InitialSetupAlreadyDone('The initial admin user has already been created.');
       }
       return createUser(request.body, request.logEvent, transaction);
     });
