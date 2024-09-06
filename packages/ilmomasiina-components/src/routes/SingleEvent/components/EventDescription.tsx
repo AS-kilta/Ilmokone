@@ -5,12 +5,11 @@ import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { useEventDateTimeFormatter } from "../../../utils/dateFormat";
-import { timezone } from '../../../config';
 import { linkComponent } from '../../../config/router';
 import AuthContext from '../../../contexts/auth';
 import { usePaths } from '../../../contexts/paths';
 import { useSingleEventContext } from '../../../modules/singleEvent';
+import { useEventDateTimeFormatter } from "../../../utils/dateFormat";
 import CCText from '../defaultCCText';
 
 const EventDescription = () => {

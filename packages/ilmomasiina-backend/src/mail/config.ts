@@ -30,7 +30,7 @@ const mailTransporter: Transporter = (() => {
       secure: config.smtpTls,
       pool: true,
       auth: {
-        type: 'OAuth2',
+        type: "OAuth2",
         user: config.smtpUser,
         pass: config.smtpPassword,
         clientId: config.googleClientId,
