@@ -2,15 +2,15 @@ name: Build & deploy
 
 env:
   # Change this to upload the built image to your own organization.
-  docker_tag: 'ghcr.io/AS-kilta/Ilmokone'
+  docker_tag: "ghcr.io/AS-kilta/Ilmokone"
 
   # Change these to customize your build.
-  branding_header_title_text: 'AS Ilmokone'
-  branding_footer_gdpr_text: 'Tietosuoja'
-  branding_footer_gdpr_link: 'https://as.fi/guild/legal/privacy-policy-ilmomasiina'
-  branding_footer_home_text: 'as.fi'
-  branding_footer_home_link: 'https://as.fi'
-  branding_login_placeholder_email: 'admin@as.fi'
+  branding_header_title_text: "AS Ilmokone"
+  branding_footer_gdpr_text: "Tietosuoja"
+  branding_footer_gdpr_link: "https://as.fi/guild/legal/privacy-policy-ilmomasiina"
+  branding_footer_home_text: "as.fi"
+  branding_footer_home_link: "https://as.fi"
+  branding_login_placeholder_email: "admin@as.fi"
 
 on:
   push:
@@ -18,7 +18,7 @@ on:
       - main
       - staging
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   lint:
@@ -35,7 +35,6 @@ jobs:
     # Change this to your repo name to build automatically on your fork.
     if: github.repository == 'AS-kilta/Ilmokone'
     steps:
-
       - name: Check out the repo
         uses: actions/checkout@v4
 
@@ -84,6 +83,7 @@ jobs:
             VERSION=${{steps.get-version.outputs.version}}
 
   # This is disabled on forks, you'll most likely need to modify it anyway for your usage
+
 #  deploy:
 #    name: Push update to App Service
 #    needs: docker

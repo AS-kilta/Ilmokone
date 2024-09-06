@@ -36,9 +36,9 @@ project's `package.json` specifies `--workspace-concurrency=1` to prevent pnpm f
 The project is divided into four packages:
 
 - `ilmomasiina-models` contains the single source of truth for the data model and API:
-    - The JS column types for DB models. These are implemented by the concrete Sequelize models.
-    - The API models, derived mostly by picking columns from the DB models.
-    - Utility interfaces that convert Dates in the API models to strings, for frontend typings.
+  - The JS column types for DB models. These are implemented by the concrete Sequelize models.
+  - The API models, derived mostly by picking columns from the DB models.
+  - Utility interfaces that convert Dates in the API models to strings, for frontend typings.
 - `ilmomasiina-backend` contains the backend code and depends on `ilmomasiina-models`.
 - `ilmomasiina-components` contains reusable components for the user-facing parts of the frontend.
 - `ilmomasiina-frontend` contains the frontend code, along with scripts and dependencies for ESBuild.
@@ -81,7 +81,7 @@ Libraries:
   [React-Bootstrap v1](https://react-bootstrap-v4.netlify.app/) for UI components
 - [SCSS](https://sass-lang.com/)
 - [Redux](https://redux.js.org/) and [React Redux](https://react-redux.js.org/)
-    - Some state is handled locally, if there's no need to share it between components
+  - Some state is handled locally, if there's no need to share it between components
 - [React Router](https://reactrouter.com/)
 - [i18next](https://www.i18next.com/) for internationalization
 - [Formik](https://formik.org/)
