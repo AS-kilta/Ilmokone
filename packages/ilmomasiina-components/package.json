@@ -1,6 +1,6 @@
 {
   "name": "@tietokilta/ilmomasiina-components",
-  "version": "2.0.0-alpha13",
+  "version": "2.0.0-alpha27",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Tietokilta/ilmomasiina.git"
@@ -25,13 +25,11 @@
     "typecheck": "tsc --build"
   },
   "dependencies": {
-    "@tietokilta/ilmomasiina-models": "workspace:2.0.0-alpha13",
+    "@tietokilta/ilmomasiina-models": "workspace:*",
     "bootstrap": "^4.6.2",
     "final-form": "^4.20.10",
     "i18next": "^23.10.0",
     "lodash-es": "^4.17.21",
-    "moment": "^2.30.1",
-    "moment-timezone": "^0.5.45",
     "react": "^17 || ^18.2.0",
     "react-bootstrap": "^1.6.8",
     "react-countdown": "^2.3.5",

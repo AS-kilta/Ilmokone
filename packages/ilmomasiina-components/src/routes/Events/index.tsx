@@ -1,34 +1,29 @@
-import React, { useMemo } from 'react';
+import React, { useMemo } from "react";
 
-import { Spinner, Table } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
+import { Spinner, Table } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
-import { ErrorCode } from '@tietokilta/ilmomasiina-models';
-import { timezone } from '../../config';
-import { linkComponent, Navigate } from '../../config/router';
-import { usePaths } from '../../contexts/paths';
-import { I18nProvider } from '../../i18n';
-import { EventListProps, EventListProvider, useEventListContext } from '../../modules/events';
-import { errorDesc, errorTitle } from '../../utils/errorMessage';
-import {
-  EventRow, eventsToRows, QuotaRow,
-} from '../../utils/eventListUtils';
-import { useSignupStateText } from '../../utils/signupStateText';
-import TableRow from './components/TableRow';
+import { ErrorCode } from "@tietokilta/ilmomasiina-models";
+import { linkComponent, Navigate } from "../../config/router";
+import { usePaths } from "../../contexts/paths";
+import { I18nProvider } from "../../i18n";
+import { EventListProps, EventListProvider, useEventListContext } from "../../modules/events";
+import { useEventDateFormatter } from "../../utils/dateFormat";
+import { errorDesc, errorTitle } from "../../utils/errorMessage";
+import { EventRow, eventsToRows, QuotaRow } from "../../utils/eventListUtils";
+import { useSignupStateText } from "../../utils/signupStateText";
+import TableRow from "./components/TableRow";
 
-const ListEventRow = ({
-  row: {
-    slug, title, date, signupState, signupCount, quotaSize,
-  },
-}: { row: EventRow }) => {
+const ListEventRow = ({ row: { slug, title, date, signupState, signupCount, quotaSize } }: { row: EventRow }) => {
   const Link = linkComponent();
   const paths = usePaths();
   const stateText = useSignupStateText(signupState);
+  const eventDateFormat = useEventDateFormatter();
   return (
     <TableRow
       className={stateText.class}
       title={<Link to={paths.eventDetails(slug)}>{title}</Link>}
-      date={date ? date.tz(timezone()).format('DD.MM.YYYY') : ''}
+      date={date ? eventDateFormat.format(date) : ""}
       signupStatus={stateText}
       signupCount={signupCount}
       quotaSize={quotaSize}
@@ -36,16 +31,12 @@ const ListEventRow = ({
   );
 };
 
-const ListQuotaRow = ({
-  row: {
-    type, title, signupCount, quotaSize,
-  },
-}: { row: QuotaRow }) => {
+const ListQuotaRow = ({ row: { type, title, signupCount, quotaSize } }: { row: QuotaRow }) => {
   const { t } = useTranslation();
   return (
     <TableRow
       className="ilmo--quota-row"
-      title={type === 'openquota' ? t('events.openQuota') : title}
+      title={type === "openquota" ? t("events.openQuota") : title}
       signupCount={signupCount}
       quotaSize={quotaSize}
     />
@@ -57,7 +48,7 @@ const EventListView = () => {
   const { t } = useTranslation();
   const paths = usePaths();
 
-  const tableRows = useMemo(() => eventsToRows(events ?? []).filter((row) => row.type !== 'waitlist'), [events]);
+  const tableRows = useMemo(() => eventsToRows(events ?? []).filter((row) => row.type !== "waitlist"), [events]);
 
   // If initial setup is needed and is possible on this frontend, redirect to that page.
   if (error && error.code === ErrorCode.INITIAL_SETUP_NEEDED && paths.hasAdmin) {
@@ -67,8 +58,8 @@ const EventListView = () => {
   if (error) {
     return (
       <>
-        <h1>{errorTitle(t, error, 'events.loadError')}</h1>
-        <p>{errorDesc(t, error, 'events.loadError')}</p>
+        <h1>{errorTitle(t, error, "events.loadError")}</h1>
+        <p>{errorDesc(t, error, "events.loadError")}</p>
       </>
     );
   }
@@ -76,7 +67,7 @@ const EventListView = () => {
   if (pending) {
     return (
       <>
-        <h1>{t('events.title')}</h1>
+        <h1>{t("events.title")}</h1>
         <Spinner animation="border" />
       </>
     );
@@ -84,21 +75,20 @@ const EventListView = () => {
 
   return (
     <>
-      <h1>{t('events.title')}</h1>
+      <h1>{t("events.title")}</h1>
       <Table className="ilmo--event-list">
         <thead>
           <tr>
-            <th>{t('events.column.name')}</th>
-            <th>{t('events.column.date')}</th>
-            <th>{t('events.column.signupStatus')}</th>
-            <th>{t('events.column.signupCount')}</th>
+            <th>{t("events.column.name")}</th>
+            <th>{t("events.column.date")}</th>
+            <th>{t("events.column.signupStatus")}</th>
+            <th>{t("events.column.signupCount")}</th>
           </tr>
         </thead>
         <tbody>
-          {tableRows.map((row) => (row.type === 'event'
-            ? <ListEventRow key={row.id} row={row} />
-            : <ListQuotaRow key={row.id} row={row} />))}
-
+          {tableRows.map((row) =>
+            row.type === "event" ? <ListEventRow key={row.id} row={row} /> : <ListQuotaRow key={row.id} row={row} />,
+          )}
         </tbody>
       </Table>
     </>
