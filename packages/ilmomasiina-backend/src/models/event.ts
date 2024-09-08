@@ -1,8 +1,19 @@
 import moment from 'moment';
 import {
-  DataTypes, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin,
-  HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin,
-  HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin, Model, Op, Optional,
+  DataTypes,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
+  HasManyGetAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManyHasAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManySetAssociationsMixin,
+  Model,
+  Op,
+  Optional,
   Sequelize,
 } from 'sequelize';
 
@@ -15,9 +26,23 @@ import { generateRandomId, RANDOM_ID_LENGTH } from './randomId';
 interface EventManualAttributes extends Omit<EventAttributes, 'updatedAt'> {}
 
 export interface EventCreationAttributes
-  extends Optional<EventManualAttributes, 'id' | 'openQuotaSize' | 'description' | 'price' | 'location'
-  | 'facebookUrl' | 'webpageUrl' | 'category' | 'draft' | 'listed' | 'signupsPublic' | 'nameQuestion'
-  | 'emailQuestion' | 'verificationEmail'> {}
+  extends Optional<
+    EventManualAttributes,
+    | 'id'
+    | 'openQuotaSize'
+    | 'description'
+    | 'price'
+    | 'location'
+    | 'facebookUrl'
+    | 'webpageUrl'
+    | 'category'
+    | 'draft'
+    | 'listed'
+    | 'signupsPublic'
+    | 'nameQuestion'
+    | 'emailQuestion'
+    | 'verificationEmail'
+  > {}
 
 export class Event extends Model<EventManualAttributes, EventCreationAttributes> implements EventAttributes {
   public id!: string;
@@ -190,25 +215,31 @@ export default function setupEventModel(sequelize: Sequelize) {
               [Op.or]: {
                 // closed less than a week ago
                 registrationEndDate: {
-                  [Op.gt]: moment()
-                    .subtract(7, 'days')
-                    .toDate(),
+                  [Op.gt]: moment().subtract(7, 'days').toDate(),
                 },
                 // or happened less than a week ago
                 date: {
-                  [Op.gt]: moment()
-                    .subtract(7, 'days')
-                    .toDate(),
+                  [Op.gt]: moment().subtract(7, 'days').toDate(),
                 },
                 endDate: {
-                  [Op.gt]: moment()
-                    .subtract(7, 'days')
-                    .toDate(),
+                  [Op.gt]: moment().subtract(7, 'days').toDate(),
                 },
               },
             },
           },
         }),
+      },
+      hooks: {
+        // Events use paranoid mode, so we need to change the slug when deleting
+        // to avoid the slug being reserved after deletion.
+        async beforeDestroy(instance, options) {
+          await instance.update(
+            {
+              slug: `${instance.slug.substring(0, 100)}-deleted-${Date.now()}`,
+            },
+            { transaction: options.transaction },
+          );
+        },
       },
     },
   );

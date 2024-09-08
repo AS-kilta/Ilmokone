@@ -27,7 +27,10 @@ export default async function adminApiFetch<T = unknown>(
     if (Date.now() > accessToken.expiresAt - RENEW_LOGIN_THRESHOLD) {
       dispatch(renewLogin(accessToken.token));
     }
-    return await apiFetch<T>(uri, { ...opts, headers: { ...opts.headers, Authorization: accessToken.token } });
+    return await apiFetch<T>(uri, {
+      ...opts,
+      headers: { ...opts.headers, Authorization: accessToken.token },
+    });
   } catch (err) {
     if (err instanceof ApiError && err.code === ErrorCode.BAD_SESSION) {
       dispatch(loginExpired());

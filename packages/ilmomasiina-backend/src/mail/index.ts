@@ -81,10 +81,10 @@ export default class EmailService {
       };
       const { template, lng } = getTemplate(language, 'confirmation');
       const html = await email.render(template, brandedParams);
-      const subject = i18next.t(
-        params.edited ? 'emails.editConfirmation.subject' : 'emails.confirmation.subject',
-        { lng, event: params.event.title },
-      );
+      const subject = i18next.t(params.edited ? 'emails.editConfirmation.subject' : 'emails.confirmation.subject', {
+        lng,
+        event: params.event.title,
+      });
       await EmailService.send(to, subject, html);
     } catch (error) {
       console.error(error);
@@ -96,7 +96,7 @@ export default class EmailService {
       const email = new Email(TEMPLATE_OPTIONS);
       const brandedParams = {
         ...params,
-        siteUrl: config.baseUrl,
+        siteUrl: config.adminUrl.replace(/\{lang\}/g, language || config.mailDefaultLang),
         branding: {
           footerText: config.brandingMailFooterText,
           footerLink: config.brandingMailFooterLink,
@@ -116,7 +116,7 @@ export default class EmailService {
       const email = new Email(TEMPLATE_OPTIONS);
       const brandedParams = {
         ...params,
-        siteUrl: config.baseUrl,
+        siteUrl: config.adminUrl.replace(/\{lang\}/g, language || config.mailDefaultLang),
         branding: {
           footerText: config.brandingMailFooterText,
           footerLink: config.brandingMailFooterLink,
@@ -131,11 +131,7 @@ export default class EmailService {
     }
   }
 
-  static async sendPromotedFromQueueMail(
-    to: string,
-    language: string | null,
-    params: PromotedFromQueueMailParams,
-  ) {
+  static async sendPromotedFromQueueMail(to: string, language: string | null, params: PromotedFromQueueMailParams) {
     try {
       const email = new Email(TEMPLATE_OPTIONS);
       const brandedParams = {
@@ -147,7 +143,10 @@ export default class EmailService {
       };
       const { template, lng } = getTemplate(language, 'queueMail');
       const html = await email.render(template, brandedParams);
-      const subject = i18n.t('emails.promotedFromQueue.subject', { lng, event: params.event.title });
+      const subject = i18n.t('emails.promotedFromQueue.subject', {
+        lng,
+        event: params.event.title,
+      });
       await EmailService.send(to, subject, html);
     } catch (error) {
       console.error(error);

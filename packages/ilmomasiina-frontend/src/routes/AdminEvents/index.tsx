@@ -68,10 +68,7 @@ const AdminEventsList = () => {
         </thead>
         <tbody>
           {events.map((event) => (
-            <AdminEventListItem
-              key={event.id}
-              event={event}
-            />
+            <AdminEventListItem key={event.id} event={event} />
           ))}
         </tbody>
       </table>

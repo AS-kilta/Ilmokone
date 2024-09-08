@@ -16,17 +16,16 @@ type Props = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
   csvOptions?: Options;
 };
 
-const CSVLink = ({
-  data,
-  csvOptions,
-  ...props
-}: Props) => {
+const CSVLink = ({ data, csvOptions, ...props }: Props) => {
   const url = useMemo(() => makeCsvUrl(data, csvOptions), [data, csvOptions]);
 
   // Revoke created URLs when they become unused
-  useEffect(() => () => {
-    if (url) URL.revokeObjectURL(url);
-  }, [url]);
+  useEffect(
+    () => () => {
+      if (url) URL.revokeObjectURL(url);
+    },
+    [url],
+  );
 
   return <Button as="a" variant="primary" href={url} {...props} />;
 };

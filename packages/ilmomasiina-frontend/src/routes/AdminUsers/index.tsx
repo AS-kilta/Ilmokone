@@ -49,10 +49,7 @@ const AdminUsersList = () => {
           </thead>
           <tbody>
             {users.map((user) => (
-              <AdminUserListItem
-                key={user.id}
-                user={user}
-              />
+              <AdminUserListItem key={user.id} user={user} />
             ))}
           </tbody>
         </table>
@@ -67,11 +64,7 @@ const AdminUsersList = () => {
 
   return (
     <>
-      <Link to={appPaths.adminEventsList}>
-        &#8592;
-        {' '}
-        {t('adminUsers.returnToEvents')}
-      </Link>
+      <Link to={appPaths.adminEventsList}>&#8592; {t('adminUsers.returnToEvents')}</Link>
       <h1>{t('adminUsers.title')}</h1>
       {content}
     </>

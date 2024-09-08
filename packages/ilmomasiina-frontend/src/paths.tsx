@@ -24,7 +24,5 @@ export default appPaths;
 export const apiUrl = `${urlPrefix}/api`;
 
 export const PathsProvider = ({ children }: PropsWithChildren<{}>) => (
-  <PathsContext.Provider value={appPaths}>
-    {children}
-  </PathsContext.Provider>
+  <PathsContext.Provider value={appPaths}>{children}</PathsContext.Provider>
 );

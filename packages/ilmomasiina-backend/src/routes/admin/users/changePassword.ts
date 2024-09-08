@@ -21,10 +21,10 @@ export default async function changePassword(
 
   await getSequelize().transaction(async (transaction) => {
     // Try to fetch existing user
-    const existing = await User.findByPk(
-      request.sessionData.user,
-      { attributes: ['id', 'email', 'password'], transaction },
-    );
+    const existing = await User.findByPk(request.sessionData.user, {
+      attributes: ['id', 'email', 'password'],
+      transaction,
+    });
 
     if (!existing) {
       throw new NotFound('User does not exist');
@@ -34,10 +34,7 @@ export default async function changePassword(
         throw new WrongOldPassword('Incorrect password');
       }
       // Update user with a new password
-      await existing.update(
-        { password: AdminPasswordAuth.createHash(request.body.newPassword) },
-        { transaction },
-      );
+      await existing.update({ password: AdminPasswordAuth.createHash(request.body.newPassword) }, { transaction });
 
       await request.logEvent(AuditEvent.CHANGE_PASSWORD, {
         extra: {

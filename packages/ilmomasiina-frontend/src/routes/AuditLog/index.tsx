@@ -23,9 +23,11 @@ const AuditLog = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    dispatch(getAuditLogs({
-      limit: LOGS_PER_PAGE,
-    }));
+    dispatch(
+      getAuditLogs({
+        limit: LOGS_PER_PAGE,
+      }),
+    );
     return () => {
       resetState();
     };
@@ -33,19 +35,13 @@ const AuditLog = () => {
 
   return (
     <>
-      <Link to={appPaths.adminEventsList}>
-        &#8592;
-        {' '}
-        {t('auditLog.returnToEvents')}
-      </Link>
+      <Link to={appPaths.adminEventsList}>&#8592; {t('auditLog.returnToEvents')}</Link>
       <h1>{t('auditLog.title')}</h1>
       <AuditLogPagination />
       <table className="table audit-log--table">
         <thead>
           <tr>
-            <th>
-              {t('auditLog.column.time')}
-            </th>
+            <th>{t('auditLog.column.time')}</th>
             <th>
               {t('auditLog.column.user')}
               <nav className="audit-log--filter">
@@ -71,9 +67,7 @@ const AuditLog = () => {
         <tbody>
           {loadError && (
             <tr>
-              <td colSpan={4}>
-                {errorDesc(t, loadError, 'auditLog.loadError')}
-              </td>
+              <td colSpan={4}>{errorDesc(t, loadError, 'auditLog.loadError')}</td>
             </tr>
           )}
           {!loadError && !auditLog && (
@@ -83,12 +77,7 @@ const AuditLog = () => {
               </td>
             </tr>
           )}
-          {auditLog && auditLog.rows.map((item) => (
-            <AuditLogItem
-              key={item.id}
-              item={item}
-            />
-          ))}
+          {auditLog && auditLog.rows.map((item) => <AuditLogItem key={item.id} item={item} />)}
         </tbody>
       </table>
     </>

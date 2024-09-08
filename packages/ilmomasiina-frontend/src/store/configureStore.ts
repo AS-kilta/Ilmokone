@@ -12,10 +12,7 @@ import { AppActions, AppState } from './types';
 export const history = createBrowserHistory();
 
 export default function configureStore(initialState = {}) {
-  const middleware = [
-    routerMiddleware(history),
-    thunk as ThunkMiddleware<AppState, AppActions>,
-  ];
+  const middleware = [routerMiddleware(history), thunk as ThunkMiddleware<AppState, AppActions>];
 
   const persistConfig = {
     key: DEV ? 'ilmomasiina-dev' : 'ilmomasiina',
@@ -23,16 +20,9 @@ export default function configureStore(initialState = {}) {
     whitelist: ['auth'],
   };
 
-  const persistedReducer = persistReducer(
-    persistConfig,
-    makeRootReducer(history),
-  );
+  const persistedReducer = persistReducer(persistConfig, makeRootReducer(history));
 
-  const store = createStore(
-    persistedReducer,
-    initialState,
-    composeWithDevTools(applyMiddleware(...middleware)),
-  );
+  const store = createStore(persistedReducer, initialState, composeWithDevTools(applyMiddleware(...middleware)));
 
   /* TODO if (module.hot) {
     module.hot.accept('./reducers', () => {

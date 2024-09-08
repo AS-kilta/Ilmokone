@@ -18,10 +18,10 @@ export default async function deleteUser(
 ): Promise<void> {
   await getSequelize().transaction(async (transaction) => {
     // Try to fetch existing user
-    const existing = await User.findByPk(
-      request.params.id,
-      { attributes: ['id', 'email'], transaction },
-    );
+    const existing = await User.findByPk(request.params.id, {
+      attributes: ['id', 'email'],
+      transaction,
+    });
 
     if (!existing) {
       throw new NotFound('User does not exist');

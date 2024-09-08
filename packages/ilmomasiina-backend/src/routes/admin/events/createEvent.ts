@@ -20,11 +20,13 @@ export default async function createEvent(
       {
         ...request.body,
         // add order to questions and stringify answer options
-        questions: request.body.questions ? request.body.questions.map((q, order) => ({
-          ...q,
-          order,
-          options: q.options?.length ? q : null,
-        })) : [],
+        questions: request.body.questions
+          ? request.body.questions.map((q, order) => ({
+              ...q,
+              order,
+              options: q.options?.length ? q.options : null,
+            }))
+          : [],
         // add order to quotas
         quotas: request.body.quotas ? request.body.quotas.map((q, order) => ({ ...q, order })) : [],
         date: toDate(request.body.date),
@@ -47,7 +49,10 @@ export default async function createEvent(
       },
     );
 
-    await request.logEvent(AuditEvent.CREATE_EVENT, { event: created, transaction });
+    await request.logEvent(AuditEvent.CREATE_EVENT, {
+      event: created,
+      transaction,
+    });
 
     return created;
   });

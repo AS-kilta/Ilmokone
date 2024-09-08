@@ -5,8 +5,6 @@ import { defineConfig } from 'vite';
 import checker from 'vite-plugin-checker';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-import momentPlugin from './rollupMomentPlugin';
-
 /* eslint-disable no-console */
 
 // Load environment variables from .env files (from the root of repository)
@@ -74,7 +72,6 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     tsconfigPaths(),
-    momentPlugin({ timezone: TIMEZONE }),
     checker({
       // We already do type checking & linting separately in CI
       enableBuild: false,

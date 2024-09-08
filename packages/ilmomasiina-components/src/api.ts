@@ -39,11 +39,12 @@ export function configureApi(url: string) {
   apiUrl = url;
 }
 
-export default async function apiFetch<T = unknown>(uri: string, {
-  method = 'GET', body, headers, signal,
-}: FetchOptions = {}) {
+export default async function apiFetch<T = unknown>(
+  uri: string,
+  { method = 'GET', body, headers, signal }: FetchOptions = {},
+) {
   const allHeaders = {
-    ...headers || {},
+    ...(headers || {}),
   };
   if (body !== undefined) {
     allHeaders['Content-Type'] = 'application/json; charset=utf-8';

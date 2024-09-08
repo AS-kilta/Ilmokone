@@ -1,14 +1,19 @@
 import find from 'lodash-es/find';
 import orderBy from 'lodash-es/orderBy';
 import sumBy from 'lodash-es/sumBy';
-import moment from 'moment-timezone';
 
 import type {
-  AdminEventResponse, AdminSignupSchema, PublicSignupSchema, QuestionID, QuotaID, QuotaWithSignupCount,
-  SignupID, UserEventResponse,
+  AdminEventResponse,
+  AdminSignupSchema,
+  PublicSignupSchema,
+  QuestionID,
+  QuotaID,
+  QuotaWithSignupCount,
+  SignupID,
+  UserEventResponse,
 } from '@tietokilta/ilmomasiina-models';
 import { SignupStatus } from '@tietokilta/ilmomasiina-models';
-import { timezone } from '../config';
+import { getCsvDateTimeFormatter } from './dateFormat';
 
 /** Placeholder quota ID for the open quota. */
 export const OPENQUOTA = '\x00open' as const;
@@ -19,21 +24,19 @@ export type AnyEventSchema = AdminEventResponse | UserEventResponse;
 export type AnySignupSchema = AdminSignupSchema | PublicSignupSchema;
 
 /** Grabs the signup type from {Admin,User}EventSchema and adds some extra information. */
-export type SignupWithQuota<Ev extends AnyEventSchema = AnyEventSchema> =
-  Ev['quotas'][number]['signups'][number] & {
-    quotaId: QuotaID;
-    quotaName: string;
-  };
+export type SignupWithQuota<Ev extends AnyEventSchema = AnyEventSchema> = Ev['quotas'][number]['signups'][number] & {
+  quotaId: QuotaID;
+  quotaName: string;
+};
 
 function getSignupsAsList<Ev extends AnyEventSchema>(event: Ev): SignupWithQuota<Ev>[] {
   return event.quotas.flatMap(
-    (quota) => quota.signups?.map(
-      (signup) => ({
+    (quota) =>
+      quota.signups?.map((signup) => ({
         ...signup,
         quotaId: quota.id,
         quotaName: quota.title,
-      }),
-    ) ?? [],
+      })) ?? [],
   );
 }
 
@@ -58,46 +61,50 @@ export type QuotaSignups = {
 export function getSignupsByQuota(event: AnyEventSchema): QuotaSignups[] {
   const signups = getSignupsAsList(event);
   const quotas = [
-    ...event.quotas.map(
-      (quota) => {
-        const quotaSignups = signups.filter((signup) => signup.quotaId === quota.id && signup.status === 'in-quota');
-        return {
-          ...quota,
-          signups: quotaSignups,
-          // Trust signupCount and size, unless we have concrete information that more signups exist
-          signupCount: Math.max(quotaSignups.length, Math.min(quota.signupCount, quota.size ?? Infinity)),
-        };
-      },
-    ),
+    ...event.quotas.map((quota) => {
+      const quotaSignups = signups.filter((signup) => signup.quotaId === quota.id && signup.status === 'in-quota');
+      return {
+        ...quota,
+        signups: quotaSignups,
+        // Trust signupCount and size, unless we have concrete information that more signups exist
+        signupCount: Math.max(quotaSignups.length, Math.min(quota.signupCount, quota.size ?? Infinity)),
+      };
+    }),
   ];
 
   const { openQuotaCount, queueCount } = countOverflowSignups(event.quotas, event.openQuotaSize);
 
   const openSignups = signups.filter((signup) => signup.status === 'in-open');
   // Open quota is shown if the event has one, or if signups have been assigned there nevertheless.
-  const openQuota = openSignups.length > 0 || event.openQuotaSize > 0 ? [{
-    id: OPENQUOTA,
-    title: 'Avoin kiintiö',
-    size: event.openQuotaSize,
-    signups: openSignups,
-    signupCount: Math.max(openQuotaCount, openSignups.length),
-  }] : [];
+  const openQuota =
+    openSignups.length > 0 || event.openQuotaSize > 0
+      ? [
+          {
+            id: OPENQUOTA,
+            title: 'Avoin kiintiö',
+            size: event.openQuotaSize,
+            signups: openSignups,
+            signupCount: Math.max(openQuotaCount, openSignups.length),
+          },
+        ]
+      : [];
 
   const queueSignups = signups.filter((signup) => signup.status === 'in-queue');
   // Queue is shown if signups have been assigned there.
-  const queue = queueSignups.length > 0 ? [{
-    id: WAITLIST,
-    title: 'Jonossa',
-    size: null,
-    signups: queueSignups,
-    signupCount: Math.max(queueCount, queueSignups.length),
-  }] : [];
+  const queue =
+    queueSignups.length > 0
+      ? [
+          {
+            id: WAITLIST,
+            title: 'Jonossa',
+            size: null,
+            signups: queueSignups,
+            signupCount: Math.max(queueCount, queueSignups.length),
+          },
+        ]
+      : [];
 
-  return [
-    ...quotas,
-    ...openQuota,
-    ...queue,
-  ];
+  return [...quotas, ...openQuota, ...queue];
 }
 
 function getAnswersFromSignup(event: AdminEventResponse, signup: AnySignupSchema) {
@@ -118,7 +125,7 @@ export type FormattedSignup = {
   email: string | null;
   answers: Record<QuestionID, string | string[]>;
   quota: string;
-  createdAt: string;
+  createdAt: Date;
   confirmed: boolean;
 };
 
@@ -139,9 +146,7 @@ export function getSignupsForAdminList(event: AdminEventResponse): FormattedSign
     }
     return {
       ...signup,
-      createdAt: moment(signup.createdAt)
-        .tz(timezone())
-        .format('DD.MM.YYYY HH:mm:ss'),
+      createdAt: new Date(signup.createdAt),
       quota: `${signup.quotaName}${quotaType}`,
       answers: getAnswersFromSignup(event, signup),
     };
@@ -155,6 +160,7 @@ export function stringifyAnswer(answer: string | string[] | undefined) {
 
 /** Converts an array of signup rows from `getSignupsForAdminList` to a an array of CSV cells. */
 export function convertSignupsToCSV(event: AdminEventResponse, signups: FormattedSignup[]): string[][] {
+  const dateFormat = getCsvDateTimeFormatter();
   return [
     // Headers
     [
@@ -170,7 +176,7 @@ export function convertSignupsToCSV(event: AdminEventResponse, signups: Formatte
       ...(event.emailQuestion ? [signup.email || ''] : []),
       signup.quota,
       ...event.questions.map((question) => stringifyAnswer(signup.answers[question.id])),
-      signup.createdAt,
+      dateFormat.format(signup.createdAt),
     ]),
   ];
 }

@@ -9,6 +9,6 @@ import { User } from '../src/models/user';
 declare global {
   var server: FastifyInstance;
   var sequelize: Sequelize;
-  var emailSend: MockInstance<Parameters<typeof EmailService['send']>, Promise<void>>;
+  var emailSend: MockInstance<Parameters<(typeof EmailService)['send']>, Promise<void>>;
   var adminUser: User;
 }

@@ -20,13 +20,10 @@ type QuotaRowProps = {
 };
 
 const numberConfig: UseFieldConfig<number | null> = {
-  allowNull: true,
-  parse: (value) => (value !== '' ? Number(value) : null),
+  parse: (value) => (value ? Number(value) : null),
 };
 
-const QuotaRow = ({
-  name, index, isOnly, remove,
-}: QuotaRowProps) => {
+const QuotaRow = ({ name, index, isOnly, remove }: QuotaRowProps) => {
   const { t } = useTranslation();
 
   const removeThis = useEvent(() => remove(index));
@@ -40,7 +37,9 @@ const QuotaRow = ({
           help={[
             isOnly ? t('editor.quotas.quotaName.singleQuota') : '',
             index === 0 ? t('editor.quotas.quotaName.reorder') : '',
-          ].filter(Boolean).join(' ')}
+          ]
+            .filter(Boolean)
+            .join(' ')}
           type="text"
           required
         />
@@ -80,20 +79,19 @@ const Quotas = () => {
   const updateOrder = useEvent(({ newIndex, oldIndex }: SortEnd) => fields.move(oldIndex, newIndex));
 
   const keys = useShallowMemo(fields.value.map((item) => item.key));
-  const quotaItems = useMemo(() => fields.map((name, i) => (
-    <QuotaRow key={keys[i]} name={name} index={i} remove={fields.remove} isOnly={fields.length === 1} />
-  // This list only invalidates when the question positions or count change.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  )), [keys]);
+  const quotaItems = useMemo(
+    () =>
+      fields.map((name, i) => (
+        <QuotaRow key={keys[i]} name={name} index={i} remove={fields.remove} isOnly={fields.length === 1} />
+      )),
+    // This list only invalidates when the question positions or count change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [keys],
+  );
 
   return (
     <>
-      <Sortable
-        collection="quotas"
-        items={quotaItems}
-        onSortEnd={updateOrder}
-        useDragHandle
-      />
+      <Sortable collection="quotas" items={quotaItems} onSortEnd={updateOrder} useDragHandle />
       <div className="text-center mb-3">
         <Button type="button" variant="primary" onClick={addQuota}>
           {t('editor.quotas.addQuota')}

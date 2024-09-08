@@ -2,10 +2,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { col, fn, Order } from 'sequelize';
 
 import type { AdminEventListResponse, EventListQuery, UserEventListResponse } from '@tietokilta/ilmomasiina-models';
-import {
-  adminEventListEventAttrs,
-  eventListEventAttrs,
-} from '@tietokilta/ilmomasiina-models/dist/attrs/event';
+import { adminEventListEventAttrs, eventListEventAttrs } from '@tietokilta/ilmomasiina-models/dist/attrs/event';
 import { Event } from '../../models/event';
 import { Quota } from '../../models/quota';
 import { Signup } from '../../models/signup';
@@ -40,12 +37,7 @@ export async function getEventsListForUser(
     include: [
       {
         model: Quota,
-        attributes: [
-          'id',
-          'title',
-          'size',
-          [fn('COUNT', col('quotas->signups.id')), 'signupCount'],
-        ],
+        attributes: ['id', 'title', 'size', [fn('COUNT', col('quotas->signups.id')), 'signupCount']],
         include: [
           {
             model: Signup.scope('active'),
@@ -83,12 +75,7 @@ export async function getEventsListForAdmin(
     include: [
       {
         model: Quota,
-        attributes: [
-          'id',
-          'title',
-          'size',
-          [fn('COUNT', col('quotas->signups.id')), 'signupCount'],
-        ],
+        attributes: ['id', 'title', 'size', [fn('COUNT', col('quotas->signups.id')), 'signupCount']],
         include: [
           {
             model: Signup.scope('active'),

@@ -1,9 +1,12 @@
 import every from 'lodash-es/every';
 import sumBy from 'lodash-es/sumBy';
-import moment, { Moment } from 'moment-timezone';
 
 import type {
-  EventID, EventSlug, QuotaID, UserEventListItem, UserEventListResponse,
+  EventID,
+  EventSlug,
+  QuotaID,
+  UserEventListItem,
+  UserEventListResponse,
 } from '@tietokilta/ilmomasiina-models';
 import { signupState, SignupStateInfo } from './signupStateText';
 
@@ -13,11 +16,11 @@ export interface EventTableOptions {
 }
 
 export type EventRow = {
-  id: EventID,
+  id: EventID;
   type: 'event';
-  slug: EventSlug,
-  title: string,
-  date: Moment | null,
+  slug: EventSlug;
+  title: string;
+  date: Date | null;
   signupState: SignupStateInfo;
   signupCount?: number;
   quotaSize?: number | null;
@@ -35,37 +38,39 @@ export type TableRow = EventRow | QuotaRow;
 
 /** Converts an event to rows to be shown in the event list. */
 export function eventToRows(event: UserEventListItem, { compact }: EventTableOptions = {}) {
-  const {
-    id, slug, title, date, registrationStartDate, registrationEndDate, quotas, openQuotaSize,
-  } = event;
+  const { id, slug, title, date, registrationStartDate, registrationEndDate, quotas, openQuotaSize } = event;
   const state = signupState(registrationStartDate, registrationEndDate);
 
   // Event row
-  const rows: TableRow[] = [{
-    type: 'event',
-    id,
-    signupState: state,
-    slug,
-    title,
-    date: date ? moment(date) : null,
-    signupCount: quotas.length < 2 ? sumBy(quotas, 'signupCount') : undefined,
-    quotaSize: quotas.length === 1 ? quotas[0].size : undefined,
-    totalSignupCount: sumBy(quotas, 'signupCount') ?? 0,
-    totalQuotaSize: every(quotas, 'size') ? sumBy(quotas, 'size') : null,
-  }];
+  const rows: TableRow[] = [
+    {
+      type: 'event',
+      id,
+      signupState: state,
+      slug,
+      title,
+      date: date ? new Date(date) : null,
+      signupCount: quotas.length < 2 ? sumBy(quotas, 'signupCount') : undefined,
+      quotaSize: quotas.length === 1 ? quotas[0].size : undefined,
+      totalSignupCount: sumBy(quotas, 'signupCount') ?? 0,
+      totalQuotaSize: every(quotas, 'size') ? sumBy(quotas, 'size') : null,
+    },
+  ];
 
   // We're done for compact format
   if (compact) return rows;
 
   // Multiple quotas go on their own rows
   if (quotas.length > 1) {
-    quotas.forEach((quota) => rows.push({
-      type: 'quota',
-      id: quota.id,
-      title: quota.title,
-      signupCount: quota.size ? Math.min(quota.signupCount, quota.size) : quota.signupCount,
-      quotaSize: quota.size,
-    }));
+    quotas.forEach((quota) =>
+      rows.push({
+        type: 'quota',
+        id: quota.id,
+        title: quota.title,
+        signupCount: quota.size ? Math.min(quota.signupCount, quota.size) : quota.signupCount,
+        quotaSize: quota.size,
+      }),
+    );
   }
 
   const overflow = sumBy(quotas, (quota) => (quota.size ? Math.max(0, quota.signupCount - quota.size) : 0));

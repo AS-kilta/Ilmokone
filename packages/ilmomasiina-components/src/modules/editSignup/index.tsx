@@ -16,27 +16,31 @@ export { useStateContext as useEditSignupContext } from './state';
 export { useDeleteSignup, useUpdateSignup } from './actions';
 
 export function useEditSignupState({ id, editToken }: EditSignupProps) {
-  const fetchSignup = useAbortablePromise(async (signal) => {
-    const response = await apiFetch(`signups/${id}`, {
-      signal,
-      headers: {
-        [EDIT_TOKEN_HEADER]: editToken,
-      },
-    }) as SignupForEditResponse;
-    return {
-      ...response,
-      signup: {
-        ...response.signup,
-        firstName: response.signup.firstName || '',
-        lastName: response.signup.lastName || '',
-        email: response.signup.email || '',
-      },
-    };
-  }, [id, editToken]);
+  const fetchSignup = useAbortablePromise(
+    async (signal) => {
+      const response = await apiFetch<SignupForEditResponse>(`signups/${id}`, {
+        signal,
+        headers: {
+          [EDIT_TOKEN_HEADER]: editToken,
+        },
+      });
+      return {
+        ...response,
+        signup: {
+          ...response.signup,
+          firstName: response.signup.firstName || '',
+          lastName: response.signup.lastName || '',
+          email: response.signup.email || '',
+        },
+      };
+    },
+    [id, editToken],
+  );
 
   // TODO: use data from server about editing end time
-  const registrationClosed = !fetchSignup.result?.event.registrationEndDate
-    || new Date(fetchSignup.result?.event.registrationEndDate) < new Date();
+  const registrationClosed =
+    !fetchSignup.result?.event.registrationEndDate ||
+    new Date(fetchSignup.result?.event.registrationEndDate) < new Date();
 
   return useShallowMemo<State>({
     editToken,
@@ -50,9 +54,5 @@ export function useEditSignupState({ id, editToken }: EditSignupProps) {
 
 export function EditSignupProvider({ id, editToken, children }: PropsWithChildren<EditSignupProps>) {
   const state = useEditSignupState({ id, editToken });
-  return (
-    <Provider value={state}>
-      {children}
-    </Provider>
-  );
+  return <Provider value={state}>{children}</Provider>;
 }

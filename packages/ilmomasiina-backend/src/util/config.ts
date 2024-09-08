@@ -68,9 +68,7 @@ export function frontendFilesPath(): string | null {
   }
 
   if (envValue) {
-    throw new Error(
-      `Env variable FRONTEND_FILES_PATH is invalid: ${envValue} does not exist or is not a directory`,
-    );
+    throw new Error(`Env variable FRONTEND_FILES_PATH is invalid: ${envValue} does not exist or is not a directory`);
   }
 
   return null;

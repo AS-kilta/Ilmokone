@@ -46,9 +46,9 @@ export default async function initApp(): Promise<FastifyInstance> {
     trustProxy: config.isAzure || config.trustProxy, // Get IPs from X-Forwarded-For
     logger: !['test', 'bench'].some((env) => env === config.nodeEnv), // Enable logger when not testing or benchmarking
   });
-  server.setValidatorCompiler(({ httpPart, schema }) => (
-    httpPart === 'body' ? bodyCompiler.compile(schema) : defaultCompiler.compile(schema)
-  ));
+  server.setValidatorCompiler(({ httpPart, schema }) =>
+    httpPart === 'body' ? bodyCompiler.compile(schema) : defaultCompiler.compile(schema),
+  );
 
   // Enable admin registration if no users are present.
   // The "cached" flag is present to prevent an unnecessary DB check on every /api/events call.
@@ -77,14 +77,14 @@ export default async function initApp(): Promise<FastifyInstance> {
     if (config.enforceHttps) {
       server.addHook('onRequest', enforceHTTPS(config));
       console.info(
-        'Enforcing HTTPS connections.\n'
-        + 'Ensure your load balancer or reverse proxy sets X-Forwarded-Proto (or X-ARR-SSL in Azure).',
+        'Enforcing HTTPS connections.\n' +
+          'Ensure your load balancer or reverse proxy sets X-Forwarded-Proto (or X-ARR-SSL in Azure).',
       );
     } else {
       console.warn(
-        'HTTPS connections are not enforced by Ilmomasiina.\n'
-        + 'For security reasons, please set ENFORCE_HTTPS=proxy and configure your load balancer or reverse proxy to '
-        + 'forward only HTTPS connections to Ilmomasiina.',
+        'HTTPS connections are not enforced by Ilmomasiina.\n' +
+          'For security reasons, please set ENFORCE_HTTPS=proxy and configure your load balancer or reverse proxy to ' +
+          'forward only HTTPS connections to Ilmomasiina.',
       );
     }
   }

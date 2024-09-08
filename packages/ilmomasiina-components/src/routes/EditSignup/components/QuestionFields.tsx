@@ -21,7 +21,9 @@ type QuestionFieldProps = {
 };
 
 const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
-  const { input: { value, onChange } } = useField<SignupUpdateBody['answers']>(name);
+  const {
+    input: { value, onChange },
+  } = useField<SignupUpdateBody['answers']>(name);
   const answerValue = find(value, { questionId: question.id })?.answer || '';
   const currentAnswerString = stringifyAnswer(answerValue);
   const currentAnswerArray = useMemo(() => (Array.isArray(answerValue) ? answerValue : []), [answerValue]);
@@ -29,10 +31,12 @@ const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
   const { t } = useTranslation();
 
   const updateAnswer = (answer: string | string[]) => {
-    onChange(reject(value, { questionId: question.id }).concat({
-      questionId: question.id,
-      answer,
-    }));
+    onChange(
+      reject(value, { questionId: question.id }).concat({
+        questionId: question.id,
+        answer,
+      }),
+    );
   };
 
   const onFieldChange = useEvent((evt: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {

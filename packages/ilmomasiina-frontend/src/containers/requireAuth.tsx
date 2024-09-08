@@ -9,9 +9,7 @@ export default function requireAuth<P extends {}>(WrappedComponent: ComponentTyp
   const RequireAuth = (props: P) => {
     const dispatch = useTypedDispatch();
 
-    const { accessToken } = useTypedSelector(
-      (state) => state.auth,
-    );
+    const { accessToken } = useTypedSelector((state) => state.auth);
 
     const expired = accessToken && accessToken.expiresAt < Date.now();
     const needLogin = expired || !accessToken;

@@ -10,7 +10,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
  *
  * @param config trustProxy: use X-Forwarded-Proto header; isAzure: use X-ARR-SSL header
  */
-export default function enforceHTTPS(config: { trustProxy: boolean, isAzure: boolean }) {
+export default function enforceHTTPS(config: { trustProxy: boolean; isAzure: boolean }) {
   return async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
     if (request.protocol === 'https') return;
 
@@ -25,7 +25,8 @@ export default function enforceHTTPS(config: { trustProxy: boolean, isAzure: boo
         } else if (xForwardedProtoHeader.length === 1) {
           forwardedProto = xForwardedProtoHeader[0].substring(0, 5);
         }
-      } else if (xForwardedProtoHeader) { // header is a string
+      } else if (xForwardedProtoHeader) {
+        // header is a string
         forwardedProto = xForwardedProtoHeader.substring(0, 5);
       }
     }

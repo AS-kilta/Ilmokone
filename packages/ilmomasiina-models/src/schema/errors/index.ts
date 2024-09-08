@@ -19,14 +19,12 @@ export const editConflictError = Type.Intersect([
       format: 'date-time',
       description: 'Last update time of the event on the server.',
     }),
-    deletedQuotas: Type.Array(
-      quotaID,
-      { description: 'IDs of quotas that are already deleted on the server.' },
-    ),
-    deletedQuestions: Type.Array(
-      questionID,
-      { description: 'IDs of questions that are already deleted on the server.' },
-    ),
+    deletedQuotas: Type.Array(quotaID, {
+      description: 'IDs of quotas that are already deleted on the server.',
+    }),
+    deletedQuestions: Type.Array(questionID, {
+      description: 'IDs of questions that are already deleted on the server.',
+    }),
   }),
 ]);
 

@@ -1,9 +1,4 @@
-import {
-  AUDIT_LOG_LOAD_FAILED,
-  AUDIT_LOG_LOADED,
-  AUDIT_LOG_QUERY,
-  RESET,
-} from './actionTypes';
+import { AUDIT_LOG_LOAD_FAILED, AUDIT_LOG_LOADED, AUDIT_LOG_QUERY, RESET } from './actionTypes';
 import type { AuditLogActions, AuditLogState } from './types';
 
 const initialState: AuditLogState = {
@@ -11,10 +6,7 @@ const initialState: AuditLogState = {
   auditLog: null,
 };
 
-export default function reducer(
-  state = initialState,
-  action: AuditLogActions,
-): AuditLogState {
+export default function reducer(state = initialState, action: AuditLogActions): AuditLogState {
   switch (action.type) {
     case AUDIT_LOG_QUERY:
       return {

@@ -18,13 +18,13 @@ const QuotaProgress = ({ max, title, value }: Props) => {
         now={Math.min(value, max)}
         max={max}
         className="ilmo--signup-progress"
-        label={(
+        label={
           <>
             {value}
             &ensp;/&ensp;
             {max !== Infinity ? max : <span title={t('singleEvent.quotaCounts.unlimited')}>&infin;</span>}
           </>
-        )}
+        }
       />
     </div>
   );

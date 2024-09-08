@@ -6,9 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { linkComponent, useParams } from '../../config/router';
 import { usePaths } from '../../contexts/paths';
 import { I18nProvider } from '../../i18n';
-import {
-  SingleEventProps, SingleEventProvider, useSingleEventContext,
-} from '../../modules/singleEvent';
+import { SingleEventProps, SingleEventProvider, useSingleEventContext } from '../../modules/singleEvent';
 import { errorDesc, errorTitle } from '../../utils/errorMessage';
 import EventDescription from './components/EventDescription';
 import QuotaStatus from './components/QuotaStatus';
@@ -16,9 +14,7 @@ import SignupCountdown from './components/SignupCountdown';
 import SignupList from './components/SignupList';
 
 const SingleEventView = () => {
-  const {
-    event, signupsByQuota, pending, error,
-  } = useSingleEventContext();
+  const { event, signupsByQuota, pending, error } = useSingleEventContext();
   const Link = linkComponent();
   const paths = usePaths();
   const { t } = useTranslation();
@@ -59,10 +55,7 @@ const SingleEventView = () => {
         <>
           <h2>{t('singleEvent.signups.title')}</h2>
           {signupsByQuota!.map((quota) => (
-            <SignupList
-              key={quota.id}
-              quota={quota}
-            />
+            <SignupList key={quota.id} quota={quota} />
           ))}
         </>
       )}

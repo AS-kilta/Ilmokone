@@ -1,9 +1,7 @@
 import React from 'react';
 
 import { FormApi } from 'final-form';
-import {
-  Button, Form as BsForm, FormControl, Spinner,
-} from 'react-bootstrap';
+import { Button, Form as BsForm, FormControl, Spinner } from 'react-bootstrap';
 import { Form } from 'react-final-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
@@ -28,10 +26,14 @@ const UserForm = () => {
       await dispatch(createUser(data));
       dispatch(getUsers());
       form.restart();
-      toast.success(t('adminUsers.createUser.success', { email: data.email }), { autoClose: 2000 });
+      toast.success(t('adminUsers.createUser.success', { email: data.email }), {
+        autoClose: 2000,
+      });
     } catch (err) {
       toast.error(
-        errorDesc(t, err as ApiError, 'adminUsers.createUser.errors', { email: data.email }),
+        errorDesc(t, err as ApiError, 'adminUsers.createUser.errors', {
+          email: data.email,
+        }),
         { autoClose: 5000 },
       );
     }

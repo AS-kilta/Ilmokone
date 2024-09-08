@@ -12,28 +12,34 @@ import type { Signup } from '../models/signup';
  * @param ipAddress related ip address
  * @param user a function returning username (email), executed when events are logged
  */
-function eventLogger(ipAddress: string, user?: () => (string | null)) {
+function eventLogger(ipAddress: string, user?: () => string | null) {
   return async (
     action: AuditEvent,
     {
-      transaction, event, signup, extra,
+      transaction,
+      event,
+      signup,
+      extra,
     }: {
-      event?: Pick<Event, 'id' | 'title'>,
-      signup?: Signup,
-      transaction?: Transaction,
-      extra?: object,
+      event?: Pick<Event, 'id' | 'title'>;
+      signup?: Signup;
+      transaction?: Transaction;
+      extra?: object;
     },
   ) => {
-    await AuditLog.create({
-      user: user ? user() : null,
-      action,
-      eventId: event?.id || signup?.quota?.event?.id || null,
-      eventName: event?.title || signup?.quota?.event?.title || null,
-      signupId: signup?.id || null,
-      signupName: signup ? `${signup.firstName} ${signup.lastName}` : null,
-      extra: extra ? JSON.stringify(extra) : null,
-      ipAddress,
-    }, { transaction });
+    await AuditLog.create(
+      {
+        user: user ? user() : null,
+        action,
+        eventId: event?.id || signup?.quota?.event?.id || null,
+        eventName: event?.title || signup?.quota?.event?.title || null,
+        signupId: signup?.id || null,
+        signupName: signup ? `${signup.firstName} ${signup.lastName}` : null,
+        extra: extra ? JSON.stringify(extra) : null,
+        ipAddress,
+      },
+      { transaction },
+    );
   };
 }
 
@@ -44,7 +50,9 @@ function eventLogger(ipAddress: string, user?: () => (string | null)) {
  * Using this method, user and ip address information will be automatically inferred into audit log event.
  */
 export function addLogEventHook(fastify: FastifyInstance): void {
-  fastify.decorateRequest('logEvent', () => { throw new Error('Not initialized'); });
+  fastify.decorateRequest('logEvent', () => {
+    throw new Error('Not initialized');
+  });
   fastify.addHook('onRequest', async (req) => {
     (req.logEvent as AuditLogger) = eventLogger(req.ip, () => req.sessionData?.email || null);
   });
@@ -57,6 +65,6 @@ export type AuditLogger = ReturnType<typeof eventLogger>;
 
 declare module 'fastify' {
   interface FastifyRequest {
-    readonly logEvent: AuditLogger,
+    readonly logEvent: AuditLogger;
   }
 }

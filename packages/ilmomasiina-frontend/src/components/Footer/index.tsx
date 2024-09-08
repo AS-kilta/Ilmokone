@@ -14,9 +14,7 @@ const Footer = () => {
   return (
     <footer>
       <Container>
-        <Link to={appPaths.adminEventsList}>
-          {t('footer.admin')}
-        </Link>
+        <Link to={appPaths.adminEventsList}>{t('footer.admin')}</Link>
         {branding.footerGdprText && (
           <a href={branding.footerGdprLink} target="_blank" rel="noreferrer">
             {branding.footerGdprText}

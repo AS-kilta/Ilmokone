@@ -3,10 +3,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import type { UserListResponse } from '@tietokilta/ilmomasiina-models';
 import { User } from '../../../models/user';
 
-export default async function listUsers(
-  request: FastifyRequest,
-  reply: FastifyReply,
-): Promise<UserListResponse> {
+export default async function listUsers(request: FastifyRequest, reply: FastifyReply): Promise<UserListResponse> {
   const users = await User.findAll({
     attributes: ['id', 'email'],
   });

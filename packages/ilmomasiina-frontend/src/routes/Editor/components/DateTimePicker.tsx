@@ -12,17 +12,20 @@ registerLocale('fi', fi);
 registerLocale('en', enUS);
 
 type Props = Pick<
-ComponentPropsWithoutRef<typeof DatePicker>,
-'selectsStart' | 'selectsEnd' | 'startDate' | 'endDate' | 'id'
+  ComponentPropsWithoutRef<typeof DatePicker>,
+  'selectsStart' | 'selectsEnd' | 'startDate' | 'endDate' | 'id'
 > & {
   name: string;
 };
 
-export default function DateTimePicker({
-  name, id, selectsStart, selectsEnd, startDate, endDate,
-}: Props) {
-  const { input: { value, onChange, onBlur } } = useField(name);
-  const { t, i18n: { language } } = useTranslation();
+export default function DateTimePicker({ name, id, selectsStart, selectsEnd, startDate, endDate }: Props) {
+  const {
+    input: { value, onChange, onBlur },
+  } = useField(name);
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation();
   return (
     <DatePicker
       name={name}

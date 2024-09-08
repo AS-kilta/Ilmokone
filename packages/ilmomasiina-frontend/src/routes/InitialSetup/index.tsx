@@ -1,9 +1,7 @@
 import React from 'react';
 
 import { FORM_ERROR } from 'final-form';
-import {
-  Alert, Button, Form as BsForm, FormControl,
-} from 'react-bootstrap';
+import { Alert, Button, Form as BsForm, FormControl } from 'react-bootstrap';
 import { Form } from 'react-final-form';
 import { useTranslation } from 'react-i18next';
 
@@ -39,7 +37,9 @@ function validate(values: FormData) {
   if (!values.password) {
     errors.password = i18n.t('initialSetup.errors.required');
   } else if (values.password.length < MIN_PASSWORD_LENGTH) {
-    errors.password = i18n.t('initialSetup.errors.minLength', { number: MIN_PASSWORD_LENGTH });
+    errors.password = i18n.t('initialSetup.errors.minLength', {
+      number: MIN_PASSWORD_LENGTH,
+    });
   }
   if (!values.passwordVerify) {
     errors.passwordVerify = i18n.t('initialSetup.errors.required');
@@ -66,14 +66,14 @@ const InitialSetup = () => {
   return (
     <div className="setup-container">
       <h1>{t('initialSetup.title')}</h1>
-      <p><strong>{t('initialSetup.welcome1')}</strong></p>
+      <p>
+        <strong>{t('initialSetup.welcome1')}</strong>
+      </p>
       <p>{t('initialSetup.welcome2')}</p>
       <Form<FormData> initialValues={initialValues} onSubmit={onSubmit} validate={validate}>
         {({ handleSubmit, submitting, submitError }) => (
           <BsForm onSubmit={handleSubmit} className="ilmo--form">
-            {submitError && (
-              <Alert variant="danger">{errorDesc(t, submitError, 'initialSetup.errors')}</Alert>
-            )}
+            {submitError && <Alert variant="danger">{errorDesc(t, submitError, 'initialSetup.errors')}</Alert>}
             <FieldFormGroup name="email" required label={t('initialSetup.email')}>
               {({ input, meta: { touched, error } }) => (
                 <FormControl
@@ -87,24 +87,12 @@ const InitialSetup = () => {
             </FieldFormGroup>
             <FieldFormGroup name="password" required label={t('initialSetup.password')}>
               {({ input, meta: { touched, error } }) => (
-                <FormControl
-                  {...input}
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  isInvalid={touched && error}
-                />
+                <FormControl {...input} type="password" required placeholder="••••••••" isInvalid={touched && error} />
               )}
             </FieldFormGroup>
             <FieldFormGroup name="passwordVerify" required label={t('initialSetup.passwordVerify')}>
               {({ input, meta: { touched, error } }) => (
-                <FormControl
-                  {...input}
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  isInvalid={touched && error}
-                />
+                <FormControl {...input} type="password" required placeholder="••••••••" isInvalid={touched && error} />
               )}
             </FieldFormGroup>
             <Button type="submit" variant="secondary" disabled={submitting}>

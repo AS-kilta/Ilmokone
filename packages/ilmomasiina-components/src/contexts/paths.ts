@@ -1,8 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import type {
-  EventID, EventSlug, SignupEditToken, SignupID,
-} from '@tietokilta/ilmomasiina-models';
+import type { EventID, EventSlug, SignupEditToken, SignupID } from '@tietokilta/ilmomasiina-models';
 
 export type UserPaths = {
   eventsList: string;
@@ -14,7 +12,7 @@ export type AdminPaths = {
   adminLogin: string;
   adminInitialSetup: string;
   adminEventsList: string;
-  adminEditEvent: (id: EventID) => string,
+  adminEditEvent: (id: EventID) => string;
   adminUsersList: string;
   adminAuditLog: string;
 };

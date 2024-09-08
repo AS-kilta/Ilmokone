@@ -51,11 +51,7 @@ const Editor = () => {
     return (
       <>
         <h1>{t('editor.title.edit')}</h1>
-        <Link to={appPaths.adminEventsList}>
-          &#8592;
-          {' '}
-          {t('editor.action.goBack')}
-        </Link>
+        <Link to={appPaths.adminEventsList}>&#8592; {t('editor.action.goBack')}</Link>
         <div className="ilmo--loading-container">
           <Spinner animation="border" />
         </div>

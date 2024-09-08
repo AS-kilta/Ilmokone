@@ -15,20 +15,17 @@ export default async function resetPassword(
 ): Promise<void> {
   await getSequelize().transaction(async (transaction) => {
     // Try to fetch existing user
-    const existing = await User.findByPk(
-      request.params.id,
-      { attributes: ['id', 'email'], transaction },
-    );
+    const existing = await User.findByPk(request.params.id, {
+      attributes: ['id', 'email'],
+      transaction,
+    });
 
     if (!existing) {
       throw new NotFound('User does not exist');
     } else {
       // Update user with a new password
       const newPassword = generatePassword();
-      await existing.update(
-        { password: AdminPasswordAuth.createHash(newPassword) },
-        { transaction },
-      );
+      await existing.update({ password: AdminPasswordAuth.createHash(newPassword) }, { transaction });
 
       await request.logEvent(AuditEvent.RESET_PASSWORD, {
         extra: {

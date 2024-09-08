@@ -82,7 +82,10 @@ describe('getSignupForEdit', () => {
 
   test('checks edit token authentication', async () => {
     const event = await testEvent();
-    const [signup, other] = await testSignups(event, { count: 2, confirmed: true });
+    const [signup, other] = await testSignups(event, {
+      count: 2,
+      confirmed: true,
+    });
 
     let [data, response] = await fetchSignupForEdit(signup, false);
     expect(response.statusCode).toBe(403);

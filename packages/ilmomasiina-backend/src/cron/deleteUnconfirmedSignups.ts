@@ -46,7 +46,10 @@ export default async function deleteUnconfirmedSignups() {
   }
 
   const signupIds = signups.map((signup) => signup.id);
-  const uniqueEvents = _.uniqBy(signups.map((signup) => signup.quota!.event!), 'id');
+  const uniqueEvents = _.uniqBy(
+    signups.map((signup) => signup.quota!.event!),
+    'id',
+  );
 
   console.info(`Deleting unconfirmed signups: ${signupIds.join(', ')}`);
   try {

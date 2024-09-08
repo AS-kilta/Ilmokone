@@ -81,18 +81,20 @@ export default async function anonymizeOldSignups() {
 
   console.info(`Redacting older signups: ${ids.join(', ')}`);
   try {
-    await Signup.update({
-      firstName: redactedName,
-      lastName: redactedName,
-      email: redactedEmail,
-    }, {
-      where: { id: ids },
-    });
-    await Answer.update({
-      answer: redactedAnswer,
-    }, {
-      where: { signupId: ids },
-    });
+    await Signup.update(
+      {
+        firstName: redactedName,
+        lastName: redactedName,
+        email: redactedEmail,
+      },
+      { where: { id: ids } },
+    );
+    await Answer.update(
+      {
+        answer: redactedAnswer,
+      },
+      { where: { signupId: ids } },
+    );
     debugLog('Signups anonymized');
   } catch (error) {
     console.error(error);

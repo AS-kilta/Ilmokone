@@ -23,7 +23,7 @@ export class InitialSetupAlreadyDone extends CustomError {
 }
 
 export async function isInitialSetupDone(transaction?: Transaction) {
-  return await User.count({ transaction }) > 0;
+  return (await User.count({ transaction })) > 0;
 }
 
 /**
@@ -47,7 +47,10 @@ export default function createInitialUser(session: AdminAuthSession) {
       return createUser(request.body, request.logEvent, transaction);
     });
 
-    const accessToken = session.createSession({ user: user.id, email: user.email });
+    const accessToken = session.createSession({
+      user: user.id,
+      email: user.email,
+    });
 
     // Stop raising errors on requests to event list
     this.initialSetupDone = true;

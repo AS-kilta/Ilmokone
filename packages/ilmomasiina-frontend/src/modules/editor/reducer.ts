@@ -22,10 +22,7 @@ const initialState: EditorState = {
   editConflictModal: null,
 };
 
-export default function reducer(
-  state = initialState,
-  action: EditorActions,
-): EditorState {
+export default function reducer(state = initialState, action: EditorActions): EditorState {
   switch (action.type) {
     case RESET:
       return initialState;

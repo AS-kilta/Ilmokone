@@ -20,30 +20,13 @@ export const eventGetEventAttrs = [
 ];
 
 /** Attributes included in GET /api/admin/events/ID for Event instances. */
-export const adminEventGetEventAttrs = [
-  ...eventGetEventAttrs,
-  'draft',
-  'listed',
-  'verificationEmail',
-  'updatedAt',
-];
+export const adminEventGetEventAttrs = [...eventGetEventAttrs, 'draft', 'listed', 'verificationEmail', 'updatedAt'];
 
 /** Attributes included in results for Question instances. */
-export const eventGetQuestionAttrs = [
-  'id',
-  'question',
-  'type',
-  'options',
-  'required',
-  'public',
-];
+export const eventGetQuestionAttrs = ['id', 'question', 'type', 'options', 'required', 'public'];
 
 /** Attributes included in results for Quota instances. */
-export const eventGetQuotaAttrs = [
-  'id',
-  'title',
-  'size',
-];
+export const eventGetQuotaAttrs = ['id', 'title', 'size'];
 
 /** Attributes included in GET /api/events/ID for Signup instances. */
 export const eventGetSignupAttrs = [
@@ -57,10 +40,7 @@ export const eventGetSignupAttrs = [
 ];
 
 /** Attributes included in results for Answer instances. */
-export const eventGetAnswerAttrs = [
-  'questionId',
-  'answer',
-];
+export const eventGetAnswerAttrs = ['questionId', 'answer'];
 
 /** Attributes included in GET /api/events for Event instances. */
 export const eventListEventAttrs = [
@@ -82,8 +62,4 @@ export const eventListEventAttrs = [
 ];
 
 /** Attributes included in GET /api/admin/events for Event instances. */
-export const adminEventListEventAttrs = [
-  ...eventListEventAttrs,
-  'draft',
-  'listed',
-];
+export const adminEventListEventAttrs = [...eventListEventAttrs, 'draft', 'listed'];

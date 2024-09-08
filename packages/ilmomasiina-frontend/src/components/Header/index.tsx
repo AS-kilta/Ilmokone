@@ -15,7 +15,10 @@ import './Header.scss';
 const Header = () => {
   const dispatch = useTypedDispatch();
   const loggedIn = useTypedSelector((state) => state.auth.loggedIn);
-  const { i18n: { language }, t } = useTranslation();
+  const {
+    i18n: { language },
+    t,
+  } = useTranslation();
 
   return (
     <Navbar>
@@ -29,9 +32,7 @@ const Header = () => {
         {language !== 'en' && (
           <Button onClick={() => i18n.changeLanguage('en')}>{t('header.switchLanguage', { lng: 'en' })}</Button>
         )}
-        {loggedIn && (
-          <Button onClick={() => dispatch(logout())}>{t('header.logout')}</Button>
-        )}
+        {loggedIn && <Button onClick={() => dispatch(logout())}>{t('header.logout')}</Button>}
       </Container>
     </Navbar>
   );

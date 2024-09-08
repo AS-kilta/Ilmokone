@@ -16,8 +16,8 @@ export default async function removeDeletedData() {
       deletedAt: {
         [Op.lt]: ifRemovedBefore,
       },
-    // Manually adding and initializing deletedAt in _every_ model would be counter-productive,
-    // so casting to avoid a type error here.
+      // Manually adding and initializing deletedAt in _every_ model would be counter-productive,
+      // so casting to avoid a type error here.
     } as WhereOptions,
     force: true,
   });

@@ -49,26 +49,39 @@ const EditFormBody = ({ form }: FormRenderProps<EditorEvent>) => {
 
   // Memoizing this render step seems to stop everything from rerendering unnecessarily, resulting in
   // an order of magnitude of performance boost.
-  return useMemo(() => (
-    <>
-      <BsForm onSubmit={onSave} className="ilmo--form" role="tablist">
-        <EditorToolbar onSave={onSave} onSaveToggleDraft={onSaveToggleDraft} />
-        <EditorTabHeader activeTab={activeTab} setActiveTab={setActiveTab} />
-        <div className="tab-content mt-4">
-          <EditorTabBody id={EditorTab.BASIC_DETAILS} activeTab={activeTab} component={BasicDetailsTab} />
-          <EditorTabBody id={EditorTab.QUOTAS} activeTab={activeTab} component={QuotasTab} />
-          <EditorTabBody id={EditorTab.QUESTIONS} activeTab={activeTab} component={QuestionsTab} />
-          <EditorTabBody id={EditorTab.EMAILS} activeTab={activeTab} component={EmailsTab} />
-          <EditorTabBody id={EditorTab.SIGNUPS} activeTab={activeTab} component={SignupsTab} />
-        </div>
-      </BsForm>
-      <MoveToQueueWarning onProceed={onMoveToQueueProceed} />
-      <EditConflictModal onSave={onSave} />
-    </>
-  ), [onSave, onSaveToggleDraft, onMoveToQueueProceed, activeTab, setActiveTab]);
+  return useMemo(
+    () => (
+      <>
+        <BsForm onSubmit={onSave} className="ilmo--form" role="tablist">
+          <EditorToolbar onSave={onSave} onSaveToggleDraft={onSaveToggleDraft} />
+          <EditorTabHeader activeTab={activeTab} setActiveTab={setActiveTab} />
+          <div className="tab-content mt-4">
+            <EditorTabBody id={EditorTab.BASIC_DETAILS} activeTab={activeTab} component={BasicDetailsTab} />
+            <EditorTabBody id={EditorTab.QUOTAS} activeTab={activeTab} component={QuotasTab} />
+            <EditorTabBody id={EditorTab.QUESTIONS} activeTab={activeTab} component={QuestionsTab} />
+            <EditorTabBody id={EditorTab.EMAILS} activeTab={activeTab} component={EmailsTab} />
+            <EditorTabBody id={EditorTab.SIGNUPS} activeTab={activeTab} component={SignupsTab} />
+          </div>
+        </BsForm>
+        <MoveToQueueWarning onProceed={onMoveToQueueProceed} />
+        <EditConflictModal onSave={onSave} />
+      </>
+    ),
+    [onSave, onSaveToggleDraft, onMoveToQueueProceed, activeTab, setActiveTab],
+  );
 };
 
-const mutators = { ...arrayMutators };
+const mutators = {
+  ...arrayMutators,
+  // The default remove() mutator deletes the entire field if the array becomes empty.
+  // This is written based on final-form-arrays's source code to undo that stupidity.
+  // See https://github.com/final-form/final-form-arrays/blob/master/src/remove.js
+  remove: ([name, index]: [string, number], state, tools) => {
+    const returnValue = arrayMutators.remove([name, index], state, tools);
+    tools.changeValue(state, name, (value) => value ?? []);
+    return returnValue;
+  },
+} satisfies typeof arrayMutators;
 
 const EditForm = () => {
   const initialValues = useTypedSelector(selectFormData);
@@ -100,7 +113,9 @@ const EditForm = () => {
         form.change('questions', newFormData.questions);
       }
     } catch (error) {
-      toast.error(errorDesc(t, error as ApiError, 'editor.saveError'), { autoClose: 2000 });
+      toast.error(errorDesc(t, error as ApiError, 'editor.saveError'), {
+        autoClose: 2000,
+      });
     }
   });
 

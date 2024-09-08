@@ -14,39 +14,23 @@ export default async function getAuditLogItems(
 ): Promise<AuditLogResponse> {
   const where: WhereOptions<AuditLog> & unknown[] = [];
   if (request.query.user) {
-    where.push(
-      { user: { [Op.like]: `%${request.query.user}%` } },
-    );
+    where.push({ user: { [Op.like]: `%${request.query.user}%` } });
   }
   if (request.query.ip) {
-    where.push(
-      { ipAddress: { [Op.like]: `%${request.query.ip}%` } },
-    );
+    where.push({ ipAddress: { [Op.like]: `%${request.query.ip}%` } });
   }
   if (request.query.action) {
-    where.push(
-      { action: { [Op.in]: request.query.action } },
-    );
+    where.push({ action: { [Op.in]: request.query.action } });
   }
   if (request.query.event) {
-    where.push(
-      {
-        [Op.or]: [
-          { eventId: request.query.event },
-          { eventName: { [Op.like]: `%${request.query.event}%` } },
-        ],
-      },
-    );
+    where.push({
+      [Op.or]: [{ eventId: request.query.event }, { eventName: { [Op.like]: `%${request.query.event}%` } }],
+    });
   }
   if (request.query.signup) {
-    where.push(
-      {
-        [Op.or]: [
-          { signupId: request.query.signup },
-          { signupName: { [Op.like]: `%${request.query.signup}%` } },
-        ],
-      },
-    );
+    where.push({
+      [Op.or]: [{ signupId: request.query.signup }, { signupName: { [Op.like]: `%${request.query.signup}%` } }],
+    });
   }
 
   const logs = await AuditLog.findAndCountAll({

@@ -41,15 +41,11 @@ const AuditLogPagination = () => {
       </Button>
       <Trans t={t} i18nKey="auditLog.pagination">
         {'Rows\u00A0'}
-        <Form.Control
-          type="number"
-          value={value + 1}
-          onChange={onOffsetChange}
-        />
+        <Form.Control type="number" value={value + 1} onChange={onOffsetChange} />
         &ndash;
         {{ last: value + LOGS_PER_PAGE }}
         {' out of '}
-        {{ total: auditLog?.count || '?' }}
+        {{ total: auditLog?.count ?? '?' }}
       </Trans>
       <Button
         className="ml-3"

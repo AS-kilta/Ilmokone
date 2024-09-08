@@ -67,7 +67,7 @@ export function Navigate({ to, replace }: LinkProps) {
 
   useEffect(() => {
     navigate(to, { replace });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [to]);
 
   return null;

@@ -11,7 +11,10 @@ async function fetchUserEventList() {
 }
 
 async function fetchUserEventDetails(event: Event) {
-  const response = await server.inject({ method: 'GET', url: `/api/events/${event.slug}` });
+  const response = await server.inject({
+    method: 'GET',
+    url: `/api/events/${event.slug}`,
+  });
   return [response.json<UserEventResponse>(), response] as const;
 }
 
@@ -192,19 +195,25 @@ describe('getEventDetails', () => {
     const [before] = await fetchUserEventDetails(event);
 
     const signup = event.quotas![0].signups![0];
-    expect(before.quotas[0].signups).toMatchObject([{
-      answers: [{
-        questionId: event.questions![0].id,
-        answer: signup.answers![0].answer,
-      }],
-    }]);
+    expect(before.quotas[0].signups).toMatchObject([
+      {
+        answers: [
+          {
+            questionId: event.questions![0].id,
+            answer: signup.answers![0].answer,
+          },
+        ],
+      },
+    ]);
 
     await event.questions![0].update({ public: false });
     const [after] = await fetchUserEventDetails(event);
 
-    expect(after.quotas[0].signups).toMatchObject([{
-      answers: [],
-    }]);
+    expect(after.quotas[0].signups).toMatchObject([
+      {
+        answers: [],
+      },
+    ]);
   });
 
   test('returns non-public signup counts', async () => {

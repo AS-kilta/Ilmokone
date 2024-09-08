@@ -1,6 +1,4 @@
-import {
-  DataTypes, Model, Optional, Sequelize,
-} from 'sequelize';
+import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 
 import type { AuditEvent } from '@tietokilta/ilmomasiina-models';
 import type { AuditLogAttributes } from '@tietokilta/ilmomasiina-models/dist/models';

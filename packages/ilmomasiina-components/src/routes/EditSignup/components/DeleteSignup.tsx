@@ -25,17 +25,11 @@ const DeleteSignup = ({ deleting, onDelete }: Props) => {
       <p>
         <Trans t={t} i18nKey="editSignup.delete.info1">
           {'Are you sure you want to delete your sign up to '}
-          <strong>
-            {{ event: event!.title }}
-          </strong>
-          ?
+          <strong>{{ event: event!.title }}</strong>?
         </Trans>
       </p>
       <p>
-        {/* eslint-disable-next-line max-len */}
-        {t('editSignup.delete.info2')}
-        {' '}
-        <strong>{t('editSignup.delete.info3')}</strong>
+        {t('editSignup.delete.info2')} <strong>{t('editSignup.delete.info3')}</strong>
       </p>
       <ConfirmButton
         type="button"

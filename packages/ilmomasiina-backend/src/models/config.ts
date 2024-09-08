@@ -2,20 +2,14 @@ import { Dialect, Options, Sequelize } from 'sequelize';
 
 import appConfig from '../config';
 
-const {
-  clearDbUrl,
-  dbDialect, dbHost, dbPort, dbSsl, dbDatabase, dbUser, dbPassword,
-  debugDbLogging,
-} = appConfig;
+const { clearDbUrl, dbDialect, dbHost, dbPort, dbSsl, dbDatabase, dbUser, dbPassword, debugDbLogging } = appConfig;
 
 let auth: Options;
 
 if (clearDbUrl) {
   // Use Sequelize's code to parse the database URL
   const parsed = new Sequelize(clearDbUrl);
-  const {
-    host, port, database, username, password, dialectOptions,
-  } = parsed.config;
+  const { host, port, database, username, password, dialectOptions } = parsed.config;
   auth = {
     dialect: parsed.getDialect() as Dialect,
     port: port ? Number(port) : undefined,

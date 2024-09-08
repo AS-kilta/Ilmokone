@@ -30,12 +30,7 @@ const QuotaStatus = () => {
           return null;
         }
         return (
-          <QuotaProgress
-            key={quota.id}
-            title={quota.title!}
-            value={quota.signupCount}
-            max={quota.size || Infinity}
-          />
+          <QuotaProgress key={quota.id} title={quota.title!} value={quota.signupCount} max={quota.size || Infinity} />
         );
       })}
     </div>

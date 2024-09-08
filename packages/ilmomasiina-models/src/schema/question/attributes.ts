@@ -22,10 +22,9 @@ export const questionAttributes = Type.Object({
     title: 'QuestionType',
     description: 'The type of answer expected.',
   }),
-  options: Nullable(
-    Type.Array(Type.String()),
-    { description: 'For select or checkbox questions, the options available.' },
-  ),
+  options: Nullable(Type.Array(Type.String()), {
+    description: 'For select or checkbox questions, the options available.',
+  }),
   required: Type.Boolean({
     description: 'Whether to require an answer to this question from all attendees.',
   }),

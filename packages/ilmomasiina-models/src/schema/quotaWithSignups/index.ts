@@ -17,10 +17,9 @@ export const quotaWithSignupCount = Type.Intersect([
 export const userQuotaWithSignups = Type.Intersect([
   quotaWithSignupCount,
   Type.Object({
-    signups: Type.Array(
-      publicSignupSchema,
-      { description: 'Public information of signups in the quota.' },
-    ),
+    signups: Type.Array(publicSignupSchema, {
+      description: 'Public information of signups in the quota.',
+    }),
   }),
 ]);
 
@@ -28,10 +27,9 @@ export const userQuotaWithSignups = Type.Intersect([
 export const adminQuotaWithSignups = Type.Intersect([
   quotaWithSignupCount,
   Type.Object({
-    signups: Type.Array(
-      adminSignupSchema,
-      { description: 'Signups in the quota.' },
-    ),
+    signups: Type.Array(adminSignupSchema, {
+      description: 'Signups in the quota.',
+    }),
   }),
 ]);
 

@@ -1,9 +1,7 @@
 import React from 'react';
 
 import { FormApi } from 'final-form';
-import {
-  Button, Form as BsForm, FormControl, Spinner,
-} from 'react-bootstrap';
+import { Button, Form as BsForm, FormControl, Spinner } from 'react-bootstrap';
 import { Form } from 'react-final-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
@@ -38,7 +36,9 @@ function validate(values: FormData) {
   if (!values.newPassword) {
     errors.newPassword = i18n.t('adminUsers.changePassword.errors.required');
   } else if (values.newPassword.length < MIN_PASSWORD_LENGTH) {
-    errors.newPassword = i18n.t('adminUsers.changePassword.errors.minLength', { number: MIN_PASSWORD_LENGTH });
+    errors.newPassword = i18n.t('adminUsers.changePassword.errors.minLength', {
+      number: MIN_PASSWORD_LENGTH,
+    });
   }
   if (!values.newPasswordVerify) {
     errors.newPasswordVerify = i18n.t('adminUsers.changePassword.errors.required');
@@ -56,54 +56,33 @@ const ChangePasswordForm = () => {
     try {
       await dispatch(changePassword(data));
       form.restart();
-      toast.success(t('adminUsers.changePassword.success'), { autoClose: 5000 });
+      toast.success(t('adminUsers.changePassword.success'), {
+        autoClose: 5000,
+      });
     } catch (err) {
-      toast.error(
-        errorDesc(t, err as ApiError, 'adminUsers.changePassword.errors'),
-        { autoClose: 5000 },
-      );
+      toast.error(errorDesc(t, err as ApiError, 'adminUsers.changePassword.errors'), {
+        autoClose: 5000,
+      });
     }
   });
 
   return (
-    <Form<FormData>
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-      validate={validate}
-    >
+    <Form<FormData> initialValues={initialValues} onSubmit={onSubmit} validate={validate}>
       {({ submitting, handleSubmit }) => (
         <BsForm className="ilmo--form" onSubmit={handleSubmit}>
           <FieldFormGroup name="oldPassword" required label={t('adminUsers.changePassword.oldPassword')}>
             {({ input, meta: { touched, error } }) => (
-              <FormControl
-                {...input}
-                type="password"
-                required
-                isInvalid={touched && error}
-                placeholder="••••••••"
-              />
+              <FormControl {...input} type="password" required isInvalid={touched && error} placeholder="••••••••" />
             )}
           </FieldFormGroup>
           <FieldFormGroup name="newPassword" required label={t('adminUsers.changePassword.newPassword')}>
             {({ input, meta: { touched, error } }) => (
-              <FormControl
-                {...input}
-                type="password"
-                required
-                isInvalid={touched && error}
-                placeholder="••••••••"
-              />
+              <FormControl {...input} type="password" required isInvalid={touched && error} placeholder="••••••••" />
             )}
           </FieldFormGroup>
           <FieldFormGroup name="newPasswordVerify" required label={t('adminUsers.changePassword.newPasswordVerify')}>
             {({ input, meta: { touched, error } }) => (
-              <FormControl
-                {...input}
-                type="password"
-                required
-                isInvalid={touched && error}
-                placeholder="••••••••"
-              />
+              <FormControl {...input} type="password" required isInvalid={touched && error} placeholder="••••••••" />
             )}
           </FieldFormGroup>
           <Button type="submit" variant="secondary" disabled={submitting}>

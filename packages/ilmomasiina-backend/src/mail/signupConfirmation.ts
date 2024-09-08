@@ -21,10 +21,7 @@ export default async function sendSignupConfirmationMail(signup: Signup) {
   const fullName = `${signup.firstName ?? ''} ${signup.lastName ?? ''}`.trim();
 
   const questionFields = questions
-    .map((question) => <const>[
-      question,
-      answers.find((answer) => answer.questionId === question.id),
-    ])
+    .map((question) => <const>[question, answers.find((answer) => answer.questionId === question.id)])
     .filter(([, answer]) => answer)
     .map(([question, answer]) => ({
       label: question.question,
@@ -39,7 +36,8 @@ export default async function sendSignupConfirmationMail(signup: Signup) {
   const editToken = generateToken(signup.id);
   const cancelLink = config.editSignupUrl
     .replace(/\{id\}/g, signup.id)
-    .replace(/\{editToken\}/g, editToken);
+    .replace(/\{editToken\}/g, editToken)
+    .replace(/\{lang\}/g, signup.language || config.mailDefaultLang);
 
   const params = {
     name: fullName,

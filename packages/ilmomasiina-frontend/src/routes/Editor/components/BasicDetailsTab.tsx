@@ -66,9 +66,7 @@ const SlugAvailability = () => {
     return <Form.Text className="text-success">{t('editor.basic.url.free')}</Form.Text>;
   }
   return (
-    <Form.Text className="text-danger">
-      {t('editor.basic.url.reserved', { event: slugAvailability.title })}
-    </Form.Text>
+    <Form.Text className="text-danger">{t('editor.basic.url.reserved', { event: slugAvailability.title })}</Form.Text>
   );
 };
 
@@ -87,12 +85,7 @@ const BasicDetailsTab = () => {
 
   return (
     <div>
-      <FieldRow
-        name="title"
-        label={t('editor.basic.name')}
-        required
-        alternateError={t('editor.basic.name.missing')}
-      />
+      <FieldRow name="title" label={t('editor.basic.name')} required alternateError={t('editor.basic.name.missing')} />
       <GenerateSlug />
       <FieldRow
         name="slug"
@@ -151,18 +144,9 @@ const BasicDetailsTab = () => {
         data={allCategories || []}
         busy={allCategories === null}
       />
-      <FieldRow
-        name="webpageUrl"
-        label={t('editor.basic.homePage')}
-      />
-      <FieldRow
-        name="facebookUrl"
-        label={t('editor.basic.facebook')}
-      />
-      <FieldRow
-        name="location"
-        label={t('editor.basic.location')}
-      />
+      <FieldRow name="webpageUrl" label={t('editor.basic.homePage')} />
+      <FieldRow name="facebookUrl" label={t('editor.basic.facebook')} />
+      <FieldRow name="location" label={t('editor.basic.location')} />
       <FieldRow
         name="description"
         label={t('editor.basic.description')}

@@ -1,6 +1,4 @@
-import {
-  createSigner, createVerifier, SignerSync, VerifierSync,
-} from 'fast-jwt';
+import { createSigner, createVerifier, SignerSync, VerifierSync } from 'fast-jwt';
 import { FastifyRequest } from 'fastify';
 
 import type { UserID, UserSchema } from '@tietokilta/ilmomasiina-models';
@@ -20,8 +18,14 @@ export default class AdminAuthSession {
   private readonly verify: typeof VerifierSync;
 
   constructor(secret: string) {
-    this.sign = createSigner({ key: secret, expiresIn: AdminAuthSession.TTL * 1000 });
-    this.verify = createVerifier({ key: secret, maxAge: AdminAuthSession.TTL * 1000 });
+    this.sign = createSigner({
+      key: secret,
+      expiresIn: AdminAuthSession.TTL * 1000,
+    });
+    this.verify = createVerifier({
+      key: secret,
+      maxAge: AdminAuthSession.TTL * 1000,
+    });
   }
 
   /**
@@ -48,7 +52,8 @@ export default class AdminAuthSession {
 
     const token = Array.isArray(header) ? header[0] : header;
 
-    try { // Try to verify token
+    try {
+      // Try to verify token
       const data = this.verify(token);
       return { user: parseInt(data.user), email: data.email || '' };
     } catch {

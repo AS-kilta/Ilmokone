@@ -1,9 +1,7 @@
 import React from 'react';
 
 import { FORM_ERROR } from 'final-form';
-import {
-  Alert, Button, Form as BsForm, FormControl,
-} from 'react-bootstrap';
+import { Alert, Button, Form as BsForm, FormControl } from 'react-bootstrap';
 import { Form } from 'react-final-form';
 import { useTranslation } from 'react-i18next';
 
@@ -46,9 +44,7 @@ const Login = () => {
       <Form<FormData> initialValues={initialValues} onSubmit={onSubmit}>
         {({ handleSubmit, submitting, submitError }) => (
           <BsForm onSubmit={handleSubmit} className="ilmo--form">
-            {submitError && (
-              <Alert variant="danger">{errorDesc(t, submitError, 'login.errors')}</Alert>
-            )}
+            {submitError && <Alert variant="danger">{errorDesc(t, submitError, 'login.errors')}</Alert>}
             <FieldFormGroup name="email" required label={t('login.email')}>
               {({ input, meta: { touched, error } }) => (
                 <FormControl
@@ -62,13 +58,7 @@ const Login = () => {
             </FieldFormGroup>
             <FieldFormGroup name="password" required label={t('login.password')}>
               {({ input, meta: { touched, error } }) => (
-                <FormControl
-                  {...input}
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  isInvalid={touched && error}
-                />
+                <FormControl {...input} type="password" required placeholder="••••••••" isInvalid={touched && error} />
               )}
             </FieldFormGroup>
             <Button type="submit" variant="secondary" disabled={submitting}>

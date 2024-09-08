@@ -20,11 +20,7 @@ const QuestionsTab = () => {
         type="checkbox"
         checkAlign
         checkLabel={t('editor.questions.nameQuestion.check')}
-        help={
-          nameQuestion
-            ? t('editor.questions.nameQuestion.infoOn')
-            : t('editor.questions.nameQuestion.infoOff')
-        }
+        help={nameQuestion ? t('editor.questions.nameQuestion.infoOn') : t('editor.questions.nameQuestion.infoOff')}
       />
       <FieldRow
         name="emailQuestion"
@@ -33,11 +29,7 @@ const QuestionsTab = () => {
         type="checkbox"
         checkAlign
         checkLabel={t('editor.questions.emailQuestion.check')}
-        help={
-          emailQuestion
-            ? t('editor.questions.emailQuestion.infoOn')
-            : t('editor.questions.emailQuestion.infoOff')
-        }
+        help={emailQuestion ? t('editor.questions.emailQuestion.infoOn') : t('editor.questions.emailQuestion.infoOff')}
       />
       <Questions />
     </div>

@@ -9,13 +9,15 @@ const mailTransporter: Transporter = (() => {
     if (!config.mailgunDomain) {
       throw new Error('Invalid email config: MAILGUN_DOMAIN must be set with MAILGUN_API_KEY.');
     }
-    return nodemailer.createTransport(mailgun({
-      auth: {
-        api_key: config.mailgunApiKey,
-        domain: config.mailgunDomain,
-      },
-      host: config.mailgunHost,
-    }));
+    return nodemailer.createTransport(
+      mailgun({
+        auth: {
+          api_key: config.mailgunApiKey,
+          domain: config.mailgunDomain,
+        },
+        host: config.mailgunHost,
+      }),
+    );
   }
 
   if (config.smtpHost) {

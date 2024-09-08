@@ -3,8 +3,12 @@ import React, { useMemo } from 'react';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
+import { useActionDateTimeFormatter } from '@tietokilta/ilmomasiina-components/dist/utils/dateFormat';
 import {
-  convertSignupsToCSV, FormattedSignup, getSignupsForAdminList, stringifyAnswer,
+  convertSignupsToCSV,
+  FormattedSignup,
+  getSignupsForAdminList,
+  stringifyAnswer,
 } from '@tietokilta/ilmomasiina-components/dist/utils/signupUtils';
 import useEvent from '@tietokilta/ilmomasiina-components/dist/utils/useEvent';
 import { deleteSignup, getEvent } from '../../../modules/editor/actions';
@@ -22,6 +26,7 @@ const SignupRow = ({ position, signup }: SignupProps) => {
   const event = useTypedSelector((state) => state.editor.event)!;
   const dispatch = useTypedDispatch();
   const { t } = useTranslation();
+  const actionDateFormat = useActionDateTimeFormatter();
 
   const onDelete = useEvent(async () => {
     // eslint-disable-next-line no-alert
@@ -41,13 +46,15 @@ const SignupRow = ({ position, signup }: SignupProps) => {
       {signup.confirmed && event.nameQuestion && <td key="lastName">{signup.lastName}</td>}
       {signup.confirmed && event.emailQuestion && <td key="email">{signup.email}</td>}
       {!signup.confirmed && nameEmailCols && (
-        <td colSpan={nameEmailCols} className="font-italic">{t('editor.signups.unconfirmed')}</td>
+        <td colSpan={nameEmailCols} className="font-italic">
+          {t('editor.signups.unconfirmed')}
+        </td>
       )}
       <td key="quota">{signup.quota}</td>
       {event.questions.map((question) => (
         <td key={question.id}>{stringifyAnswer(signup.answers[question.id])}</td>
       ))}
-      <td key="timestamp">{signup.createdAt}</td>
+      <td key="timestamp">{actionDateFormat.format(signup.createdAt)}</td>
       <td key="delete">
         <Button type="button" variant="danger" onClick={onDelete}>
           {t('editor.signups.action.delete')}
@@ -69,9 +76,7 @@ const SignupsTab = () => {
   const { t } = useTranslation();
 
   if (!event || !signups?.length) {
-    return (
-      <p>{t('editor.signups.noSignups')}</p>
-    );
+    return <p>{t('editor.signups.noSignups')}</p>;
   }
 
   return (
@@ -101,7 +106,9 @@ const SignupsTab = () => {
           </tr>
         </thead>
         <tbody>
-          {signups.map((signup, index) => <SignupRow key={signup.id} position={index + 1} signup={signup} />)}
+          {signups.map((signup, index) => (
+            <SignupRow key={signup.id} position={index + 1} signup={signup} />
+          ))}
         </tbody>
       </table>
     </div>

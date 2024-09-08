@@ -1,7 +1,13 @@
 import type { ApiError } from '@tietokilta/ilmomasiina-components';
 import type {
-  AdminEventResponse, CheckSlugResponse, EditConflictError, EventUpdateBody,
-  QuestionID, QuestionUpdate, QuotaID, QuotaUpdate,
+  AdminEventResponse,
+  CheckSlugResponse,
+  EditConflictError,
+  EventUpdateBody,
+  QuestionID,
+  QuestionUpdate,
+  QuotaID,
+  QuotaUpdate,
 } from '@tietokilta/ilmomasiina-models';
 import type { EditorEventType } from './actions';
 
@@ -27,15 +33,17 @@ export type EditorQuota = QuotaUpdate & {
 };
 
 /** Root form data type for event editor */
-export interface EditorEvent extends Omit<
-EventUpdateBody, 'quotas' | 'questions' | 'date' | 'endDate' | 'registrationStartDate' | 'registrationEndDate'
-> {
+export interface EditorEvent
+  extends Omit<
+    EventUpdateBody,
+    'quotas' | 'questions' | 'date' | 'endDate' | 'registrationStartDate' | 'registrationEndDate'
+  > {
   eventType: EditorEventType;
 
   date: Date | undefined;
   endDate: Date | undefined;
 
-  questions?: EditorQuestion[];
+  questions: EditorQuestion[];
 
   registrationStartDate: Date | undefined;
   registrationEndDate: Date | undefined;

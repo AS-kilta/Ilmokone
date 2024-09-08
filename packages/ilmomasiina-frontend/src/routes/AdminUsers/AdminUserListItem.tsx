@@ -24,10 +24,14 @@ const AdminUserListItem = ({ user }: Props) => {
     if (confirmed) {
       try {
         await dispatch(deleteUser(user.id));
-        toast.success(t('adminUsers.deleteUser.success', { user: user.email }), { autoClose: 5000 });
+        toast.success(t('adminUsers.deleteUser.success', { user: user.email }), {
+          autoClose: 5000,
+        });
       } catch (err) {
         toast.error(
-          errorDesc(t, err as ApiError, 'adminUsers.deleteUser.errors', { user: user.email }),
+          errorDesc(t, err as ApiError, 'adminUsers.deleteUser.errors', {
+            user: user.email,
+          }),
           { autoClose: 5000 },
         );
       }
@@ -40,10 +44,14 @@ const AdminUserListItem = ({ user }: Props) => {
     if (confirmed) {
       try {
         await dispatch(resetUserPassword(user.id));
-        toast.success(t('adminUsers.resetPassword.success', { user: user.email }), { autoClose: 5000 });
+        toast.success(t('adminUsers.resetPassword.success', { user: user.email }), {
+          autoClose: 5000,
+        });
       } catch (err) {
         toast.error(
-          errorDesc(t, err as ApiError, 'adminUsers.resetPassword.errors', { user: user.email }),
+          errorDesc(t, err as ApiError, 'adminUsers.resetPassword.errors', {
+            user: user.email,
+          }),
           { autoClose: 5000 },
         );
       }

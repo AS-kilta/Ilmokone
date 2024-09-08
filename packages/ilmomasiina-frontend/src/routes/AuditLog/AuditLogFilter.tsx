@@ -22,15 +22,7 @@ const AuditLogFilter = ({ name, ...props }: Props) => {
     dispatch(setAuditLogQueryField(name, e.target.value));
   }, UPDATE_DELAY);
 
-  return (
-    <Form.Control
-      type="text"
-      name={name}
-      onChange={onChange}
-      placeholder={t('auditLog.filter')}
-      {...props}
-    />
-  );
+  return <Form.Control type="text" name={name} onChange={onChange} placeholder={t('auditLog.filter')} {...props} />;
 };
 
 export default AuditLogFilter;

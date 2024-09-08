@@ -33,14 +33,11 @@ const errorResponses = {
 };
 
 export interface RouteOptions {
-  adminSession: AdminAuthSession
+  adminSession: AdminAuthSession;
 }
 
 /** Setup admin routes (prefixed with '/admin') */
-async function setupAdminRoutes(
-  fastifyInstance: FastifyInstance,
-  opts: RouteOptions,
-) {
+async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOptions) {
   // Add session validation hook:
   // All the following routes require a valid session. The route functions are called only if the session is valid.
   // For invalid sessions, the hook automatically responds with a proper error response.
@@ -49,7 +46,9 @@ async function setupAdminRoutes(
   const server = fastifyInstance.withTypeProvider<TypeBoxTypeProvider>();
 
   /** Routes for categories */
-  server.get<{/* Params: types.UserID */ }>(
+  server.get<{
+    /* Params: types.UserID */
+  }>(
     '/categories',
     {
       schema: {
@@ -105,7 +104,10 @@ async function setupAdminRoutes(
     getEventDetailsForAdmin,
   );
 
-  server.patch<{ Params: schema.AdminEventPathParams, Body: schema.EventUpdateBody }>(
+  server.patch<{
+    Params: schema.AdminEventPathParams;
+    Body: schema.EventUpdateBody;
+  }>(
     '/events/:id',
     {
       schema: {
@@ -250,10 +252,7 @@ async function setupAdminRoutes(
   );
 }
 
-async function setupPublicRoutes(
-  fastifyInstance: FastifyInstance,
-  opts: RouteOptions,
-) {
+async function setupPublicRoutes(fastifyInstance: FastifyInstance, opts: RouteOptions) {
   const server = fastifyInstance.withTypeProvider<TypeBoxTypeProvider>();
 
   // Routes that require a signup edit token
@@ -274,7 +273,10 @@ async function setupPublicRoutes(
     getSignupForEdit,
   );
 
-  server.patch<{ Params: schema.SignupPathParams, Body: schema.SignupUpdateBody }>(
+  server.patch<{
+    Params: schema.SignupPathParams;
+    Body: schema.SignupUpdateBody;
+  }>(
     '/signups/:id',
     {
       schema: {
@@ -382,11 +384,7 @@ async function setupPublicRoutes(
   );
 
   // Public route for iCal feed
-  server.get(
-    '/ical',
-    {},
-    sendICalFeed,
-  );
+  server.get('/ical', {}, sendICalFeed);
 
   // Public route for initial admin user creation
   server.post<{ Body: schema.UserCreateSchema }>(
@@ -404,10 +402,7 @@ async function setupPublicRoutes(
   );
 }
 
-export default async function setupRoutes(
-  instance: FastifyInstance,
-  opts: RouteOptions,
-): Promise<void> {
+export default async function setupRoutes(instance: FastifyInstance, opts: RouteOptions): Promise<void> {
   addLogEventHook(instance);
 
   await instance.register(setupAdminRoutes, { ...opts, prefix: '/admin' });

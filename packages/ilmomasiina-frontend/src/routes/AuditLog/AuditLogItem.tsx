@@ -1,9 +1,9 @@
 import React from 'react';
 
-import moment from 'moment-timezone';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
+import { useActionDateTimeFormatter } from '@tietokilta/ilmomasiina-components/dist/utils/dateFormat';
 import type { AuditLogItemSchema } from '@tietokilta/ilmomasiina-models';
 import { AuditEvent } from '@tietokilta/ilmomasiina-models';
 import appPaths from '../../paths';
@@ -32,7 +32,9 @@ function useItemDescription(item: AuditLogItemSchema) {
   let extra: any = {};
   try {
     extra = JSON.parse(item.extra || '');
-  } catch (err) { /* ignore */ }
+  } catch (err) {
+    /* ignore */
+  }
   switch (item.action) {
     case AuditEvent.CREATE_EVENT:
     case AuditEvent.EDIT_EVENT:
@@ -42,9 +44,11 @@ function useItemDescription(item: AuditLogItemSchema) {
       return (
         <Trans t={t} i18nKey={ACTION_STRINGS[item.action]}>
           created event
-          {item.eventId
-            ? <Link to={appPaths.adminEditEvent(item.eventId as any)}>{{ event: item.eventName ?? '' }}</Link>
-            : { event: item.eventName ?? '' }}
+          {item.eventId ? (
+            <Link to={appPaths.adminEditEvent(item.eventId as any)}>{{ event: item.eventName ?? '' }}</Link>
+          ) : (
+            { event: item.eventName ?? '' }
+          )}
         </Trans>
       );
     case AuditEvent.EDIT_SIGNUP:
@@ -55,9 +59,11 @@ function useItemDescription(item: AuditLogItemSchema) {
           edited signup
           {{ signup: `${item.signupId} (${item.signupName})` }}
           in event
-          {item.eventId
-            ? <Link to={appPaths.adminEditEvent(item.eventId)}>{{ event: item.eventName ?? '' }}</Link>
-            : { event: item.eventName ?? '' }}
+          {item.eventId ? (
+            <Link to={appPaths.adminEditEvent(item.eventId)}>{{ event: item.eventName ?? '' }}</Link>
+          ) : (
+            { event: item.eventName ?? '' }
+          )}
         </Trans>
       );
     case AuditEvent.CREATE_USER:
@@ -73,9 +79,10 @@ function useItemDescription(item: AuditLogItemSchema) {
 
 const AuditLogItem = ({ item }: Props) => {
   const desc = useItemDescription(item);
+  const actionDateFormat = useActionDateTimeFormatter();
   return (
     <tr>
-      <td>{moment(item.createdAt).tz(TIMEZONE).format('YYYY-MM-DD HH:mm:ss')}</td>
+      <td>{actionDateFormat.format(new Date(item.createdAt))}</td>
       <td>{item.user || '-'}</td>
       <td>{item.ipAddress || '-'}</td>
       <td>{desc}</td>

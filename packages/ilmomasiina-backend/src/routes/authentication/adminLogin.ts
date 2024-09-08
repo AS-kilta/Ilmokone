@@ -26,17 +26,17 @@ export function adminLogin(session: AdminAuthSession) {
     }
 
     // Authentication success -> generate auth token
-    const accessToken = session.createSession({ user: user.id, email: user.email });
+    const accessToken = session.createSession({
+      user: user.id,
+      email: user.email,
+    });
     reply.status(200);
     return { accessToken };
   };
 }
 
 export function renewAdminToken(session: AdminAuthSession) {
-  return async (
-    request: FastifyRequest,
-    reply: FastifyReply,
-  ): Promise<AdminLoginResponse | void> => {
+  return async (request: FastifyRequest, reply: FastifyReply): Promise<AdminLoginResponse | void> => {
     // Verify existing token
     const sessionData = session.verifySession(request);
 
@@ -55,25 +55,24 @@ export function renewAdminToken(session: AdminAuthSession) {
 
 /** Adds a request hook that verifies the user's session and raises a 401 error if invalid. */
 export function requireAdmin(session: AdminAuthSession, fastify: FastifyInstance): void {
-  fastify
-    .addHook('onRequest', async (request: FastifyRequest, reply) => {
-      try {
-        // Validate session & decorate request with session data
-        (request.sessionData as AdminTokenData) = session.verifySession(request);
-      } catch (err) {
-        // Throwing inside hook is not safe, so the errors must be converted to actual reply here
-        fastify.log.error(err);
-        if (err instanceof HttpError || err instanceof CustomError) {
-          reply.code(err.statusCode).send(err);
-        } else {
-          reply.internalServerError('Session validation failed');
-        }
+  fastify.addHook('onRequest', async (request: FastifyRequest, reply) => {
+    try {
+      // Validate session & decorate request with session data
+      (request.sessionData as AdminTokenData) = session.verifySession(request);
+    } catch (err) {
+      // Throwing inside hook is not safe, so the errors must be converted to actual reply here
+      fastify.log.error(err);
+      if (err instanceof HttpError || err instanceof CustomError) {
+        reply.code(err.statusCode).send(err);
+      } else {
+        reply.internalServerError('Session validation failed');
       }
-    });
+    }
+  });
 }
 
 declare module 'fastify' {
   interface FastifyRequest {
-    readonly sessionData: AdminTokenData,
+    readonly sessionData: AdminTokenData;
   }
 }

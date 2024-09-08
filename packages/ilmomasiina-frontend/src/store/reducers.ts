@@ -10,16 +10,15 @@ import auth from '../modules/auth/reducer';
 import editor from '../modules/editor/reducer';
 import type { AppState, DispatchAction } from './types';
 
-export const makeRootReducer = (
-  history: History,
-) => combineReducers({
-  router: connectRouter(history),
-  auth,
-  adminEvents,
-  adminUsers,
-  auditLog,
-  editor,
-});
+export const makeRootReducer = (history: History) =>
+  combineReducers({
+    router: connectRouter(history),
+    auth,
+    adminEvents,
+    adminUsers,
+    auditLog,
+    editor,
+  });
 
 export const useTypedSelector: TypedUseSelectorHook<AppState> = useSelector;
 export const useTypedDispatch: () => DispatchAction = useDispatch;

@@ -3,8 +3,8 @@ import type { QuotaID, SignupCreateResponse } from '@tietokilta/ilmomasiina-mode
 import apiFetch from '../../api';
 
 export function beginSignup(quotaId: QuotaID) {
-  return apiFetch('signups', {
+  return apiFetch<SignupCreateResponse>('signups', {
     method: 'POST',
     body: { quotaId },
-  }) as Promise<SignupCreateResponse>;
+  });
 }

@@ -26,9 +26,7 @@ type TabProps = Props & {
   id: EditorTab;
 };
 
-const Tab = ({
-  id, activeTab, setActiveTab,
-}: TabProps) => {
+const Tab = ({ id, activeTab, setActiveTab }: TabProps) => {
   const { t } = useTranslation();
   const onClick = useCallback(() => setActiveTab(id), [id, setActiveTab]);
   return (
@@ -48,7 +46,7 @@ const Tab = ({
 
 type Props = {
   activeTab: EditorTab;
-  setActiveTab: (tab: EditorTab) => void
+  setActiveTab: (tab: EditorTab) => void;
 };
 
 const EditorTabHeader = ({ activeTab, setActiveTab }: Props) => {
@@ -59,7 +57,9 @@ const EditorTabHeader = ({ activeTab, setActiveTab }: Props) => {
       {Object.values(EditorTab)
         // Only show Basic details for ONLY_EVENT events.
         .filter((id) => id === EditorTab.BASIC_DETAILS || eventType !== EditorEventType.ONLY_EVENT)
-        .map((id) => <Tab key={id} id={id} activeTab={activeTab} setActiveTab={setActiveTab} />)}
+        .map((id) => (
+          <Tab key={id} id={id} activeTab={activeTab} setActiveTab={setActiveTab} />
+        ))}
     </Nav>
   );
 };

@@ -1,8 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import {
-  Button, Col, Form, FormCheckProps, InputGroup, Row,
-} from 'react-bootstrap';
+import { Button, Col, Form, FormCheckProps, InputGroup, Row } from 'react-bootstrap';
 import { Field, FieldRenderProps, useForm } from 'react-final-form';
 import { FieldArray, FieldArrayRenderProps, useFieldArray } from 'react-final-form-arrays';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +8,7 @@ import { SortEnd } from 'react-sortable-hoc';
 
 import { FieldRow } from '@tietokilta/ilmomasiina-components';
 import useEvent from '@tietokilta/ilmomasiina-components/dist/utils/useEvent';
+import useShallowMemo from '@tietokilta/ilmomasiina-components/dist/utils/useShallowMemo';
 import { QuestionType } from '@tietokilta/ilmomasiina-models';
 import { EditorQuestion } from '../../../modules/editor/types';
 import { useFieldValue } from './hooks';
@@ -36,14 +35,11 @@ const OptionRow = ({ name, index, remove }: OptionProps) => {
   const removeThis = useEvent(() => remove(index));
 
   return (
-    <FieldRow
-      name={name}
-      type="text"
-      label={t('editor.questions.questionOptions')}
-      required
-    >
+    <FieldRow name={name} type="text" label={t('editor.questions.questionOptions')} required>
       <InputGroup>
-        <Field name={name} required>{renderInput}</Field>
+        <Field name={name} required>
+          {renderInput}
+        </Field>
         <InputGroup.Append>
           <Button variant="outline-danger" onClick={removeThis}>
             {t('editor.questions.questionOptions.delete')}
@@ -62,7 +58,9 @@ type QuestionProps = {
 
 const QuestionRow = ({ name, index, remove }: QuestionProps) => {
   const { t } = useTranslation();
-  const { mutators: { push } } = useForm();
+  const {
+    mutators: { push },
+  } = useForm();
 
   const removeThis = useEvent(() => remove(index));
 
@@ -73,12 +71,7 @@ const QuestionRow = ({ name, index, remove }: QuestionProps) => {
   return (
     <Row className="question-body px-0">
       <Col xs="12" sm="9" xl="10">
-        <FieldRow
-          name={`${name}.question`}
-          type="text"
-          label={t('editor.questions.questionText')}
-          required
-        />
+        <FieldRow name={`${name}.question`} type="text" label={t('editor.questions.questionText')} required />
         <FieldRow
           name={`${name}.type`}
           label={t('editor.questions.questionType')}
@@ -95,9 +88,9 @@ const QuestionRow = ({ name, index, remove }: QuestionProps) => {
         {(type === 'select' || type === 'checkbox') && (
           <>
             <FieldArray name={`${name}.options`}>
-              {({ fields }) => fields.map((optName, i) => (
-                <OptionRow key={optName} name={optName} index={i} remove={fields.remove} />
-              ))}
+              {({ fields }) =>
+                fields.map((optName, i) => <OptionRow key={optName} name={optName} index={i} remove={fields.remove} />)
+              }
             </FieldArray>
             <Row>
               <Col sm="3" />
@@ -154,18 +147,18 @@ const Questions = () => {
   });
 
   const updateOrder = useEvent(({ newIndex, oldIndex }: SortEnd) => fields.move(oldIndex, newIndex));
-  const questionItems = fields.map((name, i) => (
-    <QuestionRow key={fields.value[i].key} name={name} index={i} remove={fields.remove} />
-  ));
+
+  const keys = useShallowMemo(fields.value.map((item) => item.key));
+  const questionItems = useMemo(
+    () => fields.map((name, i) => <QuestionRow key={keys[i]} name={name} index={i} remove={fields.remove} />),
+    // This list only invalidates when the question positions or count change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [keys],
+  );
 
   return (
     <>
-      <Sortable
-        collection="questions"
-        items={questionItems}
-        onSortEnd={updateOrder}
-        useDragHandle
-      />
+      <Sortable collection="questions" items={questionItems} onSortEnd={updateOrder} useDragHandle />
       <div className="text-center mb-3">
         <Button type="button" variant="primary" onClick={addQuestion}>
           {t('editor.questions.addQuestion')}

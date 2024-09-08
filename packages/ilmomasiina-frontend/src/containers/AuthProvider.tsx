@@ -5,11 +5,7 @@ import { useTypedSelector } from '../store/reducers';
 
 const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
   const auth = useTypedSelector((state) => state.auth);
-  return (
-    <AuthContext.Provider value={auth}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 };
 
 export default AuthProvider;

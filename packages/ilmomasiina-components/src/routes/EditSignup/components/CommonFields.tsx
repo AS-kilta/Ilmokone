@@ -36,11 +36,7 @@ const CommonFields = () => {
             type="checkbox"
             disabled={registrationClosed}
             checkAlign
-            checkLabel={(
-              <>
-                {t('editSignup.namePublic')}
-              </>
-            )}
+            checkLabel={<>{t('editSignup.namePublic')}</>}
           />
         </>
       )}

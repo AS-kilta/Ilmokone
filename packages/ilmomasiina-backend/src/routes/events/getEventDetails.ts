@@ -3,7 +3,12 @@ import { NotFound } from 'http-errors';
 import { Op } from 'sequelize';
 
 import type {
-  AdminEventPathParams, AdminEventResponse, EventID, EventSlug, UserEventPathParams, UserEventResponse,
+  AdminEventPathParams,
+  AdminEventResponse,
+  EventID,
+  EventSlug,
+  UserEventPathParams,
+  UserEventResponse,
 } from '@tietokilta/ilmomasiina-models';
 import {
   adminEventGetEventAttrs,
@@ -20,9 +25,7 @@ import { Quota } from '../../models/quota';
 import { Signup } from '../../models/signup';
 import { StringifyApi } from '../utils';
 
-export async function eventDetailsForUser(
-  eventSlug: EventSlug,
-): Promise<UserEventResponse> {
+export async function eventDetailsForUser(eventSlug: EventSlug): Promise<UserEventResponse> {
   // First query general event information
   const event = await Event.scope('user').findOne({
     where: { slug: eventSlug },
@@ -42,9 +45,7 @@ export async function eventDetailsForUser(
   }
 
   // Only return answers to public questions
-  const publicQuestions = event.questions!
-    .filter((question) => question.public)
-    .map((question) => question.id);
+  const publicQuestions = event.questions!.filter((question) => question.public).map((question) => question.id);
 
   // Query all quotas for the event
   const quotas = await Quota.findAll({
@@ -88,23 +89,23 @@ export async function eventDetailsForUser(
   }
 
   const res = {
-    ...(event.get({ plain: true })),
+    ...event.get({ plain: true }),
     questions: event.questions!.map((question) => question.get({ plain: true })),
     quotas: quotas.map((quota) => ({
       ...quota.get({ plain: true }),
       signups: event.signupsPublic // Hide all signups from non-admins if answers are not public
-        // When signups are public:
-        ? quota.signups!.map((signup) => ({
-          ...(signup.get({ plain: true })),
-          // Hide name if necessary
-          firstName: event.nameQuestion && signup.namePublic ? signup.firstName : null,
-          lastName: event.nameQuestion && signup.namePublic ? signup.lastName : null,
-          answers: signup.answers!,
-          status: signup.status,
-          confirmed: signup.confirmedAt !== null,
-        }))
-        // When signups are not public:
-        : [],
+        ? // When signups are public:
+          quota.signups!.map((signup) => ({
+            ...signup.get({ plain: true }),
+            // Hide name if necessary
+            firstName: event.nameQuestion && signup.namePublic ? signup.firstName : null,
+            lastName: event.nameQuestion && signup.namePublic ? signup.lastName : null,
+            answers: signup.answers!,
+            status: signup.status,
+            confirmed: signup.confirmedAt !== null,
+          }))
+        : // When signups are not public:
+          [],
       signupCount: quota.signups!.length,
     })),
 
@@ -114,9 +115,7 @@ export async function eventDetailsForUser(
   return res as unknown as StringifyApi<typeof res>;
 }
 
-export async function eventDetailsForAdmin(
-  eventID: EventID,
-): Promise<AdminEventResponse> {
+export async function eventDetailsForAdmin(eventID: EventID): Promise<AdminEventResponse> {
   // Admin queries include internal data such as confirmation email contents
   // Admin queries include emails and signup IDs
   // Admin queries also show past and draft events.

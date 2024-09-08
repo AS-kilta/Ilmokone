@@ -27,7 +27,4 @@ configure({
   timezone: TIMEZONE,
 });
 
-ReactDOM.render(
-  <AppContainer />,
-  document.getElementById('root'),
-);
+ReactDOM.render(<AppContainer />, document.getElementById('root'));

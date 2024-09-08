@@ -23,9 +23,7 @@ export { useStateContext as useSingleEventContext };
 export { beginSignup } from './actions';
 
 export function useSingleEventState({ slug }: SingleEventProps) {
-  const fetchEvent = useAbortablePromise(async (signal) => (
-    await apiFetch(`events/${slug}`, { signal }) as UserEventResponse
-  ), [slug]);
+  const fetchEvent = useAbortablePromise((signal) => apiFetch<UserEventResponse>(`events/${slug}`, { signal }), [slug]);
 
   const event = fetchEvent.result;
 
@@ -41,9 +39,5 @@ export function useSingleEventState({ slug }: SingleEventProps) {
 
 export function SingleEventProvider({ slug, children }: PropsWithChildren<SingleEventProps>) {
   const state = useSingleEventState({ slug });
-  return (
-    <Provider value={state}>
-      {children}
-    </Provider>
-  );
+  return <Provider value={state}>{children}</Provider>;
 }

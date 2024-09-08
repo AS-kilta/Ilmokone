@@ -1,10 +1,23 @@
 import moment from 'moment';
 import {
-  DataTypes, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin,
-  HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin,
-  HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin,
-  HasOneCreateAssociationMixin, HasOneGetAssociationMixin, HasOneSetAssociationMixin,
-  Model, Op, Optional, Sequelize,
+  DataTypes,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
+  HasManyGetAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManyHasAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManySetAssociationsMixin,
+  HasOneCreateAssociationMixin,
+  HasOneGetAssociationMixin,
+  HasOneSetAssociationMixin,
+  Model,
+  Op,
+  Optional,
+  Sequelize,
 } from 'sequelize';
 
 import { SignupStatus } from '@tietokilta/ilmomasiina-models';
@@ -14,8 +27,19 @@ import type { Quota } from './quota';
 import { generateRandomId, RANDOM_ID_LENGTH } from './randomId';
 
 export interface SignupCreationAttributes
-  extends Optional<SignupAttributes, 'id' | 'firstName' | 'lastName' | 'namePublic' | 'email' | 'confirmedAt'
-  | 'language' | 'status' | 'position' | 'createdAt'> {}
+  extends Optional<
+    SignupAttributes,
+    | 'id'
+    | 'firstName'
+    | 'lastName'
+    | 'namePublic'
+    | 'email'
+    | 'confirmedAt'
+    | 'language'
+    | 'status'
+    | 'position'
+    | 'createdAt'
+  > {}
 
 export class Signup extends Model<SignupAttributes, SignupCreationAttributes> implements SignupAttributes {
   public id!: string;
@@ -121,9 +145,7 @@ export default function setupSignupModel(sequelize: Sequelize) {
               },
               // Under 30 minutes old
               createdAt: {
-                [Op.gt]: moment()
-                  .subtract(30, 'minutes')
-                  .toDate(),
+                [Op.gt]: moment().subtract(30, 'minutes').toDate(),
               },
             },
           },

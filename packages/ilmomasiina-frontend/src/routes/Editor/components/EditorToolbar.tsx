@@ -14,7 +14,9 @@ type Props = {
 };
 
 const EditorToolbar = ({ onSave, onSaveToggleDraft }: Props) => {
-  const isSubmitting = useFormState({ subscription: { submitting: true } }).submitting;
+  const isSubmitting = useFormState({
+    subscription: { submitting: true },
+  }).submitting;
   const event = useTypedSelector((state) => state.editor.event);
   const isNew = useTypedSelector((state) => state.editor.isNew);
   const isDraft = event?.draft || isNew;
@@ -23,25 +25,21 @@ const EditorToolbar = ({ onSave, onSaveToggleDraft }: Props) => {
 
   return (
     <>
-      <h1>
-        {isNew
-          ? t('editor.title.new')
-          : t('editor.title.edit')}
-      </h1>
+      <h1>{isNew ? t('editor.title.new') : t('editor.title.edit')}</h1>
       <div className="event-editor--buttons-wrapper">
         <div className="flex-fill">
-          <Link to={appPaths.adminEventsList}>
-            &#8592;
-            {' '}
-            {t('editor.action.goBack')}
-          </Link>
+          <Link to={appPaths.adminEventsList}>&#8592; {t('editor.action.goBack')}</Link>
         </div>
         {isSubmitting && <Spinner animation="border" />}
         <div className="event-editor--public-status">
           <div className={`event-editor--bubble ${isDraft ? 'draft' : 'public'} event-editor--animated`} />
           <span>
-            {isDraft ? t('editor.status.draft') : (
-              <Link to={appPaths.eventDetails(event!.slug)} target="_blank">{t('editor.status.published')}</Link>
+            {isDraft ? (
+              t('editor.status.draft')
+            ) : (
+              <Link to={appPaths.eventDetails(event!.slug)} target="_blank">
+                {t('editor.status.published')}
+              </Link>
             )}
           </span>
         </div>
@@ -57,13 +55,7 @@ const EditorToolbar = ({ onSave, onSaveToggleDraft }: Props) => {
               {isDraft ? t('editor.action.publish') : t('editor.action.convertToDraft')}
             </Button>
           )}
-          <Button
-            type="button"
-            disabled={isSubmitting}
-            variant="secondary"
-            formNoValidate
-            onClick={onSave}
-          >
+          <Button type="button" disabled={isSubmitting} variant="secondary" formNoValidate onClick={onSave}>
             {isNew ? t('editor.action.saveDraft') : t('editor.action.saveChanges')}
           </Button>
         </ButtonGroup>

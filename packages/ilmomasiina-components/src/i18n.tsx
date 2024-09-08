@@ -28,9 +28,5 @@ const i18n = createInstance({
 export default i18n;
 
 export function I18nProvider({ children }: PropsWithChildren<{}>) {
-  return (
-    <I18nextProvider i18n={i18n}>
-      {children}
-    </I18nextProvider>
-  );
+  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
 }

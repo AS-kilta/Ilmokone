@@ -23,10 +23,7 @@ function getTokenExpiry(jwt: string): number {
   return 0;
 }
 
-export default function reducer(
-  state = initialState,
-  action: AuthActions,
-): AuthState {
+export default function reducer(state = initialState, action: AuthActions): AuthState {
   switch (action.type) {
     case RESET:
       return initialState;

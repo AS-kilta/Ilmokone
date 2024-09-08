@@ -34,15 +34,9 @@ const SignupList = ({ quota }: Props) => {
                   </th>
                 )}
                 {filter(questions, 'public').map((question) => (
-                  <th key={question.id}>
-                    {question.question}
-                  </th>
+                  <th key={question.id}>{question.question}</th>
                 ))}
-                {showQuotas && (
-                  <th key="quota">
-                    {t('singleEvent.signups.quota')}
-                  </th>
-                )}
+                {showQuotas && <th key="quota">{t('singleEvent.signups.quota')}</th>}
                 <th key="datetime" style={{ minWidth: 130 }}>
                   {t('singleEvent.signups.signupTime')}
                 </th>

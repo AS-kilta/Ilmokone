@@ -42,9 +42,7 @@ export async function refreshSignupPositions(
 ): Promise<Signup[]> {
   // Wrap in transaction if not given
   if (!transaction) {
-    return getSequelize().transaction(
-      async (trans) => refreshSignupPositions(eventRef, trans),
-    );
+    return getSequelize().transaction(async (trans) => refreshSignupPositions(eventRef, trans));
   }
 
   // Lock event to prevent simultaneous changes
@@ -116,27 +114,28 @@ export async function refreshSignupPositions(
   }
 
   // If a signup was just promoted from the queue, send an email about it asynchronously.
-  await Promise.all(result.map(async ({ signup, status }) => {
-    if (signup.status === 'in-queue' && status !== 'in-queue') {
-      sendPromotedFromQueueMail(signup, event.id);
+  await Promise.all(
+    result.map(async ({ signup, status }) => {
+      if (signup.status === 'in-queue' && status !== 'in-queue') {
+        sendPromotedFromQueueMail(signup, event.id);
 
-      await internalAuditLogger(AuditEvent.PROMOTE_SIGNUP, {
-        signup,
-        event,
-        transaction,
-      });
-    }
-  }));
+        await internalAuditLogger(AuditEvent.PROMOTE_SIGNUP, {
+          signup,
+          event,
+          transaction,
+        });
+      }
+    }),
+  );
 
   // Store changes in database, if any.
-  await Promise.all(result.map(async ({ signup, status, position }) => {
-    if (signup.status !== status || signup.position !== position) {
-      await signup.update(
-        { status, position },
-        { transaction },
-      );
-    }
-  }));
+  await Promise.all(
+    result.map(async ({ signup, status, position }) => {
+      if (signup.status !== status || signup.position !== position) {
+        await signup.update({ status, position }, { transaction });
+      }
+    }),
+  );
 
   return result.map(({ signup }) => signup);
 }

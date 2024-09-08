@@ -15,7 +15,7 @@ import { NoSuchSignup, SignupsClosed } from './errors';
 
 /** Requires editTokenVerification */
 export default async function updateSignup(
-  request: FastifyRequest<{ Params: SignupPathParams, Body: SignupUpdateBody }>,
+  request: FastifyRequest<{ Params: SignupPathParams; Body: SignupUpdateBody }>,
   reply: FastifyReply,
 ): Promise<SignupUpdateResponse> {
   const updatedSignup = await getSequelize().transaction(async (transaction) => {
@@ -76,9 +76,7 @@ export default async function updateSignup(
     // Check that all questions are answered with a valid answer
     const newAnswers = questions.map((question) => {
       // Fetch the answer to this question from the request body
-      let answer = request.body.answers
-        ?.find((a) => a.questionId === question.id)
-        ?.answer;
+      let answer = request.body.answers?.find((a) => a.questionId === question.id)?.answer;
 
       if (!answer || !answer.length) {
         // Disallow empty answers to required questions

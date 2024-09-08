@@ -22,9 +22,7 @@ type SignupButtonProps = {
   total: number;
 };
 
-const SignupButton = ({
-  isOpen, isClosed, seconds, total,
-}: SignupButtonProps) => {
+const SignupButton = ({ isOpen, isClosed, seconds, total }: SignupButtonProps) => {
   const navigate = useNavigate();
   const paths = usePaths();
   const { registrationStartDate, registrationEndDate, quotas } = useSingleEventContext().event!;
@@ -33,27 +31,30 @@ const SignupButton = ({
   const isOnly = quotas.length === 1;
   const { t } = useTranslation();
 
-  const onClick = useCallback(async (quotaId: QuotaID) => {
-    if (!isOpen) return;
-    setSubmitting(true);
-    const progressToast = toast.loading(t('singleEvent.signupInProgress'));
-    try {
-      const response = await beginSignup(quotaId);
-      setSubmitting(false);
-      navigate(paths.editSignup(response.id, response.editToken));
-      toast.dismiss(progressToast);
-    } catch (err) {
-      setSubmitting(false);
-      toast.update(progressToast, {
-        render: errorDesc(t, err as ApiError, 'singleEvent.signupError'),
-        type: toast.TYPE.ERROR,
-        autoClose: 5000,
-        closeButton: true,
-        closeOnClick: true,
-        isLoading: false,
-      });
-    }
-  }, [navigate, paths, isOpen, t]);
+  const onClick = useCallback(
+    async (quotaId: QuotaID) => {
+      if (!isOpen) return;
+      setSubmitting(true);
+      const progressToast = toast.loading(t('singleEvent.signupInProgress'));
+      try {
+        const response = await beginSignup(quotaId);
+        setSubmitting(false);
+        navigate(paths.editSignup(response.id, response.editToken));
+        toast.dismiss(progressToast);
+      } catch (err) {
+        setSubmitting(false);
+        toast.update(progressToast, {
+          render: errorDesc(t, err as ApiError, 'singleEvent.signupError'),
+          type: toast.TYPE.ERROR,
+          autoClose: 5000,
+          closeButton: true,
+          closeOnClick: true,
+          isLoading: false,
+        });
+      }
+    },
+    [navigate, paths, isOpen, t],
+  );
 
   const statusText = useSignupStateText(eventState);
 
@@ -63,9 +64,7 @@ const SignupButton = ({
       <p>
         {statusText.shortLabel}
         {total < COUNTDOWN_DURATION && !isOpen && !isClosed && (
-          <span style={{ color: 'green' }}>
-            {` (${seconds} s)`}
-          </span>
+          <span style={{ color: 'green' }}>{` (${seconds} s)`}</span>
         )}
       </p>
       {quotas.map((quota) => (

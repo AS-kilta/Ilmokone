@@ -61,14 +61,16 @@ export default async function inviteUser(
   // Generate secure password
   const password = generatePassword();
 
-  const user = await getSequelize().transaction(async (transaction) => createUser(
-    {
-      email: request.body.email,
-      password,
-    },
-    request.logEvent,
-    transaction,
-  ));
+  const user = await getSequelize().transaction(async (transaction) =>
+    createUser(
+      {
+        email: request.body.email,
+        password,
+      },
+      request.logEvent,
+      transaction,
+    ),
+  );
 
   // Send invitation mail
   await EmailService.sendNewUserMail(user.email, null, {

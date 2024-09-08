@@ -15,23 +15,26 @@ export function useAbortableEffect(effect: (signal: AbortSignal) => void, deps?:
     const [signal, abort] = abortable();
     effect(signal);
     return abort;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 }
 
-export type PromiseState<R> = {
-  result: undefined;
-  error: undefined;
-  pending: true;
-} | {
-  result: R;
-  error: undefined;
-  pending: false;
-} | {
-  result: undefined;
-  error: object;
-  pending: false;
-};
+export type PromiseState<R> =
+  | {
+      result: undefined;
+      error: undefined;
+      pending: true;
+    }
+  | {
+      result: R;
+      error: undefined;
+      pending: false;
+    }
+  | {
+      result: undefined;
+      error: object;
+      pending: false;
+    };
 
 /** Wraps a Promise, ignoring DOMExceptions with name='AbortError' as if the promise was left pending. */
 export function ignoreAbort<R>(promise: Promise<R>): Promise<R> {
@@ -89,7 +92,7 @@ export function useAbortablePromise<R>(effect: (signal: AbortSignal) => Promise<
         pending: true,
       });
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
   return state;
 }

@@ -39,13 +39,9 @@ const RegistrationClosed = () => {
 
   return registrationClosed ? (
     <>
-      <p className="ilmo--form-error">
-        {t('editSignup.errors.closed')}
-      </p>
+      <p className="ilmo--form-error">{t('editSignup.errors.closed')}</p>
       <p>
-        <Link to={paths.eventDetails(event!.slug)}>
-          {t('editSignup.backToEvent')}
-        </Link>
+        <Link to={paths.eventDetails(event!.slug)}>{t('editSignup.backToEvent')}</Link>
       </p>
     </>
   ) : null;
@@ -88,20 +84,23 @@ const EditFormBody = ({ handleSubmit, deleting, onDelete }: BodyProps) => {
   const { submitting } = useFormState({ subscription: { submitting: true } });
   const onSubmit = useEvent(handleSubmit);
 
-  return useMemo(() => (
-    <NarrowContainer>
-      <h2>{isNew ? t('editSignup.title.signup') : t('editSignup.title.edit')}</h2>
-      <SignupStatus />
-      <SubmitError />
-      <RegistrationClosed />
-      <BsForm onSubmit={onSubmit} className="ilmo--form">
-        <CommonFields />
-        <QuestionFields name="answers" />
-        <EditFormSubmit disabled={submitting || deleting} />
-      </BsForm>
-      {!registrationClosed && <DeleteSignup deleting={deleting} onDelete={onDelete} />}
-    </NarrowContainer>
-  ), [onSubmit, onDelete, deleting, isNew, registrationClosed, submitting, t]);
+  return useMemo(
+    () => (
+      <NarrowContainer>
+        <h2>{isNew ? t('editSignup.title.signup') : t('editSignup.title.edit')}</h2>
+        <SignupStatus />
+        <SubmitError />
+        <RegistrationClosed />
+        <BsForm onSubmit={onSubmit} className="ilmo--form">
+          <CommonFields />
+          <QuestionFields name="answers" />
+          <EditFormSubmit disabled={submitting || deleting} />
+        </BsForm>
+        {!registrationClosed && <DeleteSignup deleting={deleting} onDelete={onDelete} />}
+      </NarrowContainer>
+    ),
+    [onSubmit, onDelete, deleting, isNew, registrationClosed, submitting, t],
+  );
 };
 
 const EditForm = () => {
@@ -111,7 +110,10 @@ const EditForm = () => {
   const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
   const paths = usePaths();
-  const { t, i18n: { language } } = useTranslation();
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation();
 
   const onSubmit = useEvent(async (answers: SignupUpdateBody) => {
     const progressToast = toast.loading(isNew ? t('editSignup.status.signup') : t('editSignup.status.edit'));
