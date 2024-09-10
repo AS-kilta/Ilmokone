@@ -1,4 +1,4 @@
-@use "sass:color";
+@use 'sass:color';
 
 // Override theme colors for Bootstrap.
 // These are defined before the imports below for use in Ilmomasiina's SCSS.
@@ -23,9 +23,9 @@ $secondary-text-color: #7a7a7a !default;
 
 // Import Bootstrap core mixins/variables/functions for use in Ilmomasiina's SCSS.
 
-@import "bootstrap/scss/functions";
-@import "bootstrap/scss/variables";
-@import "bootstrap/scss/mixins";
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
 
 // Colors for signup states. You can use Bootstrap variables here.
 
