@@ -199,172 +199,181 @@ const BasicDetailsTab = () => {
         rows={8}
         formatError={formatError}
       />
-      <div>
-        <h1>Nopea Markdown ohje</h1>
-        <p>
-          Markdown on helppo syntaksi nopeaan tekstin muotoiluun. Voit tarkasta tulokset julkaisemalla
-          ilmottautuminen ylhäältä ja klikkaamalla 'Julkaistu'. Kannattaa piilottaa ilmottautuminen
-          ellet halua sen näkyvän julkisessa listauksessa.
-        </p>
-        <h2>Perusteksti</h2>
-        <p>
-          Normaali teksti tulkitaan samaksi kappaleeksi yhdestä rivinvaihdosta huolimatta. Uuden kappaleen
-          saat kahdella rivinvaihdolla. Yleisesti toivottava tapa on jättää tyhjä rivi jokaisen
-          Markdown elementin väliin, sillä jotkin syntaksit saattavat tuottaa yllättäviä yhteisvaikutuksia.
-          Esimerkiksi teksti ja seuraavalle riville kirjoitettu --- (Väliviiva) tuottaakin tekstista Otsikko 2.
-        </p>
-        <h2>Cheat Sheet</h2>
-        <table className="table table-striped table-bordered">
+
+      <div className="ilmo--event-description">
+        <h1>{t("editor.basic.markdownGuide.title")}</h1>
+        <p>{t("editor.basic.markdownGuide.info")}</p>
+        <h2>{t("editor.basic.markdownGuide.cheatsheet")}</h2>
+        <table>
           <thead>
             <tr>
-              <th>Kirjoita</th>
-              <th>…saadaksesi</th>
-              <th>Huomioitavaa</th>
+              <th>{t("editor.basic.markdownGuide.write")}</th>
+              <th>{t("editor.basic.markdownGuide.toGet")}</th>
+              <th>{t("editor.basic.markdownGuide.notices")}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>*Italic*</td>
-              <td><em>Italic</em></td>
-              <td>Voit käyttää myös _Italic_</td>
+              <td>
+                <em>Italic</em>
+              </td>
+              <td>{t("editor.basic.markdownGuide.italic")}</td>
             </tr>
             <tr>
               <td>**Bold**</td>
-              <td><strong>Bold</strong></td>
-              <td>Voit käyttää myös __Bold__</td>
-            </tr>
-            <tr>
-              <td>~Yliviivaus~</td>
               <td>
-                <s>Yliviivaus</s>
+                <strong>Bold</strong>
               </td>
-              <td />
+              <td>{t("editor.basic.markdownGuide.bold")}</td>
             </tr>
             <tr>
-              <td># Otsikko 1</td>
-              <td><h1>Otsikko 1</h1></td>
-              <td />
+              <td>~{t("editor.basic.markdownGuide.strike")}~</td>
+              <td>
+                <s>{t("editor.basic.markdownGuide.strike")}</s>
+              </td>
+
             </tr>
             <tr>
-              <td>## Otsikko 2</td>
-              <td><h2>Otsikko 2</h2></td>
-              <td />
+              <td># {t("editor.basic.markdownGuide.h1")}</td>
+              <td>
+                <h1>{t("editor.basic.markdownGuide.h1")}</h1>
+              </td>
+
             </tr>
             <tr>
-              <td>### Otsikko 3</td>
-              <td><h3>Otsikko 3</h3></td>
-              <td />
+              <td>## {t("editor.basic.markdownGuide.h2")}</td>
+              <td>
+                <h2>{t("editor.basic.markdownGuide.h2")}</h2>
+              </td>
+
             </tr>
             <tr>
-              <td>[Linkki](https://ilmo.as.fi/)</td>
-              <td><a href="https://ilmo.as.fi/">Linkki</a></td>
-              <td />
+              <td>### {t("editor.basic.markdownGuide.h3")}</td>
+              <td>
+                <h3>{t("editor.basic.markdownGuide.h3")}</h3>
+              </td>
+
             </tr>
             <tr>
-              <td>![AS-Ilmokone](ilmo.as.fi)</td>
-              <td><img src="https://ilmo.as.fi/public/favicon-32x32.png" alt="AS-Ilmokone" /></td>
-              <td />
+              <td>[{t("editor.basic.markdownGuide.link")}](https://ilmo.as.fi/)</td>
+              <td>
+                <a href="https://ilmo.as.fi/">{t("editor.basic.markdownGuide.link")}</a>
+              </td>
+
+            </tr>
+            <tr>
+              <td>![AS-Ilmokone](https://ilmo.as.fi/favicon-32x32.png)</td>
+              <td>
+                <img src="https://ilmo.as.fi/favicon-32x32.png" alt="AS-Ilmokone" />
+              </td>
+
             </tr>
             <tr>
               <td>
-                {'>'}
-                {' '}
-                Lainaus
+                {">"}
+                {t("editor.basic.markdownGuide.quote")}
               </td>
               <td>
-                <blockquote>Lainaus</blockquote>
+                <blockquote>{t("editor.basic.markdownGuide.quote")}</blockquote>
               </td>
-              <td />
+
             </tr>
             <tr>
               <td>
-                * Lista
-                <br />
-                * Lista
-                <br />
-                * Lista
+                * {t("editor.basic.markdownGuide.list")}
+                <br />* {t("editor.basic.markdownGuide.list")}
+                <br />* {t("editor.basic.markdownGuide.list")}
               </td>
               <td>
                 <ul>
-                  <li>Lista</li>
-                  <li>Lista</li>
-                  <li>Lista</li>
+                  <li>{t("editor.basic.markdownGuide.list")}</li>
+                  <li>{t("editor.basic.markdownGuide.list")}</li>
+                  <li>{t("editor.basic.markdownGuide.list")}</li>
                 </ul>
               </td>
-              <td />
+
             </tr>
             <tr>
               <td>
-                1. Lista
+                1. {t("editor.basic.markdownGuide.list")}
                 <br />
-                2. Lista
+                2. {t("editor.basic.markdownGuide.list")}
                 <br />
-                3. Lista
+                3. {t("editor.basic.markdownGuide.list")}
               </td>
               <td>
                 <ol>
-                  <li>Lista</li>
-                  <li>Lista</li>
-                  <li>Lista</li>
+                  <li>{t("editor.basic.markdownGuide.list")}</li>
+                  <li>{t("editor.basic.markdownGuide.list")}</li>
+                  <li>{t("editor.basic.markdownGuide.list")}</li>
                 </ol>
               </td>
-              <td />
+
             </tr>
             <tr>
               <td>---</td>
-              <td>
-                <hr />
-              </td>
-              <td>Sisällönjakaja</td>
+              {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+              <td><hr /></td>
+              <td>{t("editor.basic.markdownGuide.divider")}</td>
             </tr>
             <tr>
+              <td>`{t("editor.basic.markdownGuide.code")}`</td>
               <td>
-                `Koodi`
+                <code>{t("editor.basic.markdownGuide.codeResult")}</code>
               </td>
-              <td>
-                <code>Koodi tekstin sisällä</code>
-              </td>
-              <td>Taakse taittuva aksentti (backtick)</td>
+              <td>{t("editor.basic.markdownGuide.codeNotice")}</td>
             </tr>
             <tr>
               <td>
                 ```
                 <br />
-                Koodipalikka
+                {t("editor.basic.markdownGuide.codeBlock")}
                 <br />
                 ```
               </td>
-              <td><code>Koodipalikka</code></td>
-              <td/>
+              <td>
+                <code>{t("editor.basic.markdownGuide.codeBlock")}</code>
+              </td>
+
             </tr>
             <tr>
               <td>https://ilmo.as.fi</td>
-              <td><a href="https://ilmo.as.fi/">https://ilmo.as.fi</a></td>
-              <td>URL-osotteet muuttuvat linkeiksi</td>
+              <td>
+                <a href="https://ilmo.as.fi/">https://ilmo.as.fi</a>
+              </td>
+              <td>{t("editor.basic.markdownGuide.urlNotice")}</td>
             </tr>
 
             <tr>
-              <td>Alaviite [^1]<br/>[^1]: Tämä on alaviite</td>
-              <td />
-              <td />
+              <td>
+                {t("editor.basic.markdownGuide.footnote")} [^1]
+                <br />
+                [^1]: {t("editor.basic.markdownGuide.footnoteResult")}
+              </td>
+              <td>
+                {t("editor.basic.markdownGuide.footnote")}
+                <sup>1</sup>
+                <br />
+                1. {t("editor.basic.markdownGuide.footnoteResult")}
+              </td>
+              <td>{t("editor.basic.markdownGuide.footnoteNotice")}</td>
             </tr>
             <tr>
               <td>
-                | Syntaksi | Tulos |
+                | {t("editor.basic.markdownGuide.syntax")} | {t("editor.basic.markdownGuide.result")} |
                 <br />
-                {' '}
                 |–––|–––|
                 <br />
                 | ** | Italic |
-                <br />
-                | **** | Bold |
+                <br />| **** | Bold |
               </td>
               <td>
                 <table>
                   <thead>
                     <tr>
-                      <td>Syntaksi</td>
-                      <td>Tulos</td>
+                      <td>{t("editor.basic.markdownGuide.syntax")}</td>
+                      <td>{t("editor.basic.markdownGuide.result")}</td>
                     </tr>
                   </thead>
                   <tbody>
@@ -379,9 +388,8 @@ const BasicDetailsTab = () => {
                   </tbody>
                 </table>
               </td>
-              <td>Taulukon kokoa voi lisätä lisäämällä rivejä ja </td>
+              <td>{t("editor.basic.markdownGuide.tableNotice")}</td>
             </tr>
-
           </tbody>
         </table>
       </div>
