@@ -1,5 +1,5 @@
-import every from 'lodash-es/every';
-import sumBy from 'lodash-es/sumBy';
+import every from "lodash-es/every";
+import sumBy from "lodash-es/sumBy";
 
 import type {
   EventID,
@@ -7,8 +7,8 @@ import type {
   QuotaID,
   UserEventListItem,
   UserEventListResponse,
-} from '@tietokilta/ilmomasiina-models';
-import { signupState, SignupStateInfo } from './signupStateText';
+} from "@tietokilta/ilmomasiina-models";
+import { signupState, SignupStateInfo } from "./signupStateText";
 
 export interface EventTableOptions {
   /** If true, quotas are not placed on separate rows. */
@@ -17,7 +17,7 @@ export interface EventTableOptions {
 
 export type EventRow = {
   id: EventID;
-  type: 'event';
+  type: "event";
   slug: EventSlug;
   title: string;
   date: Date | null;
@@ -28,7 +28,7 @@ export type EventRow = {
   totalQuotaSize: number | null;
 };
 export type QuotaRow = {
-  type: 'quota' | 'openquota' | 'waitlist';
+  type: "quota" | "openquota" | "waitlist";
   id: QuotaID;
   title?: string;
   signupCount: number;
@@ -44,16 +44,16 @@ export function eventToRows(event: UserEventListItem, { compact }: EventTableOpt
   // Event row
   const rows: TableRow[] = [
     {
-      type: 'event',
+      type: "event",
       id,
       signupState: state,
       slug,
       title,
       date: date ? new Date(date) : null,
-      signupCount: quotas.length < 2 ? sumBy(quotas, 'signupCount') : undefined,
+      signupCount: quotas.length < 2 ? sumBy(quotas, "signupCount") : undefined,
       quotaSize: quotas.length === 1 ? quotas[0].size : undefined,
-      totalSignupCount: sumBy(quotas, 'signupCount') ?? 0,
-      totalQuotaSize: every(quotas, 'size') ? sumBy(quotas, 'size') : null,
+      totalSignupCount: sumBy(quotas, "signupCount") ?? 0,
+      totalQuotaSize: every(quotas, "size") ? sumBy(quotas, "size") : null,
     },
   ];
 
@@ -64,7 +64,7 @@ export function eventToRows(event: UserEventListItem, { compact }: EventTableOpt
   if (quotas.length > 1) {
     quotas.forEach((quota) =>
       rows.push({
-        type: 'quota',
+        type: "quota",
         id: quota.id,
         title: quota.title,
         signupCount: quota.size ? Math.min(quota.signupCount, quota.size) : quota.signupCount,
@@ -78,7 +78,7 @@ export function eventToRows(event: UserEventListItem, { compact }: EventTableOpt
   // Open quota
   if (openQuotaSize > 0) {
     rows.push({
-      type: 'openquota',
+      type: "openquota",
       id: `${event.id} openquota`,
       signupCount: Math.min(overflow, openQuotaSize),
       quotaSize: openQuotaSize,
@@ -88,7 +88,7 @@ export function eventToRows(event: UserEventListItem, { compact }: EventTableOpt
   // Queue/waitlist
   if (overflow > openQuotaSize) {
     rows.push({
-      type: 'waitlist',
+      type: "waitlist",
       id: `${event.id} waitlist`,
       signupCount: overflow - openQuotaSize,
       quotaSize: null,

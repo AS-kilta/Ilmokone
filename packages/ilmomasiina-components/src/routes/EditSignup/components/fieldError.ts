@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { DefaultNamespace, ParseKeys } from "i18next";
 import { useTranslation } from "react-i18next";
 
-import { SignupFieldError } from '@tietokilta/ilmomasiina-models';
+import { SignupFieldError } from "@tietokilta/ilmomasiina-models";
 
 /** Localizes a SignupFieldError. */
 export default function useFieldErrors() {

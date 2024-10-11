@@ -1,4 +1,4 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyReply, FastifyRequest } from "fastify";
 
 import type { AdminEventPathParams } from "@tietokilta/ilmomasiina-models";
 import { AuditEvent } from "@tietokilta/ilmomasiina-models";

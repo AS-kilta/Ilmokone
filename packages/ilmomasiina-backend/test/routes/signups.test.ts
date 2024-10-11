@@ -1,10 +1,10 @@
-import { testEvent, testSignups } from 'test/testData';
-import { describe, expect, test } from 'vitest';
+import { testEvent, testSignups } from "test/testData";
+import { describe, expect, test } from "vitest";
 
-import { EDIT_TOKEN_HEADER, SignupForEditResponse } from '@tietokilta/ilmomasiina-models';
-import { Signup } from '../../src/models/signup';
-import { refreshSignupPositionsAndGet } from '../../src/routes/signups/computeSignupPosition';
-import { generateToken } from '../../src/routes/signups/editTokens';
+import { EDIT_TOKEN_HEADER, SignupForEditResponse } from "@tietokilta/ilmomasiina-models";
+import { Signup } from "../../src/models/signup";
+import { refreshSignupPositionsAndGet } from "../../src/routes/signups/computeSignupPosition";
+import { generateToken } from "../../src/routes/signups/editTokens";
 
 async function fetchSignupForEdit(signup: Signup, editToken?: string | false) {
   const headers: Record<string, string> = {};
@@ -12,15 +12,15 @@ async function fetchSignupForEdit(signup: Signup, editToken?: string | false) {
     headers[EDIT_TOKEN_HEADER] = editToken ?? generateToken(signup.id);
   }
   const response = await server.inject({
-    method: 'GET',
+    method: "GET",
     url: `/api/signups/${signup.id}`,
     headers,
   });
   return [response.json<SignupForEditResponse>(), response] as const;
 }
 
-describe('getSignupForEdit', () => {
-  test('returns signup for editing', async () => {
+describe("getSignupForEdit", () => {
+  test("returns signup for editing", async () => {
     const event = await testEvent();
     const [signup] = await testSignups(event, { count: 1, confirmed: true });
     const quota = await signup.getQuota();
@@ -54,7 +54,7 @@ describe('getSignupForEdit', () => {
     });
   });
 
-  test('returns nulls for unconfirmed signup', async () => {
+  test("returns nulls for unconfirmed signup", async () => {
     const event = await testEvent();
     const [signup] = await testSignups(event, { count: 1, confirmed: false });
 
@@ -70,7 +70,7 @@ describe('getSignupForEdit', () => {
     });
   });
 
-  test('returns correct status information', async () => {
+  test("returns correct status information", async () => {
     const event = await testEvent();
     const signups = await testSignups(event, { count: 40 });
     const signup = signups[0]; // created in random order, so this suffices
@@ -82,7 +82,7 @@ describe('getSignupForEdit', () => {
     expect(data.signup.position).toEqual(status.position);
   });
 
-  test('checks edit token authentication', async () => {
+  test("checks edit token authentication", async () => {
     const event = await testEvent();
     const [signup, other] = await testSignups(event, {
       count: 2,

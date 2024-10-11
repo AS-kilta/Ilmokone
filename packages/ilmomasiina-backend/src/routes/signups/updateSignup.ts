@@ -1,6 +1,6 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
-import { Transaction } from 'sequelize';
-import { isEmail } from 'validator';
+import { FastifyReply, FastifyRequest } from "fastify";
+import { Transaction } from "sequelize";
+import { isEmail } from "validator";
 
 import type {
   SignupPathParams,
@@ -30,7 +30,7 @@ export default async function updateSignup(
       lock: Transaction.LOCK.UPDATE,
     });
     if (signup === null) {
-      throw new NoSuchSignup('Signup expired or already deleted');
+      throw new NoSuchSignup("Signup expired or already deleted");
     }
 
     const quota = await signup.getQuota({
@@ -105,8 +105,8 @@ export default async function updateSignup(
           error = SignupFieldError.MISSING;
         }
         // Normalize empty answers to "" or [], depending on question type
-        answer = question.type === 'checkbox' ? [] : '';
-      } else if (question.type === 'checkbox') {
+        answer = question.type === "checkbox" ? [] : "";
+      } else if (question.type === "checkbox") {
         // Ensure checkbox answers are arrays
         if (!Array.isArray(answer)) {
           error = SignupFieldError.WRONG_TYPE;
@@ -120,20 +120,20 @@ export default async function updateSignup(
         }
       } else {
         // Don't allow arrays for non-checkbox questions
-        if (typeof answer !== 'string') {
+        if (typeof answer !== "string") {
           error = SignupFieldError.WRONG_TYPE;
         } else {
           switch (question.type) {
-            case 'text':
-            case 'textarea':
+            case "text":
+            case "textarea":
               break;
-            case 'number':
+            case "number":
               // Check that a numeric answer is valid
               if (!Number.isFinite(parseFloat(answer))) {
                 error = SignupFieldError.NOT_A_NUMBER;
               }
               break;
-            case 'select': {
+            case "select": {
               // Check that the select answer is valid
               if (!question.options!.includes(answer)) {
                 error = SignupFieldError.NOT_AN_OPTION;
@@ -141,7 +141,7 @@ export default async function updateSignup(
               break;
             }
             default:
-              throw new Error('Invalid question type');
+              throw new Error("Invalid question type");
           }
         }
       }
@@ -159,7 +159,7 @@ export default async function updateSignup(
     });
 
     if (Object.keys(errors).length > 0) {
-      throw new SignupValidationError('Errors validating signup', errors);
+      throw new SignupValidationError("Errors validating signup", errors);
     }
 
     // Update fields for the signup (name and email only editable on first confirmation)

@@ -1,4 +1,4 @@
-import { Static, Type } from '@sinclair/typebox';
+import { Static, Type } from "@sinclair/typebox";
 
 import { adminEventListAttributes, eventIdentity, userEventListAttributes } from "../event/attributes";
 import { quotaWithSignupCount } from "../quotaWithSignups";
@@ -23,7 +23,7 @@ const userEventListItemSchema = Type.Composite([
   userEventListAttributes,
   Type.Object({
     quotas: Type.Array(quotaWithSignupCount, {
-      description: 'The quotas in this event, with signup counts.',
+      description: "The quotas in this event, with signup counts.",
     }),
   }),
 ]);
@@ -35,7 +35,7 @@ export const userEventListResponse = Type.Array(userEventListItemSchema);
 export const eventListQuery = Type.Object({
   category: Type.Optional(
     Type.String({
-      description: 'If set, only events with the provided category are included.',
+      description: "If set, only events with the provided category are included.",
     }),
   ),
 });

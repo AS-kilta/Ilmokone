@@ -1,9 +1,9 @@
-import React, { MouseEvent } from 'react';
+import React, { MouseEvent } from "react";
 
-import sumBy from 'lodash-es/sumBy';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import sumBy from "lodash-es/sumBy";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import { ApiError } from "@tietokilta/ilmomasiina-components";
 import { useEventDateFormatter } from "@tietokilta/ilmomasiina-components/dist/utils/dateFormat";
@@ -29,12 +29,12 @@ const AdminEventListItem = ({ event }: Props) => {
   async function onDelete(e: MouseEvent) {
     e.preventDefault();
     // eslint-disable-next-line no-alert
-    const confirmed = window.confirm(t('adminEvents.action.delete.confirm'));
+    const confirmed = window.confirm(t("adminEvents.action.delete.confirm"));
     if (confirmed) {
       try {
         await dispatch(deleteEvent(id));
       } catch (err) {
-        toast.error(errorDesc(t, err as ApiError, 'adminEvents.action.delete.error'), {
+        toast.error(errorDesc(t, err as ApiError, "adminEvents.action.delete.error"), {
           autoClose: 2000,
         });
       } finally {
@@ -51,7 +51,7 @@ const AdminEventListItem = ({ event }: Props) => {
   } else if (!listed) {
     status = <Link to={appPaths.eventDetails(slug)}>{t("adminEvents.status.hidden")}</Link>;
   } else {
-    status = <Link to={appPaths.eventDetails(slug)}>{t('adminEvents.status.published')}</Link>;
+    status = <Link to={appPaths.eventDetails(slug)}>{t("adminEvents.status.published")}</Link>;
   }
 
   return (
@@ -59,15 +59,15 @@ const AdminEventListItem = ({ event }: Props) => {
       <td>
         <Link to={appPaths.adminEditEvent(id)}>{title}</Link>
       </td>
-      <td>{date ? eventDateFormat.format(new Date(date)) : ''}</td>
+      <td>{date ? eventDateFormat.format(new Date(date)) : ""}</td>
       <td>{status}</td>
-      <td>{sumBy(quotas, 'signupCount')}</td>
+      <td>{sumBy(quotas, "signupCount")}</td>
       <td>
-        <Link to={appPaths.adminEditEvent(id)}>{t('adminEvents.action.edit')}</Link>
+        <Link to={appPaths.adminEditEvent(id)}>{t("adminEvents.action.edit")}</Link>
         &ensp;/&ensp;
         {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
         <a href="#" onClick={onDelete} role="button">
-          {t('adminEvents.action.delete')}
+          {t("adminEvents.action.delete")}
         </a>
       </td>
     </tr>

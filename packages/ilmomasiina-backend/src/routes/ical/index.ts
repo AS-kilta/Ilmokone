@@ -1,9 +1,9 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
-import { createEvents, DateArray } from 'ics';
-import { Op } from 'sequelize';
+import { FastifyReply, FastifyRequest } from "fastify";
+import { createEvents, DateArray } from "ics";
+import { Op } from "sequelize";
 
-import config from '../../config';
-import { Event } from '../../models/event';
+import config from "../../config";
+import { Event } from "../../models/event";
 
 function dateToArray(date: Date) {
   return [
@@ -18,10 +18,10 @@ function dateToArray(date: Date) {
 /** Domain name for generating iCalendar UIDs.
  * @see https://datatracker.ietf.org/doc/html/rfc5545#section-3.8.4.7
  */
-const uidDomain = config.icalUidDomain || new URL(config.baseUrl ?? 'http://localhost').hostname;
+const uidDomain = config.icalUidDomain || new URL(config.baseUrl ?? "http://localhost").hostname;
 
 export async function eventsAsICal() {
-  const events = await Event.scope('user').findAll({
+  const events = await Event.scope("user").findAll({
     where: {
       listed: true,
       // only events, not signup-only
@@ -30,9 +30,9 @@ export async function eventsAsICal() {
       endDate: { [Op.ne]: null },
     },
     order: [
-      ['date', 'ASC'],
-      ['registrationEndDate', 'ASC'],
-      ['title', 'ASC'],
+      ["date", "ASC"],
+      ["registrationEndDate", "ASC"],
+      ["title", "ASC"],
     ],
   });
 
@@ -41,9 +41,9 @@ export async function eventsAsICal() {
       calName: config.icalCalendarName,
       uid: `${event.id}@${uidDomain}`,
       start: dateToArray(event.date!),
-      startInputType: 'utc',
+      startInputType: "utc",
       end: dateToArray(new Date(event.endDate!)),
-      endInputType: 'utc',
+      endInputType: "utc",
       title: event.title,
       description: event.description || undefined, // TODO convert markdown
       location: event.location || undefined,
@@ -61,6 +61,6 @@ export async function sendICalFeed(request: FastifyRequest, reply: FastifyReply)
   const cal = await eventsAsICal();
 
   reply.status(200);
-  reply.type('text/calendar'); // Set proper content type header
+  reply.type("text/calendar"); // Set proper content type header
   reply.send(cal);
 }

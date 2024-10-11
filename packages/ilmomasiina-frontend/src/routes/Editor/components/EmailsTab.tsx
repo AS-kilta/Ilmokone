@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 import { FieldRow } from "@tietokilta/ilmomasiina-components";
 import useEditorErrors from "./errors";

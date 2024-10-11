@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-import { FORM_ERROR } from 'final-form';
-import { Button, Form as BsForm } from 'react-bootstrap';
-import { Form, FormRenderProps, useFormState } from 'react-final-form';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
+import { FORM_ERROR } from "final-form";
+import { Button, Form as BsForm } from "react-bootstrap";
+import { Form, FormRenderProps, useFormState } from "react-final-form";
+import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 import { ErrorCode, QuestionID, SignupUpdateBody, SignupValidationError } from "@tietokilta/ilmomasiina-models";
 import { ApiError } from "../../../api";
@@ -27,7 +27,7 @@ const SubmitError = () => {
 
   return submitError ? (
     <p className="ilmo--form-error">
-      {errorDesc(t, submitError, isNew ? 'editSignup.signupError' : 'editSignup.editError')}
+      {errorDesc(t, submitError, isNew ? "editSignup.signupError" : "editSignup.editError")}
     </p>
   ) : null;
 };
@@ -85,13 +85,13 @@ const EditFormSubmit = ({ disabled }: { disabled: boolean }) => {
   return editingClosedOnLoad ? null : (
     <>
       <p>
-        {t('editSignup.editInstructions')}
-        {event!.emailQuestion && ` ${t('editSignup.editInstructions.email')}`}
+        {t("editSignup.editInstructions")}
+        {event!.emailQuestion && ` ${t("editSignup.editInstructions.email")}`}
       </p>
       <nav className="ilmo--submit-buttons">
         {!preview && !isNew && (
           <Button as={Link} variant="link" to={paths.eventDetails(event!.slug)}>
-            {t('editSignup.action.cancel')}
+            {t("editSignup.action.cancel")}
           </Button>
         )}
         {!preview && (
@@ -110,7 +110,7 @@ const EditFormSubmit = ({ disabled }: { disabled: boolean }) => {
 };
 
 // react-final-form works better when we convert answers to an object
-type SignupFormData = Omit<SignupUpdateBody, 'answers'> & {
+type SignupFormData = Omit<SignupUpdateBody, "answers"> & {
   answers: Record<QuestionID, string | string[]>;
 };
 
@@ -179,7 +179,7 @@ const EditForm = () => {
     try {
       await updateSignup({ ...formData, answers, language });
       toast.update(progressToast, {
-        render: isNew ? t('editSignup.status.signupSuccess') : t('editSignup.status.editSuccess'),
+        render: isNew ? t("editSignup.status.signupSuccess") : t("editSignup.status.editSuccess"),
         type: toast.TYPE.SUCCESS,
         autoClose: 5000,
         closeButton: true,
@@ -209,12 +209,12 @@ const EditForm = () => {
   });
 
   const onDelete = useEvent(async () => {
-    const progressToast = toast.loading(t('editSignup.status.delete'));
+    const progressToast = toast.loading(t("editSignup.status.delete"));
     try {
       setDeleting(true);
       await deleteSignup();
       toast.update(progressToast, {
-        render: t('editSignup.status.deleteSuccess'),
+        render: t("editSignup.status.deleteSuccess"),
         type: toast.TYPE.SUCCESS,
         closeButton: true,
         closeOnClick: true,
@@ -223,7 +223,7 @@ const EditForm = () => {
       navigate(paths.eventDetails(event!.slug));
     } catch (error) {
       toast.update(progressToast, {
-        render: errorDesc(t, error as ApiError, 'editSignup.deleteError'),
+        render: errorDesc(t, error as ApiError, "editSignup.deleteError"),
         type: toast.TYPE.ERROR,
         autoClose: 5000,
         closeButton: true,

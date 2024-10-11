@@ -1,7 +1,7 @@
-import { Type } from '@sinclair/typebox';
+import { Type } from "@sinclair/typebox";
 
 export const userID = Type.Integer({
-  title: 'UserID',
+  title: "UserID",
 });
 
 /** Non-editable identity attributes of a user. */

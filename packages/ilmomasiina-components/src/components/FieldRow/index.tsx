@@ -4,7 +4,7 @@ import identity from "lodash-es/identity";
 import { Form, FormControlProps } from "react-bootstrap";
 import { useField, UseFieldConfig } from "react-final-form";
 
-import BaseFieldRow, { BaseFieldRowProps } from '../BaseFieldRow';
+import BaseFieldRow, { BaseFieldRowProps } from "../BaseFieldRow";
 
 type BaseProps = Omit<BaseFieldRowProps, "error" | "children"> &
   Pick<UseFieldConfig<any>, "type"> & {
@@ -54,7 +54,7 @@ type Props<C extends As> = PropsWithFormControl | PropsWithChildren | PropsWithA
 /** react-final-field field row component */
 export default function FieldRow<C extends As>({
   name,
-  label = '',
+  label = "",
   help,
   required = false,
   formatError,

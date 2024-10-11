@@ -1,12 +1,12 @@
-import React, { BaseSyntheticEvent, useMemo, useState } from 'react';
+import React, { BaseSyntheticEvent, useMemo, useState } from "react";
 
-import { FormApi } from 'final-form';
-import arrayMutators from 'final-form-arrays';
-import { Form as BsForm } from 'react-bootstrap';
-import { Form, FormRenderProps } from 'react-final-form';
-import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { FormApi } from "final-form";
+import arrayMutators from "final-form-arrays";
+import { Form as BsForm } from "react-bootstrap";
+import { Form, FormRenderProps } from "react-final-form";
+import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import { ApiError } from "@tietokilta/ilmomasiina-components";
 import { errorDesc } from "@tietokilta/ilmomasiina-components/dist/utils/errorMessage";
@@ -116,22 +116,22 @@ const EditForm = () => {
       if (isNew) {
         saved = await dispatch(publishNewEvent(data));
         history.push(appPaths.adminEditEvent(saved.id));
-        toast.success(t('editor.status.createSuccess'), { autoClose: 2000 });
+        toast.success(t("editor.status.createSuccess"), { autoClose: 2000 });
       } else {
         saved = await dispatch(publishEventUpdate(eventId!, data));
         if (saved) {
-          toast.success(t('editor.status.saveSuccess'), { autoClose: 2000 });
+          toast.success(t("editor.status.saveSuccess"), { autoClose: 2000 });
         }
       }
       // Update questions/quotas to get IDs from the server
       if (saved) {
         const newFormData = serverEventToEditor(saved);
-        form.change('updatedAt', saved.updatedAt);
-        form.change('quotas', newFormData.quotas);
-        form.change('questions', newFormData.questions);
+        form.change("updatedAt", saved.updatedAt);
+        form.change("quotas", newFormData.quotas);
+        form.change("questions", newFormData.questions);
       }
     } catch (error) {
-      toast.error(errorDesc(t, error as ApiError, 'editor.saveError'), {
+      toast.error(errorDesc(t, error as ApiError, "editor.saveError"), {
         autoClose: 2000,
       });
     }

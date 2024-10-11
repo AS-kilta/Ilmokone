@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
-import { Form } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
+import { Form } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 import { FieldRow } from "@tietokilta/ilmomasiina-components";
 import useEditorErrors from "./errors";
@@ -9,15 +9,15 @@ import { useFieldValue } from "./hooks";
 import Questions from "./Questions";
 
 const QuestionsTab = () => {
-  const nameQuestion = useFieldValue<boolean>('nameQuestion');
-  const emailQuestion = useFieldValue<boolean>('emailQuestion');
+  const nameQuestion = useFieldValue<boolean>("nameQuestion");
+  const emailQuestion = useFieldValue<boolean>("emailQuestion");
   const { t } = useTranslation();
   const formatError = useEditorErrors();
   return (
     <div>
       <FieldRow
         name="nameQuestion"
-        label={t('editor.questions.nameQuestion')}
+        label={t("editor.questions.nameQuestion")}
         as={Form.Check}
         type="checkbox"
         checkAlign
@@ -27,7 +27,7 @@ const QuestionsTab = () => {
       />
       <FieldRow
         name="emailQuestion"
-        label={t('editor.questions.emailQuestion')}
+        label={t("editor.questions.emailQuestion")}
         as={Form.Check}
         type="checkbox"
         checkAlign

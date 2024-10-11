@@ -1,6 +1,6 @@
-import { Type } from '@sinclair/typebox';
+import { Type } from "@sinclair/typebox";
 
-import { Nullable } from '../utils';
+import { Nullable } from "../utils";
 
 export const eventSlug = Type.String({
   description: "Event slug, used for accessing the event by URL.",
@@ -31,19 +31,19 @@ export const userEventListAttributes = Type.Object({
     maxLength: 255,
   }),
   slug: eventSlug,
-  date: Nullable(Type.String({ format: 'date-time' }), {
+  date: Nullable(Type.String({ format: "date-time" }), {
     description:
-      'Event start date. Considered to be the start date if endDate is also set. If null, ' +
-      'the event is signup-only.',
+      "Event start date. Considered to be the start date if endDate is also set. If null, " +
+      "the event is signup-only.",
   }),
-  endDate: Nullable(Type.String({ format: 'date-time' }), {
-    description: 'Event end date. If null, the event will not appear in iCalendar exports.',
+  endDate: Nullable(Type.String({ format: "date-time" }), {
+    description: "Event end date. If null, the event will not appear in iCalendar exports.",
   }),
-  registrationStartDate: Nullable(Type.String({ format: 'date-time' }), {
-    description: 'Event signup opening date. If null, the event does not have a signup.',
+  registrationStartDate: Nullable(Type.String({ format: "date-time" }), {
+    description: "Event signup opening date. If null, the event does not have a signup.",
   }),
-  registrationEndDate: Nullable(Type.String({ format: 'date-time' }), {
-    description: 'Event signup closing date.',
+  registrationEndDate: Nullable(Type.String({ format: "date-time" }), {
+    description: "Event signup closing date.",
   }),
   openQuotaSize: Type.Integer({
     description: "The size of the open quota, which will be filled with signups overflowing their dedicated quota.",
@@ -54,7 +54,7 @@ export const userEventListAttributes = Type.Object({
     maxLength: 255,
   }),
   description: Nullable(Type.String(), {
-    description: 'Description for the event. Supports Markdown.',
+    description: "Description for the event. Supports Markdown.",
   }),
   price: Nullable(Type.String({ maxLength: 255 }), {
     description: "Free-form pricing information for the event.",
@@ -69,7 +69,7 @@ export const userEventListAttributes = Type.Object({
     description: "Link to a Facebook page for the event.",
   }),
   signupsPublic: Type.Boolean({
-    description: 'Whether signups should be shown to all users.',
+    description: "Whether signups should be shown to all users.",
   }),
 });
 
@@ -116,9 +116,9 @@ export const adminEventDetailsAttributes = Type.Composite([
 /** Event attributes that are dynamically calculated in public event details. */
 export const eventDynamicAttributes = Type.Object({
   millisTillOpening: Nullable(Type.Integer(), {
-    description: 'Time in ms until signup opens. If null, the signup will not open in the future.',
+    description: "Time in ms until signup opens. If null, the signup will not open in the future.",
   }),
   registrationClosed: Type.Boolean({
-    description: 'Whether the signup has closed.',
+    description: "Whether the signup has closed.",
   }),
 });

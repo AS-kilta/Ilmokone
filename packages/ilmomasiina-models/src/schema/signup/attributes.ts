@@ -1,8 +1,8 @@
-import { Type } from '@sinclair/typebox';
+import { Type } from "@sinclair/typebox";
 
-import { SignupStatus } from '../../enum';
-import { questionID } from '../question/attributes';
-import { Nullable } from '../utils';
+import { SignupStatus } from "../../enum";
+import { questionID } from "../question/attributes";
+import { Nullable } from "../utils";
 
 export const signupID = Type.String({
   title: "SignupID",
@@ -17,11 +17,11 @@ export const signupIdentity = Type.Object({
 });
 
 const namePublic = Type.Boolean({
-  description: 'Whether to show `firstName` and `lastName` publicly.',
+  description: "Whether to show `firstName` and `lastName` publicly.",
 });
 
 export const editToken = Type.String({
-  description: 'Token required for editing or deleting the signup.',
+  description: "Token required for editing or deleting the signup.",
 });
 
 /** Answer to a single signup question */
@@ -58,7 +58,7 @@ export const editableSignupAttributes = Type.Object({
   }),
   namePublic,
   answers: Type.Array(signupAnswer, {
-    description: 'Answers to the questions of the event.',
+    description: "Answers to the questions of the event.",
   }),
 });
 
@@ -72,7 +72,7 @@ export const publicEditableSignupAttributes = Type.Object({
   }),
   namePublic,
   answers: Type.Array(signupAnswer, {
-    description: 'Answers to the public questions in the event.',
+    description: "Answers to the public questions in the event.",
   }),
 });
 
@@ -82,13 +82,13 @@ export const dynamicSignupAttributes = Type.Object({
     description: "Status of the signup. If null, the status has not been computed yet.",
   }),
   position: Nullable(Type.Integer(), {
-    description: 'Position of the signup in its current quota. If null, the status has not been computed yet.',
+    description: "Position of the signup in its current quota. If null, the status has not been computed yet.",
   }),
   createdAt: Type.String({
-    format: 'date-time',
-    description: 'The creation date of the signup.',
+    format: "date-time",
+    description: "The creation date of the signup.",
   }),
   confirmed: Type.Boolean({
-    description: 'Whether the signup has been confirmed (saved).',
+    description: "Whether the signup has been confirmed (saved).",
   }),
 });

@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker";
 import { afterAll, afterEach, beforeAll, beforeEach, TaskBase, vi } from "vitest";
 
-import initApp from '../src/app';
-import EmailService from '../src/mail';
-import setupDatabase, { closeDatabase } from '../src/models';
-import { testUser } from './testData';
+import initApp from "../src/app";
+import EmailService from "../src/mail";
+import setupDatabase, { closeDatabase } from "../src/models";
+import { testUser } from "./testData";
 
 const needsDb = (suite: TaskBase) => suite.name.includes("test/routes");
 const needsApi = (suite: TaskBase) => suite.name.includes("test/routes");
@@ -51,7 +51,7 @@ beforeEach(async () => {
 
 // Mock email sending: ensure no actual email is sent and allow checking for calls.
 beforeAll(() => {
-  global.emailSend = vi.spyOn(EmailService, 'send').mockImplementation(async () => {});
+  global.emailSend = vi.spyOn(EmailService, "send").mockImplementation(async () => {});
 });
 afterEach(() => {
   emailSend.mockClear();

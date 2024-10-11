@@ -1,4 +1,4 @@
-import { Static, Type } from '@sinclair/typebox';
+import { Static, Type } from "@sinclair/typebox";
 
 import { userEventForSignup } from "../event";
 import { quota } from "../quota";

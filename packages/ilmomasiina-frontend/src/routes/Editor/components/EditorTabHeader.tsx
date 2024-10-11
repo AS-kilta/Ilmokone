@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback } from "react";
 
 import { Nav } from "react-bootstrap";
 import { useFormState } from "react-final-form";
@@ -90,7 +90,7 @@ type Props = {
 };
 
 const EditorTabHeader = ({ activeTab, setActiveTab }: Props) => {
-  const eventType = useFieldValue<EditorEventType>('eventType');
+  const eventType = useFieldValue<EditorEventType>("eventType");
 
   return (
     <Nav variant="tabs" activeKey={activeTab} role="tablist">

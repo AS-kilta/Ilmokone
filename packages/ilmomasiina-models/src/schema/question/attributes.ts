@@ -1,11 +1,11 @@
-import { Type } from '@sinclair/typebox';
+import { Type } from "@sinclair/typebox";
 
-import { QuestionType } from '../../enum';
-import { Nullable } from '../utils';
+import { QuestionType } from "../../enum";
+import { Nullable } from "../utils";
 
 export const questionID = Type.String({
-  title: 'QuestionID',
-  description: 'Question ID. Randomly generated alphanumeric string.',
+  title: "QuestionID",
+  description: "Question ID. Randomly generated alphanumeric string.",
 });
 
 /** Non-editable identity attributes of a question. */
@@ -21,8 +21,8 @@ export const questionAttributes = Type.Object({
     maxLength: 255,
   }),
   type: Type.Enum(QuestionType, {
-    title: 'QuestionType',
-    description: 'The type of answer expected.',
+    title: "QuestionType",
+    description: "The type of answer expected.",
   }),
   options: Nullable(
     Type.Array(
@@ -35,9 +35,9 @@ export const questionAttributes = Type.Object({
     },
   ),
   required: Type.Boolean({
-    description: 'Whether to require an answer to this question from all attendees.',
+    description: "Whether to require an answer to this question from all attendees.",
   }),
   public: Type.Boolean({
-    description: 'Whether to show the answers to this question publicly.',
+    description: "Whether to show the answers to this question publicly.",
   }),
 });

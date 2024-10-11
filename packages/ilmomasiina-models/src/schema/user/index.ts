@@ -1,6 +1,6 @@
-import { Static, Type } from '@sinclair/typebox';
+import { Static, Type } from "@sinclair/typebox";
 
-import { password, userAttributes, userID, userIdentity } from './attributes';
+import { password, userAttributes, userID, userIdentity } from "./attributes";
 
 /** Request body for creating an admin user. */
 export const userCreateSchema = Type.Composite([

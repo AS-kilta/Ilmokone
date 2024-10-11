@@ -1,9 +1,9 @@
-import { Action, AnyAction, Store } from 'redux';
-import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { Action, AnyAction, Store } from "redux";
+import { ThunkAction, ThunkDispatch } from "redux-thunk";
 
-import { AdminEventsActions } from '../modules/adminEvents/types';
-import { EditorActions } from '../modules/editor/types';
-import { makeRootReducer } from './reducers';
+import { AdminEventsActions } from "../modules/adminEvents/types";
+import { EditorActions } from "../modules/editor/types";
+import { makeRootReducer } from "./reducers";
 
 export type AppReducer = ReturnType<typeof makeRootReducer>;
 export type AppState = ReturnType<AppReducer>;

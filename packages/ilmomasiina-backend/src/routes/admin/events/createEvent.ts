@@ -1,5 +1,5 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
-import { CreationAttributes } from 'sequelize';
+import { FastifyReply, FastifyRequest } from "fastify";
+import { CreationAttributes } from "sequelize";
 
 import type { AdminEventResponse, EventCreateBody } from "@tietokilta/ilmomasiina-models";
 import { AuditEvent } from "@tietokilta/ilmomasiina-models";

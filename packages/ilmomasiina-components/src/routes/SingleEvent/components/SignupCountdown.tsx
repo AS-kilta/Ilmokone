@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
-import Countdown from 'react-countdown';
+import Countdown from "react-countdown";
 
-import { useSingleEventContext } from '../../../modules/singleEvent';
-import SignupButton from './SignupButton';
+import { useSingleEventContext } from "../../../modules/singleEvent";
+import SignupButton from "./SignupButton";
 
 const SignupCountdown = () => {
   const event = useSingleEventContext().event!;

@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode } from "react";
 
-import { Col, Form, Row } from 'react-bootstrap';
+import { Col, Form, Row } from "react-bootstrap";
 
 export type BaseFieldRowProps = {
   /** Passed to the `FormGroup`. */
@@ -23,7 +23,7 @@ export type BaseFieldRowProps = {
 /** Form library agnostic field row component */
 export default function BaseFieldRow({
   controlId,
-  label = '',
+  label = "",
   help,
   required = false,
   extraFeedback,

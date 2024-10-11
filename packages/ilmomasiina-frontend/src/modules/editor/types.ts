@@ -1,4 +1,4 @@
-import type { ApiError } from '@tietokilta/ilmomasiina-components';
+import type { ApiError } from "@tietokilta/ilmomasiina-components";
 import type {
   AdminEventResponse,
   CheckSlugResponse,
@@ -8,21 +8,21 @@ import type {
   QuestionUpdate,
   QuotaID,
   QuotaUpdate,
-} from '@tietokilta/ilmomasiina-models';
-import type { EditorEventType } from './actions';
+} from "@tietokilta/ilmomasiina-models";
+import type { EditorEventType } from "./actions";
 
 export interface EditorState {
   event: AdminEventResponse | null;
   isNew: boolean;
   loadError?: ApiError;
-  slugAvailability: null | 'checking' | CheckSlugResponse;
+  slugAvailability: null | "checking" | CheckSlugResponse;
   allCategories: null | string[];
   moveToQueueModal: { count: number } | null;
   editConflictModal: EditConflictError | null;
 }
 
 /** Question type for event editor */
-export interface EditorQuestion extends Omit<QuestionUpdate, 'options'> {
+export interface EditorQuestion extends Omit<QuestionUpdate, "options"> {
   key: QuestionID;
   options: string[];
 }
@@ -66,5 +66,5 @@ export interface EditorEvent
 /** Stricter version of EventUpdateBody with fields we guarantee to return from `editorEventToServer`. */
 export type ConvertedEditorEvent = Omit<Required<EventUpdateBody>, "moveSignupsToQueue">;
 
-export type { EditorActions } from './actions';
-export { EditorEventType } from './actions';
+export type { EditorActions } from "./actions";
+export { EditorEventType } from "./actions";

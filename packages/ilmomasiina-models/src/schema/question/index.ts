@@ -1,8 +1,8 @@
-import { Static, Type } from '@sinclair/typebox';
+import { Static, Type } from "@sinclair/typebox";
 
-import { questionAttributes, questionID, questionIdentity } from './attributes';
+import { questionAttributes, questionID, questionIdentity } from "./attributes";
 
-export { questionID } from './attributes';
+export { questionID } from "./attributes";
 
 /** Schema for a question. */
 export const question = Type.Composite([questionIdentity, questionAttributes]);

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ReactNode, useMemo } from 'react';
+import React, { ChangeEvent, ReactNode, useMemo } from "react";
 
 import identity from "lodash-es/identity";
 import without from "lodash-es/without";
@@ -42,7 +42,7 @@ const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
     onChange(newAnswers);
   });
 
-  const help = question.public ? t('editSignup.publicQuestion') : null;
+  const help = question.public ? t("editSignup.publicQuestion") : null;
 
   let input: ReactNode;
   let isCheckboxes = false;
@@ -118,7 +118,7 @@ const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
             isInvalid={invalid}
           >
             <option value="" disabled={question.required}>
-              {t('editSignup.fields.select.placeholder')}
+              {t("editSignup.fields.select.placeholder")}
             </option>
             {question.options?.map((option, optIndex) => (
               // eslint-disable-next-line react/no-array-index-key

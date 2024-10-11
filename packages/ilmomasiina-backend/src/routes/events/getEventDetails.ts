@@ -1,6 +1,6 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
-import { NotFound } from 'http-errors';
-import { Op } from 'sequelize';
+import { FastifyReply, FastifyRequest } from "fastify";
+import { NotFound } from "http-errors";
+import { Op } from "sequelize";
 
 import type {
   AdminEventPathParams,
@@ -9,7 +9,7 @@ import type {
   EventSlug,
   UserEventPathParams,
   UserEventResponse,
-} from '@tietokilta/ilmomasiina-models';
+} from "@tietokilta/ilmomasiina-models";
 import {
   adminEventGetEventAttrs,
   eventGetAnswerAttrs,
@@ -161,12 +161,12 @@ export async function eventDetailsForAdmin(eventID: EventID): Promise<AdminEvent
         attributes: eventGetQuestionAttrs,
       },
     ],
-    order: [[Question, 'order', 'ASC']],
+    order: [[Question, "order", "ASC"]],
   });
 
   if (event === null) {
     // Event not found with id, probably deleted
-    throw new NotFound('No event found with id');
+    throw new NotFound("No event found with id");
   }
 
   const quotas = await Quota.findAll({
@@ -175,8 +175,8 @@ export async function eventDetailsForAdmin(eventID: EventID): Promise<AdminEvent
     // Include all signups for the quotas
     include: [
       {
-        model: Signup.scope('active'),
-        attributes: [...eventGetSignupAttrs, 'id', 'email'],
+        model: Signup.scope("active"),
+        attributes: [...eventGetSignupAttrs, "id", "email"],
         required: false,
         // ... and answers of signups
         include: [
@@ -190,8 +190,8 @@ export async function eventDetailsForAdmin(eventID: EventID): Promise<AdminEvent
     ],
     // First sort by Quota order, then by signup creation date
     order: [
-      ['order', 'ASC'],
-      [Signup, 'createdAt', 'ASC'],
+      ["order", "ASC"],
+      [Signup, "createdAt", "ASC"],
     ],
   });
 

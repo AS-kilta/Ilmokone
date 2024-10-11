@@ -1,4 +1,4 @@
-import { Static, Type } from '@sinclair/typebox';
+import { Static, Type } from "@sinclair/typebox";
 
 import { password, userEmail } from "../user/attributes";
 
@@ -10,7 +10,7 @@ export const adminLoginBody = Type.Object({
 /** Response schema for a successful login. */
 export const adminLoginResponse = Type.Object({
   accessToken: Type.String({
-    description: 'JWT access token. Used in `Authorization` header to authorize requests.',
+    description: "JWT access token. Used in `Authorization` header to authorize requests.",
   }),
 });
 

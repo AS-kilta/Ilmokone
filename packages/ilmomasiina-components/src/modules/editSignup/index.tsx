@@ -1,11 +1,11 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from "react";
 
-import type { SignupForEditResponse } from '@tietokilta/ilmomasiina-models';
-import { EDIT_TOKEN_HEADER } from '@tietokilta/ilmomasiina-models';
-import apiFetch, { ApiError } from '../../api';
-import { useAbortablePromise } from '../../utils/abortable';
-import useShallowMemo from '../../utils/useShallowMemo';
-import { Provider, State } from './state';
+import type { SignupForEditResponse } from "@tietokilta/ilmomasiina-models";
+import { EDIT_TOKEN_HEADER } from "@tietokilta/ilmomasiina-models";
+import apiFetch, { ApiError } from "../../api";
+import { useAbortablePromise } from "../../utils/abortable";
+import useShallowMemo from "../../utils/useShallowMemo";
+import { Provider, State } from "./state";
 
 export interface EditSignupProps {
   id: string;
@@ -30,9 +30,9 @@ export function useEditSignupState({ id, editToken }: EditSignupProps) {
         ...response,
         signup: {
           ...response.signup,
-          firstName: response.signup.firstName || '',
-          lastName: response.signup.lastName || '',
-          email: response.signup.email || '',
+          firstName: response.signup.firstName || "",
+          lastName: response.signup.lastName || "",
+          email: response.signup.email || "",
         },
         // Compute these once when the response arrives.
         editingClosedOnLoad: response.signup.editableForMillis === 0,

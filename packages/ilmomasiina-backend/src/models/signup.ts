@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from "moment";
 import {
   DataTypes,
   HasManyAddAssociationMixin,
@@ -18,7 +18,7 @@ import {
   Op,
   Optional,
   Sequelize,
-} from 'sequelize';
+} from "sequelize";
 
 import { SignupStatus } from "@tietokilta/ilmomasiina-models";
 import type { SignupAttributes } from "@tietokilta/ilmomasiina-models/dist/models";
@@ -30,16 +30,16 @@ import { generateRandomId, RANDOM_ID_LENGTH } from "./randomId";
 export interface SignupCreationAttributes
   extends Optional<
     SignupAttributes,
-    | 'id'
-    | 'firstName'
-    | 'lastName'
-    | 'namePublic'
-    | 'email'
-    | 'confirmedAt'
-    | 'language'
-    | 'status'
-    | 'position'
-    | 'createdAt'
+    | "id"
+    | "firstName"
+    | "lastName"
+    | "namePublic"
+    | "email"
+    | "confirmedAt"
+    | "language"
+    | "status"
+    | "position"
+    | "createdAt"
   > {}
 
 export class Signup extends Model<SignupAttributes, SignupCreationAttributes> implements SignupAttributes {
@@ -62,13 +62,13 @@ export class Signup extends Model<SignupAttributes, SignupCreationAttributes> im
   public answers?: Answer[];
   public getAnswers!: HasManyGetAssociationsMixin<Answer>;
   public countAnswers!: HasManyCountAssociationsMixin;
-  public hasAnswer!: HasManyHasAssociationMixin<Answer, Answer['id']>;
-  public hasAnswers!: HasManyHasAssociationsMixin<Answer, Answer['id']>;
-  public setAnswers!: HasManySetAssociationsMixin<Answer, Answer['id']>;
-  public addAnswer!: HasManyAddAssociationMixin<Answer, Answer['id']>;
-  public addAnswers!: HasManyAddAssociationsMixin<Answer, Answer['id']>;
-  public removeAnswer!: HasManyRemoveAssociationMixin<Answer, Answer['id']>;
-  public removeAnswers!: HasManyRemoveAssociationsMixin<Answer, Answer['id']>;
+  public hasAnswer!: HasManyHasAssociationMixin<Answer, Answer["id"]>;
+  public hasAnswers!: HasManyHasAssociationsMixin<Answer, Answer["id"]>;
+  public setAnswers!: HasManySetAssociationsMixin<Answer, Answer["id"]>;
+  public addAnswer!: HasManyAddAssociationMixin<Answer, Answer["id"]>;
+  public addAnswers!: HasManyAddAssociationsMixin<Answer, Answer["id"]>;
+  public removeAnswer!: HasManyRemoveAssociationMixin<Answer, Answer["id"]>;
+  public removeAnswers!: HasManyRemoveAssociationsMixin<Answer, Answer["id"]>;
   public createAnswer!: HasManyCreateAssociationMixin<Answer>;
 
   public readonly createdAt!: Date;
@@ -148,7 +148,7 @@ export default function setupSignupModel(sequelize: Sequelize) {
     },
     {
       sequelize,
-      modelName: 'signup',
+      modelName: "signup",
       freezeTableName: true,
       paranoid: true,
       scopes: {

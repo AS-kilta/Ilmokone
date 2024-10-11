@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { Form, FormControlProps } from 'react-bootstrap';
+import { Form, FormControlProps } from "react-bootstrap";
 
 type SelectOptions = [string, string][];
 

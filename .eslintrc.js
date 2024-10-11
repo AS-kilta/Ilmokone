@@ -1,17 +1,17 @@
 module.exports = {
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": [
+  parser: "@typescript-eslint/parser",
+  parserOptions: {
+    project: [
       "packages/ilmomasiina-models/tsconfig.json",
       "packages/ilmomasiina-components/tsconfig.json",
       "packages/ilmomasiina-frontend/tsconfig.json",
-      "packages/ilmomasiina-backend/tsconfig.json"
+      "packages/ilmomasiina-backend/tsconfig.json",
     ],
-    "tsconfigRootDir": __dirname,
+    tsconfigRootDir: __dirname,
     // https://github.com/typescript-eslint/typescript-eslint/issues/2094
-    "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true
+    EXPERIMENTAL_useSourceOfProjectReferenceRedirect: true,
   },
-  "ignorePatterns": [
+  ignorePatterns: [
     "**/node_modules/**",
     "**/dist/**",
     "**/build/**",
@@ -20,33 +20,23 @@ module.exports = {
     "*.svg",
     "*.png",
     "*.scss",
-    "*.json"
+    "*.json",
   ],
-  "settings": {
-    "react": {
-      "pragma": "React",
-      "version": "16.12"
+  settings: {
+    react: {
+      pragma: "React",
+      version: "16.12",
     },
   },
-  "extends": [
-    "airbnb",
-    "airbnb/hooks",
-    "airbnb-typescript",
-    "prettier"
-  ],
-  "plugins": [
-    "@typescript-eslint",
-    "promise",
-    "simple-import-sort",
-    "jest"
-  ],
-  "env": {
-    "browser": true
+  extends: ["airbnb", "airbnb/hooks", "airbnb-typescript", "prettier"],
+  plugins: ["@typescript-eslint", "promise", "simple-import-sort", "jest"],
+  env: {
+    browser: true,
   },
-  "rules": {
+  rules: {
     "max-len": ["error", 120, 2],
     "@typescript-eslint/semi": ["error", "always"],
-    "@typescript-eslint/quotes": ["error", "single"],
+    "@typescript-eslint/quotes": ["error", "double"],
     // To allow grouping of class members - especially for Models.
     "@typescript-eslint/lines-between-class-members": "off",
     // Doesn't increase code quality with redux.
@@ -54,7 +44,7 @@ module.exports = {
     // Allow i++ in for loops.
     "no-plusplus": ["error", { allowForLoopAfterthoughts: true }],
     // We are targeting ES5 or higher.
-    "radix": ["error", "as-needed"],
+    radix: ["error", "as-needed"],
     // ...I know what I'm doing.
     "no-control-regex": "off",
     // In some cases, especially if you want to comment the logic, it's much
@@ -70,29 +60,33 @@ module.exports = {
     // the problem at all, and useCallback is just plain ugly.
     "react/jsx-no-bind": "off",
     // Add any custom hooks here
-    "react-hooks/exhaustive-deps": ["error", {
-      additionalHooks: "useAbortableEffect|useAbortablePromise",
-    }],
+    "react-hooks/exhaustive-deps": [
+      "error",
+      {
+        additionalHooks: "useAbortableEffect|useAbortablePromise",
+      },
+    ],
     // Prefer arrow functions to functions expressions, as that's what was done
     // when this rule was introduced.
-    "react/function-component-definition": ["error", {
-      namedComponents: ["function-declaration", "arrow-function"],
-      unnamedComponents: "arrow-function",
-    }],
+    "react/function-component-definition": [
+      "error",
+      {
+        namedComponents: ["function-declaration", "arrow-function"],
+        unnamedComponents: "arrow-function",
+      },
+    ],
     // Allow dev deps in test files.
-    "import/no-extraneous-dependencies": ["error", {
-      devDependencies: [
-        "**/test/**",
-        "**/vite.config.ts",
-        "**/vitest.config.ts",
-        "**/.eslintrc.js"
-      ],
-    }],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        devDependencies: ["**/test/**", "**/vite.config.ts", "**/vitest.config.ts", "**/.eslintrc.js"],
+      },
+    ],
     // Sort imports: React first, then npm packages, then local files, then CSS.
     "simple-import-sort/imports": [
       "error",
       {
-        "groups": [
+        groups: [
           ["^react$"],
           ["^@?\\w"],
           // Anything that does not start with a dot.
@@ -100,19 +94,22 @@ module.exports = {
           // Anything that starts with a dot, or is from one of our packages.
           ["^@tietokilta/", "^"],
           // Css
-          ["css$"]
-        ]
-      }
+          ["css$"],
+        ],
+      },
     ],
     // Prevent imports from "src/...". VS Code adds these automatically, but they
     // break when compiled.
     "no-restricted-imports": [
       "error",
       {
-        "patterns": [{
-          group: ["src/*"],
-          message: "This import will break when compiled by tsc. Use a relative path instead, or \"../src/\" in test files."
-        }],
+        patterns: [
+          {
+            group: ["src/*"],
+            message:
+              'This import will break when compiled by tsc. Use a relative path instead, or "../src/" in test files.',
+          },
+        ],
       },
     ],
     // Removing for..of loops from this rule. Vite already targets modern browsers, so for..of doesn't require
@@ -121,17 +118,18 @@ module.exports = {
     "no-restricted-syntax": [
       "error",
       {
-        "selector": "ForInStatement",
-        "message": "for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array."
+        selector: "ForInStatement",
+        message:
+          "for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.",
       },
       {
-        "selector": "LabeledStatement",
-        "message": "Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand."
+        selector: "LabeledStatement",
+        message: "Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.",
       },
       {
-        "selector": "WithStatement",
-        "message": "`with` is disallowed in strict mode because it makes code impossible to predict and optimize."
-      }
+        selector: "WithStatement",
+        message: "`with` is disallowed in strict mode because it makes code impossible to predict and optimize.",
+      },
     ],
-  }
+  },
 };

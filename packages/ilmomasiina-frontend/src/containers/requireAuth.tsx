@@ -1,4 +1,4 @@
-import React, { ComponentType, useEffect } from 'react';
+import React, { ComponentType, useEffect } from "react";
 
 import { loginExpired, redirectToLogin } from "../modules/auth/actions";
 import { useTypedDispatch, useTypedSelector } from "../store/reducers";

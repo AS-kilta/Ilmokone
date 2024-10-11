@@ -5,8 +5,8 @@ import {
   QuestionID,
   QuotaID,
   WouldMoveSignupsToQueueError,
-} from '@tietokilta/ilmomasiina-models';
-import CustomError from '../../../util/customError';
+} from "@tietokilta/ilmomasiina-models";
+import CustomError from "../../../util/customError";
 
 export class EditConflict extends CustomError implements EditConflictError {
   public readonly updatedAt: string; // in date-time format

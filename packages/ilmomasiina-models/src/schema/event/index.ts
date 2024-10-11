@@ -1,8 +1,8 @@
-import { Static, Type } from '@sinclair/typebox';
+import { Static, Type } from "@sinclair/typebox";
 
-import { question, questionCreate, questionUpdate } from '../question';
-import { quotaCreate, quotaUpdate } from '../quota';
-import { adminQuotaWithSignups, userQuotaWithSignups } from '../quotaWithSignups';
+import { question, questionCreate, questionUpdate } from "../question";
+import { quotaCreate, quotaUpdate } from "../quota";
+import { adminQuotaWithSignups, userQuotaWithSignups } from "../quotaWithSignups";
 import {
   adminEventDetailsAttributes,
   eventDynamicAttributes,
@@ -20,8 +20,8 @@ export const adminEventResponse = Type.Intersect([
     questions: Type.Array(question),
     quotas: Type.Array(adminQuotaWithSignups),
     updatedAt: Type.String({
-      description: 'Last update time of the event. Used for edit conflict handling.',
-      format: 'date-time',
+      description: "Last update time of the event. Used for edit conflict handling.",
+      format: "date-time",
     }),
   }),
 ]);
@@ -55,13 +55,13 @@ export const eventUpdateBody = Type.Partial(
       questions: Type.Array(questionUpdate),
       moveSignupsToQueue: Type.Boolean({
         default: false,
-        description: 'Whether to allow moving signups to the queue, if caused by quota changes.',
+        description: "Whether to allow moving signups to the queue, if caused by quota changes.",
       }),
       updatedAt: Type.String({
-        format: 'date-time',
+        format: "date-time",
         description:
-          'Last update time of the event. An edit conflict is detected if this does not match the update ' +
-          'date on the server.',
+          "Last update time of the event. An edit conflict is detected if this does not match the update " +
+          "date on the server.",
       }),
     }),
   ]),

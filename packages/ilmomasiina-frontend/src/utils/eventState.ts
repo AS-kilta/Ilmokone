@@ -1,4 +1,4 @@
-import type { AdminEventListItem } from '@tietokilta/ilmomasiina-models';
+import type { AdminEventListItem } from "@tietokilta/ilmomasiina-models";
 
 /** Determines the effective end date of the event, matching the scope logic in `backend/src/models/event`. */
 function getEffectiveEndDate(event: Pick<AdminEventListItem, "date" | "endDate" | "registrationEndDate">) {

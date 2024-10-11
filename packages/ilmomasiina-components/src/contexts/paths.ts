@@ -1,6 +1,6 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext } from "react";
 
-import type { EventID, EventSlug, SignupEditToken, SignupID } from '@tietokilta/ilmomasiina-models';
+import type { EventID, EventSlug, SignupEditToken, SignupID } from "@tietokilta/ilmomasiina-models";
 
 export type UserPaths = {
   eventsList: string;
@@ -24,7 +24,7 @@ export type IlmoPaths = PublicPaths | FullPaths;
 export const defaultPaths: IlmoPaths = {
   hasAdmin: false,
 
-  eventsList: '/',
+  eventsList: "/",
   eventDetails: (slug) => `/events/${slug}`,
   editSignup: (id, editToken) => `/signup/${id}/${editToken}`,
 };
@@ -38,7 +38,7 @@ export function usePaths(): IlmoPaths {
 export function useFullPaths(): FullPaths {
   const paths = usePaths();
   if (!paths.hasAdmin) {
-    throw new Error('This app is not configured with admin paths.');
+    throw new Error("This app is not configured with admin paths.");
   }
   return paths;
 }

@@ -42,8 +42,8 @@ const AdminEventsList = () => {
   if (loadError) {
     return (
       <>
-        <h1>{errorTitle(t, loadError, 'adminEvents.loadError')}</h1>
-        <p>{errorDesc(t, loadError, 'adminEvents.loadError')}</p>
+        <h1>{errorTitle(t, loadError, "adminEvents.loadError")}</h1>
+        <p>{errorDesc(t, loadError, "adminEvents.loadError")}</p>
       </>
     );
   }
@@ -51,7 +51,7 @@ const AdminEventsList = () => {
   if (!shownEvents) {
     return (
       <>
-        <h1>{t('adminEvents.title')}</h1>
+        <h1>{t("adminEvents.title")}</h1>
         <Spinner animation="border" />
       </>
     );
@@ -65,23 +65,23 @@ const AdminEventsList = () => {
           {showPast ? t("adminEvents.nav.upcoming") : t("adminEvents.nav.past")}
         </Button>
         <Button as={Link} variant="secondary" to={appPaths.adminUsersList}>
-          {t('adminEvents.nav.users')}
+          {t("adminEvents.nav.users")}
         </Button>
         <Button as={Link} variant="secondary" to={appPaths.adminAuditLog}>
-          {t('adminEvents.nav.auditLog')}
+          {t("adminEvents.nav.auditLog")}
         </Button>
-        <Button as={Link} variant="primary" to={appPaths.adminEditEvent('new')}>
-          {t('adminEvents.nav.newEvent')}
+        <Button as={Link} variant="primary" to={appPaths.adminEditEvent("new")}>
+          {t("adminEvents.nav.newEvent")}
         </Button>
       </nav>
       <table className="table ilmo--admin-event-list">
         <thead>
           <tr>
-            <th>{t('adminEvents.column.name')}</th>
-            <th>{t('adminEvents.column.date')}</th>
-            <th>{t('adminEvents.column.status')}</th>
-            <th>{t('adminEvents.column.signups')}</th>
-            <th>{t('adminEvents.column.actions')}</th>
+            <th>{t("adminEvents.column.name")}</th>
+            <th>{t("adminEvents.column.date")}</th>
+            <th>{t("adminEvents.column.status")}</th>
+            <th>{t("adminEvents.column.signups")}</th>
+            <th>{t("adminEvents.column.actions")}</th>
           </tr>
         </thead>
         <tbody>

@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo } from "react";
 
-import { Button, Col, Row } from 'react-bootstrap';
-import { UseFieldConfig } from 'react-final-form';
-import { FieldArrayRenderProps, useFieldArray } from 'react-final-form-arrays';
-import { useTranslation } from 'react-i18next';
-import { SortEnd } from 'react-sortable-hoc';
+import { Button, Col, Row } from "react-bootstrap";
+import { UseFieldConfig } from "react-final-form";
+import { FieldArrayRenderProps, useFieldArray } from "react-final-form-arrays";
+import { useTranslation } from "react-i18next";
+import { SortEnd } from "react-sortable-hoc";
 
 import { FieldRow } from "@tietokilta/ilmomasiina-components";
 import useEvent from "@tietokilta/ilmomasiina-components/dist/utils/useEvent";
@@ -17,7 +17,7 @@ type QuotaRowProps = {
   name: string;
   index: number;
   isOnly: boolean;
-  remove: FieldArrayRenderProps<EditorQuota, HTMLElement>['fields']['remove'];
+  remove: FieldArrayRenderProps<EditorQuota, HTMLElement>["fields"]["remove"];
 };
 
 const numberConfig: UseFieldConfig<number | null> = {
@@ -35,13 +35,13 @@ const QuotaRow = ({ name, index, isOnly, remove }: QuotaRowProps) => {
       <Col xs="12" sm="10">
         <FieldRow
           name={`${name}.title`}
-          label={t('editor.quotas.quotaName')}
+          label={t("editor.quotas.quotaName")}
           help={[
-            isOnly ? t('editor.quotas.quotaName.singleQuota') : '',
-            index === 0 ? t('editor.quotas.quotaName.reorder') : '',
+            isOnly ? t("editor.quotas.quotaName.singleQuota") : "",
+            index === 0 ? t("editor.quotas.quotaName.reorder") : "",
           ]
             .filter(Boolean)
-            .join(' ')}
+            .join(" ")}
           type="text"
           required
           maxLength={255}
@@ -49,8 +49,8 @@ const QuotaRow = ({ name, index, isOnly, remove }: QuotaRowProps) => {
         />
         <FieldRow
           name={`${name}.size`}
-          label={t('editor.quotas.quotaSize')}
-          help={t('editor.quotas.quotaSize.info')}
+          label={t("editor.quotas.quotaSize")}
+          help={t("editor.quotas.quotaSize.info")}
           type="number"
           min={1}
           placeholder={t("editor.quotas.quotaSize.unlimited")}
@@ -61,7 +61,7 @@ const QuotaRow = ({ name, index, isOnly, remove }: QuotaRowProps) => {
       {index > 0 && (
         <Col xs="12" sm="2" className="no-focus">
           <Button type="button" variant="danger" onClick={removeThis}>
-            {t('editor.quotas.deleteQuota')}
+            {t("editor.quotas.deleteQuota")}
           </Button>
         </Col>
       )}
@@ -72,12 +72,12 @@ const QuotaRow = ({ name, index, isOnly, remove }: QuotaRowProps) => {
 const Quotas = () => {
   const { t } = useTranslation();
 
-  const { fields } = useFieldArray<EditorQuota>('quotas');
+  const { fields } = useFieldArray<EditorQuota>("quotas");
 
   const addQuota = useEvent(() => {
     fields.push({
       key: `new-${Math.random()}`,
-      title: '',
+      title: "",
       size: null,
     });
   });
@@ -100,7 +100,7 @@ const Quotas = () => {
       <Sortable collection="quotas" items={quotaItems} onSortEnd={updateOrder} useDragHandle />
       <div className="text-center mb-3">
         <Button type="button" variant="primary" onClick={addQuota}>
-          {t('editor.quotas.addQuota')}
+          {t("editor.quotas.addQuota")}
         </Button>
       </div>
     </>

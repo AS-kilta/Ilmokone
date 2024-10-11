@@ -1,5 +1,5 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { col, fn, Order } from 'sequelize';
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { col, fn, Order } from "sequelize";
 
 import type { AdminEventListResponse, EventListQuery, UserEventListResponse } from "@tietokilta/ilmomasiina-models";
 import { adminEventListEventAttrs, eventListEventAttrs } from "@tietokilta/ilmomasiina-models/dist/attrs/event";
@@ -14,10 +14,10 @@ import { StringifyApi } from "../utils";
 function eventOrder(): Order {
   return [
     // events without signup (date=NULL) come first
-    ['date', ascNullsFirst()],
-    ['registrationEndDate', 'ASC'],
-    ['title', 'ASC'],
-    [Quota, 'order', 'ASC'],
+    ["date", ascNullsFirst()],
+    ["registrationEndDate", "ASC"],
+    ["title", "ASC"],
+    [Quota, "order", "ASC"],
   ];
 }
 
@@ -86,17 +86,17 @@ export async function getEventsListForAdmin(
     include: [
       {
         model: Quota,
-        attributes: ['id', 'title', 'size', [fn('COUNT', col('quotas->signups.id')), 'signupCount']],
+        attributes: ["id", "title", "size", [fn("COUNT", col("quotas->signups.id")), "signupCount"]],
         include: [
           {
-            model: Signup.scope('active'),
+            model: Signup.scope("active"),
             required: false,
             attributes: [],
           },
         ],
       },
     ],
-    group: [col('event.id'), col('quotas.id')],
+    group: [col("event.id"), col("quotas.id")],
     order: eventOrder(),
   });
 

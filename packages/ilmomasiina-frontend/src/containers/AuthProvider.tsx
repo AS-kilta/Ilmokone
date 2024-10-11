@@ -1,8 +1,8 @@
-import React, { PropsWithChildren, useEffect } from 'react';
+import React, { PropsWithChildren, useEffect } from "react";
 
-import { AuthContext } from '@tietokilta/ilmomasiina-components';
-import { renewLogin } from '../modules/auth/actions';
-import { useTypedDispatch, useTypedSelector } from '../store/reducers';
+import { AuthContext } from "@tietokilta/ilmomasiina-components";
+import { renewLogin } from "../modules/auth/actions";
+import { useTypedDispatch, useTypedSelector } from "../store/reducers";
 
 const LOGIN_RENEW_INTERVAL = 60 * 1000;
 

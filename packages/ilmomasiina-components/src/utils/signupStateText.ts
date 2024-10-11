@@ -1,12 +1,12 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-import { useEventDateTimeFormatter } from './dateFormat';
+import { useEventDateTimeFormatter } from "./dateFormat";
 
 export enum SignupState {
-  disabled = 'disabled',
-  not_opened = 'not_opened',
-  open = 'open',
-  closed = 'closed',
+  disabled = "disabled",
+  not_opened = "not_opened",
+  open = "open",
+  closed = "closed",
 }
 
 export type SignupStateInfo =
@@ -48,28 +48,28 @@ export function useSignupStateText(state: SignupStateInfo): SignupStateText {
   switch (state.state) {
     case SignupState.disabled:
       return {
-        shortLabel: t('signupState.disabled'),
-        class: 'ilmo--signup-disabled',
+        shortLabel: t("signupState.disabled"),
+        class: "ilmo--signup-disabled",
       };
     case SignupState.not_opened:
       return {
-        shortLabel: t('signupState.notOpened.short', {
+        shortLabel: t("signupState.notOpened.short", {
           date: eventDateFormat.format(new Date(state.opens)),
         }),
-        fullLabel: t('signupState.notOpened', {
+        fullLabel: t("signupState.notOpened", {
           date: eventDateFormat.format(new Date(state.opens)),
         }),
-        class: 'ilmo--signup-not-opened',
+        class: "ilmo--signup-not-opened",
       };
     case SignupState.open:
       return {
-        shortLabel: t('signupState.open.short', {
+        shortLabel: t("signupState.open.short", {
           date: eventDateFormat.format(new Date(state.closes)),
         }),
         fullLabel: t("signupState.open", {
           date: eventDateFormat.format(new Date(state.closes)),
         }),
-        class: 'ilmo--signup-opened',
+        class: "ilmo--signup-opened",
       };
     case SignupState.closed:
       return {
@@ -82,6 +82,6 @@ export function useSignupStateText(state: SignupStateInfo): SignupStateText {
         class: "ilmo--signup-closed",
       };
     default:
-      throw new Error('invalid state');
+      throw new Error("invalid state");
   }
 }

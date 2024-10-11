@@ -1,4 +1,4 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyReply, FastifyRequest } from "fastify";
 
 import type { SignupPathParams } from "@tietokilta/ilmomasiina-models";
 import { AuditEvent } from "@tietokilta/ilmomasiina-models";
@@ -18,11 +18,11 @@ async function deleteSignup(id: string, auditLogger: AuditLogger, admin: boolean
       include: [
         {
           model: Quota,
-          attributes: ['id'],
+          attributes: ["id"],
           include: [
             {
               model: Event,
-              attributes: ['id', 'title', 'registrationStartDate', 'registrationEndDate', 'openQuotaSize'],
+              attributes: ["id", "title", "registrationStartDate", "registrationEndDate", "openQuotaSize"],
             },
           ],
         },
@@ -30,7 +30,7 @@ async function deleteSignup(id: string, auditLogger: AuditLogger, admin: boolean
       transaction,
     });
     if (signup === null) {
-      throw new NoSuchSignup('No signup found with id');
+      throw new NoSuchSignup("No signup found with id");
     }
     if (!admin && !signupEditable(signup.quota!.event!, signup)) {
       throw new SignupsClosed("Signups closed for this event.");
