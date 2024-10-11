@@ -3,10 +3,11 @@ import _ from 'lodash';
 import moment from 'moment';
 import { Op } from 'sequelize';
 
-import { Event } from '../models/event';
-import { Quota } from '../models/quota';
-import { Signup } from '../models/signup';
-import { refreshSignupPositions } from '../routes/signups/computeSignupPosition';
+import config from "../config";
+import { Event } from "../models/event";
+import { Quota } from "../models/quota";
+import { Signup } from "../models/signup";
+import { refreshSignupPositions } from "../routes/signups/computeSignupPosition";
 
 const debugLog = debug('app:cron:unconfirmed');
 
@@ -14,13 +15,12 @@ export default async function deleteUnconfirmedSignups() {
   const signups = await Signup.findAll({
     where: {
       [Op.and]: {
-        // Is not confirmed
+        // Is not confirmed, and is too old
         confirmedAt: {
           [Op.eq]: null,
         },
-        // Over 30 minutes old
         createdAt: {
-          [Op.lt]: moment().subtract(30, 'minutes').toDate(),
+          [Op.lt]: moment().subtract(config.signupConfirmMins, "minutes").toDate(),
         },
       },
     },

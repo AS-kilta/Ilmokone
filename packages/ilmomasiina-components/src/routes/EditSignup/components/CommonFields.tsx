@@ -1,18 +1,17 @@
 import React from 'react';
 
-import { Form } from 'react-bootstrap';
-import { useFormState } from 'react-final-form';
-import { useTranslation } from 'react-i18next';
+import { Form } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
-import FieldRow from '../../../components/FieldRow';
-import { useEditSignupContext } from '../../../modules/editSignup';
-import fieldError from './fieldError';
+import FieldRow from "../../../components/FieldRow";
+import { useEditSignupContext } from "../../../modules/editSignup";
+import useFieldErrors from "./fieldError";
 
 const CommonFields = () => {
-  const { event, signup, registrationClosed } = useEditSignupContext();
-  const { submitErrors } = useFormState({ subscription: { submitErrors: true } });
+  const { event, signup, editingClosedOnLoad } = useEditSignupContext();
   const isNew = !signup!.confirmed;
   const { t } = useTranslation();
+  const formatError = useFieldErrors();
   return (
     <>
       {event!.nameQuestion && (
@@ -23,8 +22,8 @@ const CommonFields = () => {
             label={t('editSignup.fields.firstName')}
             placeholder={t('editSignup.fields.firstName.placeholder')}
             required
-            readOnly={!isNew || registrationClosed}
-            alternateError={fieldError(t, submitErrors?.firstName)}
+            readOnly={!isNew || editingClosedOnLoad}
+            formatError={formatError}
           />
           <FieldRow
             name="lastName"
@@ -32,14 +31,14 @@ const CommonFields = () => {
             label={t('editSignup.fields.lastName')}
             placeholder={t('editSignup.fields.lastName.placeholder')}
             required
-            readOnly={!isNew || registrationClosed}
-            alternateError={fieldError(t, submitErrors?.lastName)}
+            readOnly={!isNew || editingClosedOnLoad}
+            formatError={formatError}
           />
           <FieldRow
             name="namePublic"
             as={Form.Check}
             type="checkbox"
-            disabled={registrationClosed}
+            disabled={editingClosedOnLoad}
             checkAlign
             checkLabel={<>{t('editSignup.namePublic')}</>}
           />
@@ -52,8 +51,8 @@ const CommonFields = () => {
           label={t('editSignup.fields.email')}
           placeholder={t('editSignup.fields.email.placeholder')}
           required
-          readOnly={!isNew || registrationClosed}
-          alternateError={fieldError(t, submitErrors?.email)}
+          readOnly={!isNew || editingClosedOnLoad}
+          formatError={formatError}
         />
       )}
     </>

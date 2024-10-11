@@ -16,15 +16,24 @@ export const questionIdentity = Type.Object({
 /** Editable attributes of a question. */
 export const questionAttributes = Type.Object({
   question: Type.String({
-    description: 'The question shown to attendees.',
+    description: "The question shown to attendees.",
+    minLength: 1,
+    maxLength: 255,
   }),
   type: Type.Enum(QuestionType, {
     title: 'QuestionType',
     description: 'The type of answer expected.',
   }),
-  options: Nullable(Type.Array(Type.String()), {
-    description: 'For select or checkbox questions, the options available.',
-  }),
+  options: Nullable(
+    Type.Array(
+      Type.String({ maxLength: 255 }),
+      // This was a practical limit before an explicit limitation was added, so seems reasonable to set it here.
+      { maxItems: 64 },
+    ),
+    {
+      description: "For select or checkbox questions, the options available.",
+    },
+  ),
   required: Type.Boolean({
     description: 'Whether to require an answer to this question from all attendees.',
   }),

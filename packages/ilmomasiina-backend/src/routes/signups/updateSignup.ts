@@ -7,16 +7,16 @@ import type {
   SignupUpdateBody,
   SignupUpdateResponse,
   SignupValidationErrors,
-} from '@tietokilta/ilmomasiina-models';
-import { AuditEvent, SignupFieldError } from '@tietokilta/ilmomasiina-models';
-import sendSignupConfirmationMail from '../../mail/signupConfirmation';
-import { getSequelize } from '../../models';
-import { Answer } from '../../models/answer';
-import { Event } from '../../models/event';
-import { Question } from '../../models/question';
-import { Signup } from '../../models/signup';
-import { signupsAllowed } from './createNewSignup';
-import { NoSuchSignup, SignupsClosed, SignupValidationError } from './errors';
+} from "@tietokilta/ilmomasiina-models";
+import { AuditEvent, SignupFieldError } from "@tietokilta/ilmomasiina-models";
+import sendSignupConfirmationMail from "../../mail/signupConfirmation";
+import { getSequelize } from "../../models";
+import { Answer } from "../../models/answer";
+import { Event } from "../../models/event";
+import { Question } from "../../models/question";
+import { Signup } from "../../models/signup";
+import { signupEditable } from "./createNewSignup";
+import { NoSuchSignup, SignupsClosed, SignupValidationError } from "./errors";
 
 /** Requires editTokenVerification */
 export default async function updateSignup(
@@ -25,8 +25,7 @@ export default async function updateSignup(
 ): Promise<SignupUpdateResponse> {
   const { updatedSignup, edited } = await getSequelize().transaction(async (transaction) => {
     // Retrieve event data and lock the row for editing
-    const signup = await Signup.scope('active').findByPk(request.params.id, {
-      attributes: ['id', 'quotaId', 'confirmedAt', 'firstName', 'lastName', 'email', 'language', 'status', 'position'],
+    const signup = await Signup.scope("active").findByPk(request.params.id, {
       transaction,
       lock: Transaction.LOCK.UPDATE,
     });
@@ -48,8 +47,8 @@ export default async function updateSignup(
       transaction,
     });
     const event = quota.event!;
-    if (!signupsAllowed(event)) {
-      throw new SignupsClosed('Signups closed for this event.');
+    if (!signupEditable(event, signup)) {
+      throw new SignupsClosed("Signups closed for this event.");
     }
 
     /** Is this signup already confirmed (i.e. is this the first update for this signup) */
