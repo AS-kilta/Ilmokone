@@ -10,7 +10,7 @@
 
 services:
   database-dev:
-    image: mariadb:latest
+    image: mariadb:10.11
     restart: always
     environment:
       - MARIADB_PASSWORD=$DB_PASSWORD
@@ -20,6 +20,7 @@ services:
     volumes:
       - ./data:/var/lib/mysql
     ports:
+      # Port open to the host. ilmomasiina-dev container uses default MariaDB port 3306.
       - 5432:5432
 
   ilmomasiina-dev:
@@ -51,9 +52,6 @@ services:
       - type: bind
         source: ./packages/ilmomasiina-frontend/index.html
         target: /opt/ilmomasiina/packages/ilmomasiina-frontend/index.html
-      - type: bind
-        source: ./packages/ilmomasiina-frontend/rollupMomentPlugin.ts
-        target: /opt/ilmomasiina/packages/ilmomasiina-frontend/rollupMomentPlugin.ts
       - type: bind
         source: ./packages/ilmomasiina-components/src
         target: /opt/ilmomasiina/packages/ilmomasiina-components/src

@@ -10,17 +10,24 @@
 // Ilmomasiina uses Bootstrap 4.
 
 $primary: #610396 !default;
-$secondary: #0FF0D8 !default;
-$red: #F00F27 !default; // further assigned to $danger by Bootstrap
+$secondary: #0ff0d8 !default;
+$red: #f00f27 !default; // further assigned to $danger by Bootstrap
 $green: #1daa26 !default; // further assigned to $success by Bootstrap
 $orange: #f6a561 !default;
 $text-muted: #888 !default;
 $info-box-background: #f6f0fb !default;
 
+// Links are impossible to see with Tietokilta's black $primary.
+// You can disable this if you use something light.
+$force-link-underline: true !default;
+
 // Additional colors, only used by Ilmomasiina's SCSS.
 
 $secondary-background: #f1f1f1 !default;
 $secondary-text-color: #7a7a7a !default;
+
+// If you don't want a header logo, set this to false.
+$header-logo: true !default;
 
 // Import Bootstrap core mixins/variables/functions for use in Ilmomasiina's SCSS.
 

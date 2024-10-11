@@ -1,18 +1,17 @@
-import React, { ChangeEvent, ReactNode, useMemo } from 'react';
+import React, { ChangeEvent, ReactNode, useMemo } from "react";
 
-import find from 'lodash-es/find';
-import reject from 'lodash-es/reject';
-import without from 'lodash-es/without';
-import { Form } from 'react-bootstrap';
-import { useField } from 'react-final-form';
-import { useTranslation } from 'react-i18next';
+import identity from "lodash-es/identity";
+import without from "lodash-es/without";
+import { Form } from "react-bootstrap";
+import { useField } from "react-final-form";
+import { useTranslation } from "react-i18next";
 
-import type { Question, SignupUpdateBody } from '@tietokilta/ilmomasiina-models';
-import { QuestionType } from '@tietokilta/ilmomasiina-models';
-import FieldRow from '../../../components/FieldRow';
-import { useEditSignupContext } from '../../../modules/editSignup';
-import { stringifyAnswer } from '../../../utils/signupUtils';
-import useEvent from '../../../utils/useEvent';
+import { Question, QuestionType } from "@tietokilta/ilmomasiina-models";
+import FieldRow from "../../../components/FieldRow";
+import { useEditSignupContext } from "../../../modules/editSignup";
+import { stringifyAnswer } from "../../../utils/signupUtils";
+import useEvent from "../../../utils/useEvent";
+import useFieldErrors from "./fieldError";
 
 type QuestionFieldProps = {
   name: string;
@@ -21,31 +20,29 @@ type QuestionFieldProps = {
 };
 
 const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
-  const { input: { value, onChange } } = useField<SignupUpdateBody['answers']>(name);
-  const answerValue = find(value, { questionId: question.id })?.answer || '';
-  const currentAnswerString = stringifyAnswer(answerValue);
-  const currentAnswerArray = useMemo(() => (Array.isArray(answerValue) ? answerValue : []), [answerValue]);
+  const {
+    input: { value, onChange },
+    meta: { invalid },
+  } = useField<string | string[]>(`${name}.${question.id}`, { parse: identity });
+  const currentAnswerString = stringifyAnswer(value);
+  const currentAnswerArray = useMemo(() => (Array.isArray(value) ? value : []), [value]);
 
   const { t } = useTranslation();
+  const formatError = useFieldErrors();
 
-  const updateAnswer = (answer: string | string[]) => {
-    onChange(reject(value, { questionId: question.id }).concat({
-      questionId: question.id,
-      answer,
-    }));
-  };
-
+  // We need to wrap onChange, as react-final-form complains if we pass radios to it without type="radio".
+  // If we pass type="radio", it doesn't provide us with the value of the field.
   const onFieldChange = useEvent((evt: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    updateAnswer(evt.currentTarget.value);
+    onChange(evt.currentTarget.value);
   });
 
   const onCheckboxChange = useEvent((evt: ChangeEvent<HTMLInputElement>) => {
     const { checked, value: option } = evt.currentTarget;
     const newAnswers = checked ? [...currentAnswerArray, option] : without(currentAnswerArray, option);
-    updateAnswer(newAnswers);
+    onChange(newAnswers);
   });
 
-  const help = question.public ? t('editSignup.publicQuestion') : null;
+  const help = question.public ? t("editSignup.publicQuestion") : null;
 
   let input: ReactNode;
   let isCheckboxes = false;
@@ -59,6 +56,7 @@ const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
           readOnly={disabled}
           value={currentAnswerString}
           onChange={onFieldChange}
+          isInvalid={invalid}
         />
       );
       break;
@@ -70,6 +68,7 @@ const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
           readOnly={disabled}
           value={currentAnswerString}
           onChange={onFieldChange}
+          isInvalid={invalid}
         />
       );
       break;
@@ -86,6 +85,7 @@ const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
           disabled={disabled}
           checked={currentAnswerArray.includes(option)}
           onChange={onCheckboxChange}
+          isInvalid={invalid}
         />
       ));
       isCheckboxes = true;
@@ -102,6 +102,7 @@ const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
           readOnly={disabled}
           value={currentAnswerString}
           onChange={onFieldChange}
+          isInvalid={invalid}
         />
       );
       break;
@@ -114,9 +115,10 @@ const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
             disabled={disabled}
             value={currentAnswerString}
             onChange={onFieldChange}
+            isInvalid={invalid}
           >
             <option value="" disabled={question.required}>
-              {t('editSignup.fields.select.placeholder')}
+              {t("editSignup.fields.select.placeholder")}
             </option>
             {question.options?.map((option, optIndex) => (
               // eslint-disable-next-line react/no-array-index-key
@@ -140,6 +142,7 @@ const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
             disabled={disabled}
             checked={currentAnswerString === option}
             onChange={onFieldChange}
+            isInvalid={invalid}
           />
         ));
         isCheckboxes = true;
@@ -152,11 +155,12 @@ const QuestionField = ({ name, question, disabled }: QuestionFieldProps) => {
   return (
     <FieldRow
       key={question.id}
-      name={`question-${question.id}`}
+      name={`${name}.${question.id}`}
       label={question.question}
       required={question.required}
       help={help}
       checkAlign={isCheckboxes}
+      formatError={formatError}
     >
       {input}
     </FieldRow>
@@ -168,12 +172,12 @@ type Props = {
 };
 
 const QuestionFields = ({ name }: Props) => {
-  const { event, registrationClosed } = useEditSignupContext();
+  const { event, editingClosedOnLoad } = useEditSignupContext();
   return (
     // TODO: add proper validation
     <>
       {event!.questions.map((question) => (
-        <QuestionField key={question.id} name={name} question={question} disabled={registrationClosed} />
+        <QuestionField key={question.id} name={name} question={question} disabled={editingClosedOnLoad} />
       ))}
     </>
   );

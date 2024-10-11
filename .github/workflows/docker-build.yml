@@ -2,23 +2,21 @@ name: Build & deploy
 
 env:
   # Change this to upload the built image to your own organization.
-  docker_tag: 'ghcr.io/AS-kilta/Ilmokone'
+  docker_tag: "ghcr.io/AS-kilta/Ilmokone"
 
   # Change these to customize your build.
-  branding_header_title_text: 'AS Ilmokone'
-  branding_footer_gdpr_text: 'Tietosuoja'
-  branding_footer_gdpr_link: 'https://as.fi/guild/legal/privacy-policy-ilmomasiina'
-  branding_footer_home_text: 'as.fi'
-  branding_footer_home_link: 'https://as.fi'
-  branding_login_placeholder_email: 'admin@as.fi'
+  branding_header_title_text: "AS Ilmokone"
+  branding_header_title_text_short: "Ilmokone"
+  branding_footer_gdpr_text: "Tietosuoja"
+  branding_footer_gdpr_link: "https://as.fi/guild/legal/privacy-policy-ilmomasiina"
+  branding_footer_home_text: "as.fi"
+  branding_footer_home_link: "https://as.fi"
+  branding_login_placeholder_email: "admin@as.fi"
 
 on:
   push:
     branches:
       - main
-      - staging
-    tags:
-      - 'v*'
 
 jobs:
   lint:
@@ -35,7 +33,6 @@ jobs:
     # Change this to your repo name to build automatically on your fork.
     if: github.repository == 'AS-kilta/Ilmokone'
     steps:
-
       - name: Check out the repo
         uses: actions/checkout@v4
 
@@ -76,28 +73,10 @@ jobs:
           # Customize your build here
           build-args: |
             BRANDING_HEADER_TITLE_TEXT=${{ env.branding_header_title_text }}
+            BRANDING_HEADER_TITLE_TEXT_SHORT=${{ env.branding_header_title_text_short }}
             BRANDING_FOOTER_GDPR_TEXT=${{ env.branding_footer_gdpr_text }}
             BRANDING_FOOTER_GDPR_LINK=${{ env.branding_footer_gdpr_link }}
             BRANDING_FOOTER_HOME_TEXT=${{ env.branding_footer_home_text }}
             BRANDING_FOOTER_HOME_LINK=${{ env.branding_footer_home_link }}
             BRANDING_LOGIN_PLACEHOLDER_EMAIL=${{ env.branding_login_placeholder_email }}
             VERSION=${{steps.get-version.outputs.version}}
-
-  # This is disabled on forks, you'll most likely need to modify it anyway for your usage
-#  deploy:
-#    name: Push update to App Service
-#    needs: docker
-#    if: github.ref_type == 'branch' && github.repository == 'AS-kilta/ilmomasiina-v2'
-#    runs-on: ubuntu-latest
-#    environment: production
-#    steps:
-#
-#    - name: Login via Azure CLI
-#      uses: azure/login@v1
-#      with:
-#        creds: ${{ secrets.AZURE_CREDENTIALS }}
-#
-#    - uses: azure/webapps-deploy@v3
-#      with:
-#        app-name: tik-ilmo-${{ github.ref_name }}-app
-#        images: '${{ env.docker_tag }}:${{ github.ref_name }}'

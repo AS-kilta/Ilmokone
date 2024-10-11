@@ -19,19 +19,12 @@
     "rootDirs": ["src", "."],
     "baseUrl": ".",
     "paths": {
-      "@tietokilta/ilmomasiina-components": [
-        "../ilmomasiina-components/src/index.ts"
-      ],
-      "@tietokilta/ilmomasiina-components/dist/*": [
-        "../ilmomasiina-components/src/*"
-      ],
+      "@tietokilta/ilmomasiina-components": ["../ilmomasiina-components/src/index.ts"],
+      "@tietokilta/ilmomasiina-components/dist/*": ["../ilmomasiina-components/src/*"],
       "@tietokilta/ilmomasiina-models": ["../ilmomasiina-models/src/index.ts"]
     }
   },
   "exclude": ["dist"],
-  "include": ["src", "vite.config.ts", "rollupMomentPlugin.ts"],
-  "references": [
-    { "path": "../ilmomasiina-components" },
-    { "path": "../ilmomasiina-models" }
-  ]
+  "include": ["src", "vite.config.ts"],
+  "references": [{ "path": "../ilmomasiina-components" }, { "path": "../ilmomasiina-models" }]
 }

@@ -10,10 +10,24 @@ table.ilmo--event-list {
       padding-top: 0;
     }
   }
-  tr.ilmo--signup-not-opened td.ilmo--signup-state { color: $signup-state-not-opened; }
-  tr.ilmo--signup-opened td.ilmo--signup-state { color: $signup-state-opened; }
-  tr.ilmo--signup-closed td.ilmo--signup-state { color: $signup-state-closed; }
-  tr.ilmo--signup-disabled td.ilmo--signup-state { color: $signup-state-disabled; }
+  tr.ilmo--signup-not-opened td.ilmo--signup-state {
+    color: $signup-state-not-opened;
+  }
+  tr.ilmo--signup-opened td.ilmo--signup-state {
+    color: $signup-state-opened;
+  }
+  tr.ilmo--signup-closed td.ilmo--signup-state {
+    color: $signup-state-closed;
+  }
+  tr.ilmo--signup-disabled td.ilmo--signup-state {
+    color: $signup-state-disabled;
+  }
+}
+
+@if $force-link-underline {
+  table.ilmo--event-list :link {
+    text-decoration: underline;
+  }
 }
 
 @include media-breakpoint-up(md) {
@@ -61,7 +75,8 @@ table.ilmo--event-list {
       }
 
       // smaller font in signup counts
-      tr.ilmo--quota-row td.ilmo--title, td.ilmo--signup-count {
+      tr.ilmo--quota-row td.ilmo--title,
+      td.ilmo--signup-count {
         font-size: 0.85em;
       }
 

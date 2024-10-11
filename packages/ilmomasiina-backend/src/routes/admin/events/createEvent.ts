@@ -1,14 +1,15 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
-import { CreationAttributes } from 'sequelize';
+import { FastifyReply, FastifyRequest } from "fastify";
+import { CreationAttributes } from "sequelize";
 
-import type { AdminEventResponse, EventCreateBody } from '@tietokilta/ilmomasiina-models';
-import { AuditEvent } from '@tietokilta/ilmomasiina-models';
-import { getSequelize } from '../../../models';
-import { Event } from '../../../models/event';
-import { Question } from '../../../models/question';
-import { Quota } from '../../../models/quota';
-import { eventDetailsForAdmin } from '../../events/getEventDetails';
-import { toDate } from '../../utils';
+import type { AdminEventResponse, EventCreateBody } from "@tietokilta/ilmomasiina-models";
+import { AuditEvent } from "@tietokilta/ilmomasiina-models";
+import { getSequelize } from "../../../models";
+import { Event } from "../../../models/event";
+import { Question } from "../../../models/question";
+import { Quota } from "../../../models/quota";
+import { basicEventInfoCached, eventDetailsForAdmin, eventDetailsForUserCached } from "../../events/getEventDetails";
+import { eventsListForUserCached } from "../../events/getEventsList";
+import { toDate } from "../../utils";
 
 export default async function createEvent(
   request: FastifyRequest<{ Body: EventCreateBody }>,
@@ -20,11 +21,13 @@ export default async function createEvent(
       {
         ...request.body,
         // add order to questions and stringify answer options
-        questions: request.body.questions ? request.body.questions.map((q, order) => ({
-          ...q,
-          order,
-          options: q.options?.length ? q : null,
-        })) : [],
+        questions: request.body.questions
+          ? request.body.questions.map((q, order) => ({
+              ...q,
+              order,
+              options: q.options?.length ? q.options : null,
+            }))
+          : [],
         // add order to quotas
         quotas: request.body.quotas ? request.body.quotas.map((q, order) => ({ ...q, order })) : [],
         date: toDate(request.body.date),
@@ -47,10 +50,17 @@ export default async function createEvent(
       },
     );
 
-    await request.logEvent(AuditEvent.CREATE_EVENT, { event: created, transaction });
+    await request.logEvent(AuditEvent.CREATE_EVENT, {
+      event: created,
+      transaction,
+    });
 
     return created;
   });
+
+  eventsListForUserCached.invalidate();
+  basicEventInfoCached.invalidate();
+  eventDetailsForUserCached.invalidate();
 
   const eventDetails = await eventDetailsForAdmin(event.id);
 

@@ -70,7 +70,7 @@
   }
 
   ol > li::marker {
-  font-weight: bold;
+    font-weight: bold;
   }
 
   :last-child {
@@ -92,6 +92,13 @@
 
   :last-child {
     margin-bottom: 0;
+  }
+}
+
+@if $force-link-underline {
+  .ilmo--event-heading :link,
+  .ilmo--event-description :link {
+    text-decoration: underline;
   }
 }
 
@@ -117,7 +124,8 @@
     }
   }
 
-  .ilmo--unconfirmed, .ilmo--hidden-name {
+  .ilmo--unconfirmed,
+  .ilmo--hidden-name {
     color: $text-muted;
   }
   .ilmo--hidden-name {
@@ -137,7 +145,7 @@
 
 .ilmo--signup-progress {
   height: 1.8rem;
-  font-size: .9rem;
+  font-size: 0.9rem;
   margin-bottom: $spacer;
 
   .progress-bar {
