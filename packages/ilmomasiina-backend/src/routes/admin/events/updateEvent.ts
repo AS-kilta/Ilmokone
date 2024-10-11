@@ -1,6 +1,6 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
-import { NotFound } from 'http-errors';
-import { Op, Transaction } from 'sequelize';
+import { FastifyReply, FastifyRequest } from "fastify";
+import { NotFound } from "http-errors";
+import { Op, Transaction } from "sequelize";
 
 import type {
   AdminEventPathParams,
@@ -8,16 +8,17 @@ import type {
   EditConflictError,
   EventUpdateBody,
   WouldMoveSignupsToQueueError,
-} from '@tietokilta/ilmomasiina-models';
-import { AuditEvent } from '@tietokilta/ilmomasiina-models';
-import { getSequelize } from '../../../models';
-import { Event } from '../../../models/event';
-import { Question } from '../../../models/question';
-import { Quota } from '../../../models/quota';
-import { eventDetailsForAdmin } from '../../events/getEventDetails';
-import { refreshSignupPositions } from '../../signups/computeSignupPosition';
-import { toDate } from '../../utils';
-import { EditConflict } from './errors';
+} from "@tietokilta/ilmomasiina-models";
+import { AuditEvent } from "@tietokilta/ilmomasiina-models";
+import { getSequelize } from "../../../models";
+import { Event } from "../../../models/event";
+import { Question } from "../../../models/question";
+import { Quota } from "../../../models/quota";
+import { basicEventInfoCached, eventDetailsForAdmin, eventDetailsForUserCached } from "../../events/getEventDetails";
+import { eventsListForUserCached } from "../../events/getEventsList";
+import { refreshSignupPositions } from "../../signups/computeSignupPosition";
+import { toDate } from "../../utils";
+import { EditConflict } from "./errors";
 
 export default async function updateEvent(
   request: FastifyRequest<{
@@ -29,23 +30,23 @@ export default async function updateEvent(
   await getSequelize().transaction(async (transaction) => {
     // Get the event with all relevant information for the update
     const event = await Event.findByPk(request.params.id, {
-      attributes: ['id', 'openQuotaSize', 'draft', 'updatedAt'],
+      attributes: ["id", "openQuotaSize", "draft", "updatedAt"],
       transaction,
       lock: Transaction.LOCK.UPDATE,
     });
     if (event === null) {
-      throw new NotFound('No event found with id');
+      throw new NotFound("No event found with id");
     }
     // Postgres doesn't support FOR UPDATE with LEFT JOIN
     event.quotas = await Quota.findAll({
       where: { eventId: event.id },
-      attributes: ['id'],
+      attributes: ["id"],
       transaction,
       lock: Transaction.LOCK.UPDATE,
     });
     event.questions = await Question.findAll({
       where: { eventId: event.id },
-      attributes: ['id'],
+      attributes: ["id"],
       transaction,
       lock: Transaction.LOCK.UPDATE,
     });
@@ -64,12 +65,12 @@ export default async function updateEvent(
     const deletedQuestions =
       updatedQuestions
         ?.filter((question) => !question.existing && question.id)
-        .map((question) => question.id as Question['id']) ?? [];
+        .map((question) => question.id as Question["id"]) ?? [];
     const deletedQuotas =
-      updatedQuotas?.filter((quota) => !quota.existing && quota.id).map((quota) => quota.id as Quota['id']) ?? [];
+      updatedQuotas?.filter((quota) => !quota.existing && quota.id).map((quota) => quota.id as Quota["id"]) ?? [];
 
     // Check for edit conflicts
-    const expectedUpdatedAt = new Date(request.body.updatedAt ?? '');
+    const expectedUpdatedAt = new Date(request.body.updatedAt ?? "");
     if (event.updatedAt.getTime() !== expectedUpdatedAt.getTime() || deletedQuestions.length || deletedQuotas.length) {
       throw new EditConflict(event.updatedAt, deletedQuotas, deletedQuestions);
     }
@@ -90,7 +91,7 @@ export default async function updateEvent(
     if (updatedQuestions !== undefined) {
       const reuseQuestionIds = updatedQuestions
         .map((question) => question.id)
-        .filter((questionId) => questionId) as Question['id'][];
+        .filter((questionId) => questionId) as Question["id"][];
 
       // Remove previous Questions not present in request
       await Question.destroy({
@@ -128,7 +129,7 @@ export default async function updateEvent(
     }
 
     if (updatedQuotas !== undefined) {
-      const reuseQuotaIds = updatedQuotas.map((quota) => quota.id).filter((quotaId) => quotaId) as Quota['id'][];
+      const reuseQuotaIds = updatedQuotas.map((quota) => quota.id).filter((quotaId) => quotaId) as Quota["id"][];
 
       // Remove previous Quotas not present in request
       await Quota.destroy({
@@ -174,6 +175,10 @@ export default async function updateEvent(
 
     await request.logEvent(action, { event, transaction });
   });
+
+  eventsListForUserCached.invalidate();
+  basicEventInfoCached.invalidate();
+  eventDetailsForUserCached.invalidate();
 
   const updatedEvent = await eventDetailsForAdmin(request.params.id);
 

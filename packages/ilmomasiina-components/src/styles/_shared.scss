@@ -1,5 +1,5 @@
-@use 'definitions' as *;
-@use 'forms';
+@use "definitions" as *;
+@use "forms";
 
 @include media-breakpoint-up(sm) {
   .ilmo--mobile-only {
@@ -18,7 +18,8 @@
   column-gap: $spacer * 0.5;
 
   :first-child {
-    flex: 1 0 auto;
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
   // on narrow screens, always wrap the button(s)

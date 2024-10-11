@@ -10,8 +10,8 @@ import {
   MOVE_TO_QUEUE_CANCELED,
   MOVE_TO_QUEUE_WARNING,
   RESET,
-} from './actionTypes';
-import type { EditorActions, EditorState } from './types';
+} from "./actionTypes";
+import type { EditorActions, EditorState } from "./types";
 
 const initialState: EditorState = {
   event: null,
@@ -41,7 +41,7 @@ export default function reducer(state = initialState, action: EditorActions): Ed
     case EVENT_SLUG_CHECKING:
       return {
         ...state,
-        slugAvailability: 'checking',
+        slugAvailability: "checking",
       };
     case EVENT_SLUG_CHECKED:
       return {

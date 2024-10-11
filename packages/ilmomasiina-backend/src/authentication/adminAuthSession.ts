@@ -1,18 +1,18 @@
-import { createSigner, createVerifier, SignerSync, VerifierSync } from 'fast-jwt';
-import { FastifyRequest } from 'fastify';
+import { createSigner, createVerifier, SignerSync, VerifierSync } from "fast-jwt";
+import { FastifyRequest } from "fastify";
 
-import type { UserID, UserSchema } from '@tietokilta/ilmomasiina-models';
-import config from '../config';
-import { BadSession } from './errors';
+import type { UserID, UserSchema } from "@tietokilta/ilmomasiina-models";
+import config from "../config";
+import { BadSession } from "./errors";
 
 export interface AdminTokenData {
   user: UserID;
-  email: UserSchema['email'];
+  email: UserSchema["email"];
 }
 
 export default class AdminAuthSession {
   /** Session lifetime in seconds */
-  static TTL = config.nodeEnv === 'development' ? 365 * 24 * 60 * 60 : 60 * 60 * 3;
+  static TTL = config.nodeEnv === "development" ? 365 * 24 * 60 * 60 : 60 * 60 * 3;
 
   private readonly sign: typeof SignerSync;
   private readonly verify: typeof VerifierSync;
@@ -47,7 +47,7 @@ export default class AdminAuthSession {
     const header = request.headers.authorization; // Yes, Fastify converts header names to lowercase :D
 
     if (!header) {
-      throw new BadSession('Missing Authorization header');
+      throw new BadSession("Missing Authorization header");
     }
 
     const token = Array.isArray(header) ? header[0] : header;
@@ -55,9 +55,9 @@ export default class AdminAuthSession {
     try {
       // Try to verify token
       const data = this.verify(token);
-      return { user: parseInt(data.user), email: data.email || '' };
+      return { user: parseInt(data.user), email: data.email || "" };
     } catch {
-      throw new BadSession('Invalid session');
+      throw new BadSession("Invalid session");
     }
   }
 }

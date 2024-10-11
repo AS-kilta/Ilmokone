@@ -16,14 +16,14 @@ import {
   Model,
   Optional,
   Sequelize,
-} from 'sequelize';
+} from "sequelize";
 
-import type { QuotaAttributes } from '@tietokilta/ilmomasiina-models/dist/models';
-import type { Event } from './event';
-import { generateRandomId, RANDOM_ID_LENGTH } from './randomId';
-import type { Signup } from './signup';
+import type { QuotaAttributes } from "@tietokilta/ilmomasiina-models/dist/models";
+import type { Event } from "./event";
+import { generateRandomId, RANDOM_ID_LENGTH } from "./randomId";
+import type { Signup } from "./signup";
 
-export interface QuotaCreationAttributes extends Optional<QuotaAttributes, 'id'> {}
+export interface QuotaCreationAttributes extends Optional<QuotaAttributes, "id"> {}
 
 export class Quota extends Model<QuotaAttributes, QuotaCreationAttributes> implements QuotaAttributes {
   public id!: string;
@@ -31,22 +31,22 @@ export class Quota extends Model<QuotaAttributes, QuotaCreationAttributes> imple
   public title!: string;
   public size!: number | null;
 
-  public eventId!: Event['id'];
+  public eventId!: Event["id"];
   public event?: Event;
   public getEvent!: HasOneGetAssociationMixin<Event>;
-  public setEvent!: HasOneSetAssociationMixin<Event, Event['id']>;
+  public setEvent!: HasOneSetAssociationMixin<Event, Event["id"]>;
   public createEvent!: HasOneCreateAssociationMixin<Event>;
 
   public signups?: Signup[];
   public getSignups!: HasManyGetAssociationsMixin<Signup>;
   public countSignups!: HasManyCountAssociationsMixin;
-  public hasSignup!: HasManyHasAssociationMixin<Signup, Signup['id']>;
-  public hasSignups!: HasManyHasAssociationsMixin<Signup, Signup['id']>;
-  public setSignups!: HasManySetAssociationsMixin<Signup, Signup['id']>;
-  public addSignup!: HasManyAddAssociationMixin<Signup, Signup['id']>;
-  public addSignups!: HasManyAddAssociationsMixin<Signup, Signup['id']>;
-  public removeSignup!: HasManyRemoveAssociationMixin<Signup, Signup['id']>;
-  public removeSignups!: HasManyRemoveAssociationsMixin<Signup, Signup['id']>;
+  public hasSignup!: HasManyHasAssociationMixin<Signup, Signup["id"]>;
+  public hasSignups!: HasManyHasAssociationsMixin<Signup, Signup["id"]>;
+  public setSignups!: HasManySetAssociationsMixin<Signup, Signup["id"]>;
+  public addSignup!: HasManyAddAssociationMixin<Signup, Signup["id"]>;
+  public addSignups!: HasManyAddAssociationsMixin<Signup, Signup["id"]>;
+  public removeSignup!: HasManyRemoveAssociationMixin<Signup, Signup["id"]>;
+  public removeSignups!: HasManyRemoveAssociationsMixin<Signup, Signup["id"]>;
   public createSignup!: HasManyCreateAssociationMixin<Signup>;
 
   public readonly createdAt!: Date;
@@ -91,12 +91,12 @@ export default function setupQuotaModel(sequelize: Sequelize) {
     },
     {
       sequelize,
-      modelName: 'quota',
+      modelName: "quota",
       // Apparently 'quota' is plural of 'quotum', and sequelize + node-inflection
       // would _really_ like to call our foreign key 'quotumId'.
       name: {
-        singular: 'quota',
-        plural: 'quotas',
+        singular: "quota",
+        plural: "quotas",
       },
       freezeTableName: true,
       paranoid: true,

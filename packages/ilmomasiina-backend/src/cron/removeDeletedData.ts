@@ -1,15 +1,15 @@
-import moment from 'moment';
-import { Op, WhereOptions } from 'sequelize';
+import moment from "moment";
+import { Op, WhereOptions } from "sequelize";
 
-import config from '../config';
-import { Answer } from '../models/answer';
-import { Event } from '../models/event';
-import { Question } from '../models/question';
-import { Quota } from '../models/quota';
-import { Signup } from '../models/signup';
+import config from "../config";
+import { Answer } from "../models/answer";
+import { Event } from "../models/event";
+import { Question } from "../models/question";
+import { Quota } from "../models/quota";
+import { Signup } from "../models/signup";
 
 export default async function removeDeletedData() {
-  const ifRemovedBefore = moment().subtract(config.deletionGracePeriod, 'days').toDate();
+  const ifRemovedBefore = moment().subtract(config.deletionGracePeriod, "days").toDate();
 
   await Event.unscoped().destroy({
     where: {

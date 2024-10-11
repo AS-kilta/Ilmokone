@@ -1,5 +1,5 @@
-import { Sequelize, Transaction } from 'sequelize';
-import { RunnableMigration } from 'umzug';
+import { Sequelize, Transaction } from "sequelize";
+import { RunnableMigration } from "umzug";
 
 export type MigrationContext = {
   sequelize: Sequelize;

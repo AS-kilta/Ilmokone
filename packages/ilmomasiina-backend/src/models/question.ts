@@ -16,16 +16,16 @@ import {
   Model,
   Optional,
   Sequelize,
-} from 'sequelize';
+} from "sequelize";
 
-import { QuestionType } from '@tietokilta/ilmomasiina-models';
-import type { QuestionAttributes } from '@tietokilta/ilmomasiina-models/dist/models';
-import type { Answer } from './answer';
-import type { Event } from './event';
-import { generateRandomId, RANDOM_ID_LENGTH } from './randomId';
+import { QuestionType } from "@tietokilta/ilmomasiina-models";
+import type { QuestionAttributes } from "@tietokilta/ilmomasiina-models/dist/models";
+import type { Answer } from "./answer";
+import type { Event } from "./event";
+import { generateRandomId, RANDOM_ID_LENGTH } from "./randomId";
 
 export interface QuestionCreationAttributes
-  extends Optional<QuestionAttributes, 'id' | 'options' | 'required' | 'public'> {}
+  extends Optional<QuestionAttributes, "id" | "options" | "required" | "public"> {}
 
 export class Question extends Model<QuestionAttributes, QuestionCreationAttributes> implements QuestionAttributes {
   public id!: string;
@@ -36,22 +36,22 @@ export class Question extends Model<QuestionAttributes, QuestionCreationAttribut
   public required!: boolean;
   public public!: boolean;
 
-  public eventId!: Event['id'];
+  public eventId!: Event["id"];
   public event?: Event;
   public getEvent!: HasOneGetAssociationMixin<Event>;
-  public setEvent!: HasOneSetAssociationMixin<Event, Event['id']>;
+  public setEvent!: HasOneSetAssociationMixin<Event, Event["id"]>;
   public createEvent!: HasOneCreateAssociationMixin<Event>;
 
   public answers?: Answer[];
   public getAnswers!: HasManyGetAssociationsMixin<Answer>;
   public countAnswers!: HasManyCountAssociationsMixin;
-  public hasAnswer!: HasManyHasAssociationMixin<Answer, Answer['id']>;
-  public hasAnswers!: HasManyHasAssociationsMixin<Answer, Answer['id']>;
-  public setAnswers!: HasManySetAssociationsMixin<Answer, Answer['id']>;
-  public addAnswer!: HasManyAddAssociationMixin<Answer, Answer['id']>;
-  public addAnswers!: HasManyAddAssociationsMixin<Answer, Answer['id']>;
-  public removeAnswer!: HasManyRemoveAssociationMixin<Answer, Answer['id']>;
-  public removeAnswers!: HasManyRemoveAssociationsMixin<Answer, Answer['id']>;
+  public hasAnswer!: HasManyHasAssociationMixin<Answer, Answer["id"]>;
+  public hasAnswers!: HasManyHasAssociationsMixin<Answer, Answer["id"]>;
+  public setAnswers!: HasManySetAssociationsMixin<Answer, Answer["id"]>;
+  public addAnswer!: HasManyAddAssociationMixin<Answer, Answer["id"]>;
+  public addAnswers!: HasManyAddAssociationsMixin<Answer, Answer["id"]>;
+  public removeAnswer!: HasManyRemoveAssociationMixin<Answer, Answer["id"]>;
+  public removeAnswers!: HasManyRemoveAssociationsMixin<Answer, Answer["id"]>;
   public createAnswer!: HasManyCreateAssociationMixin<Answer>;
 
   public readonly createdAt!: Date;
@@ -90,12 +90,12 @@ export default function setupQuestionModel(sequelize: Sequelize) {
         allowNull: true,
         // TODO: Once we upgrade to Sequelize v7, try migrating this to custom datatypes again.
         get(): string[] {
-          const json = this.getDataValue('options');
+          const json = this.getDataValue("options");
           return json === null ? null : JSON.parse(json as unknown as string);
         },
         set(val: string[] | null) {
           const json = val === null ? null : JSON.stringify(val);
-          this.setDataValue('options', json as unknown as string[]);
+          this.setDataValue("options", json as unknown as string[]);
         },
       },
       required: {
@@ -111,7 +111,7 @@ export default function setupQuestionModel(sequelize: Sequelize) {
     },
     {
       sequelize,
-      modelName: 'question',
+      modelName: "question",
       freezeTableName: true,
       paranoid: true,
     },

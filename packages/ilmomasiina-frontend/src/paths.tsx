@@ -1,6 +1,6 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from "react";
 
-import { FullPaths, PathsContext } from '@tietokilta/ilmomasiina-components';
+import { FullPaths, PathsContext } from "@tietokilta/ilmomasiina-components";
 
 export const urlPrefix = PATH_PREFIX;
 

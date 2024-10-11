@@ -1,12 +1,12 @@
-import Email from 'email-templates';
-import { existsSync } from 'fs';
-import i18next from 'i18next';
-import path from 'path';
+import Email from "email-templates";
+import { existsSync } from "fs";
+import i18next from "i18next";
+import path from "path";
 
-import config from '../config';
-import i18n from '../i18n';
-import { Event } from '../models/event';
-import mailTransporter from './config';
+import config from "../config";
+import i18n from "../i18n";
+import { Event } from "../models/event";
+import mailTransporter from "./config";
 
 export interface ConfirmationMailParams {
   name: string;
@@ -33,13 +33,13 @@ export interface PromotedFromQueueMailParams {
   date: string | null;
 }
 
-const TEMPLATE_DIR = path.join(__dirname, '../../emails');
+const TEMPLATE_DIR = path.join(__dirname, "../../emails");
 
 /** Gets a localized template for the given language, or a fallback one if it doesn't exist. */
 function getTemplate(language: string | null, template: string) {
   const lng = language || config.mailDefaultLang;
   // ensure no path injections
-  if (!/^[a-zA-Z-]{2,}$/.test(lng)) throw new Error('invalid language');
+  if (!/^[a-zA-Z-]{2,}$/.test(lng)) throw new Error("invalid language");
 
   const localizedPath = path.join(TEMPLATE_DIR, lng, `${template}.pug`);
   if (existsSync(localizedPath)) return { template: localizedPath, lng };
@@ -53,7 +53,7 @@ const TEMPLATE_OPTIONS = {
   juiceResources: {
     preserveImportant: true,
     webResources: {
-      relativeTo: path.join(TEMPLATE_DIR, 'css'),
+      relativeTo: path.join(TEMPLATE_DIR, "css"),
     },
   },
 };
@@ -80,9 +80,9 @@ export default class EmailService {
           footerLink: config.brandingMailFooterLink,
         },
       };
-      const { template, lng } = getTemplate(language, 'confirmation');
+      const { template, lng } = getTemplate(language, "confirmation");
       const html = await email.render(template, brandedParams);
-      const subject = i18next.t(params.edited ? 'emails.editConfirmation.subject' : 'emails.confirmation.subject', {
+      const subject = i18next.t(params.edited ? "emails.editConfirmation.subject" : "emails.confirmation.subject", {
         lng,
         event: params.event.title,
       });
@@ -103,9 +103,9 @@ export default class EmailService {
           footerLink: config.brandingMailFooterLink,
         },
       };
-      const { template, lng } = getTemplate(language, 'newUser');
+      const { template, lng } = getTemplate(language, "newUser");
       const html = await email.render(template, brandedParams);
-      const subject = i18n.t('emails.newUser.subject', { lng });
+      const subject = i18n.t("emails.newUser.subject", { lng });
       await EmailService.send(to, subject, html);
     } catch (error) {
       console.error(error);
@@ -123,9 +123,9 @@ export default class EmailService {
           footerLink: config.brandingMailFooterLink,
         },
       };
-      const { template, lng } = getTemplate(language, 'resetPassword');
+      const { template, lng } = getTemplate(language, "resetPassword");
       const html = await email.render(template, brandedParams);
-      const subject = i18n.t('emails.resetPassword.subject', { lng });
+      const subject = i18n.t("emails.resetPassword.subject", { lng });
       await EmailService.send(to, subject, html);
     } catch (error) {
       console.error(error);
@@ -142,9 +142,9 @@ export default class EmailService {
           footerLink: config.brandingMailFooterLink,
         },
       };
-      const { template, lng } = getTemplate(language, 'queueMail');
+      const { template, lng } = getTemplate(language, "queueMail");
       const html = await email.render(template, brandedParams);
-      const subject = i18n.t('emails.promotedFromQueue.subject', {
+      const subject = i18n.t("emails.promotedFromQueue.subject", {
         lng,
         event: params.event.title,
       });

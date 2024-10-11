@@ -1,10 +1,10 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from "react";
 
-import type { UserEventListResponse } from '@tietokilta/ilmomasiina-models';
-import apiFetch, { ApiError } from '../../api';
-import { useAbortablePromise } from '../../utils/abortable';
-import { createStateContext } from '../../utils/stateContext';
-import useShallowMemo from '../../utils/useShallowMemo';
+import type { UserEventListResponse } from "@tietokilta/ilmomasiina-models";
+import apiFetch, { ApiError } from "../../api";
+import { useAbortablePromise } from "../../utils/abortable";
+import { createStateContext } from "../../utils/stateContext";
+import useShallowMemo from "../../utils/useShallowMemo";
 
 export type EventListProps = {
   category?: string;
@@ -22,7 +22,7 @@ export { useStateContext as useEventListContext };
 export function useEventListState({ category }: EventListProps = {}) {
   const fetchEvents = useAbortablePromise(
     (signal) => {
-      const query = category === undefined ? '' : `?${new URLSearchParams({ category })}`;
+      const query = category === undefined ? "" : `?${new URLSearchParams({ category })}`;
       return apiFetch<UserEventListResponse>(`events${query}`, {
         signal,
       });

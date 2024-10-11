@@ -1,6 +1,6 @@
-import React, { MouseEvent, ReactNode, useCallback, useEffect, useState } from 'react';
+import React, { MouseEvent, ReactNode, useCallback, useEffect, useState } from "react";
 
-import { Button, ButtonProps } from 'react-bootstrap';
+import { Button, ButtonProps } from "react-bootstrap";
 
 type Props = ButtonProps & {
   /** The interval within which the button must be repressed. */

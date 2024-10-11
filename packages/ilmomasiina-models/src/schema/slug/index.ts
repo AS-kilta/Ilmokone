@@ -1,7 +1,7 @@
-import { Static, Type } from '@sinclair/typebox';
+import { Static, Type } from "@sinclair/typebox";
 
-import { eventID, eventSlug } from '../event/attributes';
-import { Nullable } from '../utils';
+import { eventID, eventSlug } from "../event/attributes";
+import { Nullable } from "../utils";
 
 /** Path parameters necessary to check a slug's availability from the admin API. */
 export const checkSlugParams = Type.Object({
@@ -11,10 +11,10 @@ export const checkSlugParams = Type.Object({
 /** Response schema for checking a slug's availability. */
 export const checkSlugResponse = Type.Object({
   id: Nullable(eventID, {
-    description: 'ID of the event with the given slug, or null if none exist.',
+    description: "ID of the event with the given slug, or null if none exist.",
   }),
   title: Nullable(Type.String(), {
-    description: 'Title of the event with the given slug, or null if none exist.',
+    description: "Title of the event with the given slug, or null if none exist.",
   }),
 });
 
