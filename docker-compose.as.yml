@@ -11,6 +11,9 @@ services:
       - MARIADB_USER=$DB_USER
       - MARIADB_DATABASE=$DB_DATABASE
       - MARIADB_ROOT_PASSWORD=$ROOT_PASSWORD
+    command:
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
     volumes:
       - ilmokone_data:/var/lib/mysql
     networks:
