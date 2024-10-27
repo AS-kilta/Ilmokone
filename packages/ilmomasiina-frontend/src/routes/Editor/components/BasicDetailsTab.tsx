@@ -199,6 +199,200 @@ const BasicDetailsTab = () => {
         rows={8}
         formatError={formatError}
       />
+
+      <div className="ilmo--event-description">
+        <h1>{t("editor.basic.markdownGuide.title")}</h1>
+        <p>{t("editor.basic.markdownGuide.info")}</p>
+        <h2>{t("editor.basic.markdownGuide.cheatsheet")}</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>{t("editor.basic.markdownGuide.write")}</th>
+              <th>{t("editor.basic.markdownGuide.toGet")}</th>
+              <th>{t("editor.basic.markdownGuide.notices")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>*Italic*</td>
+              <td>
+                <em>Italic</em>
+              </td>
+              <td>{t("editor.basic.markdownGuide.italic")}</td>
+            </tr>
+            <tr>
+              <td>**Bold**</td>
+              <td>
+                <strong>Bold</strong>
+              </td>
+              <td>{t("editor.basic.markdownGuide.bold")}</td>
+            </tr>
+            <tr>
+              <td>~{t("editor.basic.markdownGuide.strike")}~</td>
+              <td>
+                <s>{t("editor.basic.markdownGuide.strike")}</s>
+              </td>
+
+            </tr>
+            <tr>
+              <td># {t("editor.basic.markdownGuide.h1")}</td>
+              <td>
+                <h1>{t("editor.basic.markdownGuide.h1")}</h1>
+              </td>
+
+            </tr>
+            <tr>
+              <td>## {t("editor.basic.markdownGuide.h2")}</td>
+              <td>
+                <h2>{t("editor.basic.markdownGuide.h2")}</h2>
+              </td>
+
+            </tr>
+            <tr>
+              <td>### {t("editor.basic.markdownGuide.h3")}</td>
+              <td>
+                <h3>{t("editor.basic.markdownGuide.h3")}</h3>
+              </td>
+
+            </tr>
+            <tr>
+              <td>[{t("editor.basic.markdownGuide.link")}](https://ilmo.as.fi/)</td>
+              <td>
+                <a href="https://ilmo.as.fi/">{t("editor.basic.markdownGuide.link")}</a>
+              </td>
+
+            </tr>
+            <tr>
+              <td>![AS-Ilmokone](https://ilmo.as.fi/favicon-32x32.png)</td>
+              <td>
+                <img src="https://ilmo.as.fi/favicon-32x32.png" alt="AS-Ilmokone" />
+              </td>
+
+            </tr>
+            <tr>
+              <td>
+                {">"}
+                {t("editor.basic.markdownGuide.quote")}
+              </td>
+              <td>
+                <blockquote>{t("editor.basic.markdownGuide.quote")}</blockquote>
+              </td>
+
+            </tr>
+            <tr>
+              <td>
+                * {t("editor.basic.markdownGuide.list")}
+                <br />* {t("editor.basic.markdownGuide.list")}
+                <br />* {t("editor.basic.markdownGuide.list")}
+              </td>
+              <td>
+                <ul>
+                  <li>{t("editor.basic.markdownGuide.list")}</li>
+                  <li>{t("editor.basic.markdownGuide.list")}</li>
+                  <li>{t("editor.basic.markdownGuide.list")}</li>
+                </ul>
+              </td>
+
+            </tr>
+            <tr>
+              <td>
+                1. {t("editor.basic.markdownGuide.list")}
+                <br />
+                2. {t("editor.basic.markdownGuide.list")}
+                <br />
+                3. {t("editor.basic.markdownGuide.list")}
+              </td>
+              <td>
+                <ol>
+                  <li>{t("editor.basic.markdownGuide.list")}</li>
+                  <li>{t("editor.basic.markdownGuide.list")}</li>
+                  <li>{t("editor.basic.markdownGuide.list")}</li>
+                </ol>
+              </td>
+
+            </tr>
+            <tr>
+              <td>---</td>
+              {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+              <td><hr /></td>
+              <td>{t("editor.basic.markdownGuide.divider")}</td>
+            </tr>
+            <tr>
+              <td>`{t("editor.basic.markdownGuide.code")}`</td>
+              <td>
+                <code>{t("editor.basic.markdownGuide.codeResult")}</code>
+              </td>
+              <td>{t("editor.basic.markdownGuide.codeNotice")}</td>
+            </tr>
+            <tr>
+              <td>
+                ```
+                <br />
+                {t("editor.basic.markdownGuide.codeBlock")}
+                <br />
+                ```
+              </td>
+              <td>
+                <code>{t("editor.basic.markdownGuide.codeBlock")}</code>
+              </td>
+
+            </tr>
+            <tr>
+              <td>https://ilmo.as.fi</td>
+              <td>
+                <a href="https://ilmo.as.fi/">https://ilmo.as.fi</a>
+              </td>
+              <td>{t("editor.basic.markdownGuide.urlNotice")}</td>
+            </tr>
+
+            <tr>
+              <td>
+                {t("editor.basic.markdownGuide.footnote")} [^1]
+                <br />
+                [^1]: {t("editor.basic.markdownGuide.footnoteResult")}
+              </td>
+              <td>
+                {t("editor.basic.markdownGuide.footnote")}
+                <sup>1</sup>
+                <br />
+                1. {t("editor.basic.markdownGuide.footnoteResult")}
+              </td>
+              <td>{t("editor.basic.markdownGuide.footnoteNotice")}</td>
+            </tr>
+            <tr>
+              <td>
+                | {t("editor.basic.markdownGuide.syntax")} | {t("editor.basic.markdownGuide.result")} |
+                <br />
+                |–––|–––|
+                <br />
+                | ** | Italic |
+                <br />| **** | Bold |
+              </td>
+              <td>
+                <table>
+                  <thead>
+                    <tr>
+                      <td>{t("editor.basic.markdownGuide.syntax")}</td>
+                      <td>{t("editor.basic.markdownGuide.result")}</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>**</td>
+                      <td>Italic</td>
+                    </tr>
+                    <tr>
+                      <td>****</td>
+                      <td>Bold</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+              <td>{t("editor.basic.markdownGuide.tableNotice")}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

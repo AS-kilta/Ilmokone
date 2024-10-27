@@ -105,11 +105,11 @@
       margin-right: 10px;
 
       &.draft {
-        background-color: orange;
+        background-color: $orange;
       }
 
       &.public {
-        background-color: green;
+        background-color: $green;
       }
     }
   }
