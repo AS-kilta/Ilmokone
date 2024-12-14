@@ -1,4 +1,4 @@
-interface Options<A, R> {
+interface Options<A, K, R> {
   /** Maximum number of milliseconds since start of call that a result can be reused. */
   maxAgeMs: number;
   /** Maximum number of milliseconds since start of call that a pending promise can be reused. */
@@ -9,6 +9,8 @@ interface Options<A, R> {
   allowTesting?: boolean;
   /** The actual implementation of the cached function. */
   get(key: A): Promise<R>;
+  /** If set, used to convert arguments to a cache key. */
+  formatKey?: (key: A) => K;
 }
 
 interface Ongoing<R> {
@@ -30,13 +32,14 @@ interface CachedGet<A, R> {
  *
  * Only the latest `maxSize` keys are preserved in the cache.
  */
-export default function createCache<A, R>({
+export default function createCache<A, K, R>({
   maxAgeMs,
   maxPendingAgeMs = maxAgeMs,
   maxSize = 128,
   allowTesting = false,
   get,
-}: Options<A, R>) {
+  formatKey = (key) => key as unknown as K,
+}: Options<A, K, R>) {
   // Disable cache when in testing.
   if (process.env.NODE_ENV === "test" && !allowTesting) {
     const dummyGet = ((key: A) => get(key)) as CachedGet<A, R>;
@@ -44,10 +47,11 @@ export default function createCache<A, R>({
     return dummyGet;
   }
 
-  const cache = new Map<A, Ongoing<R>>();
+  const cache = new Map<K, Ongoing<R>>();
 
   const cachedGet = (async (key: A) => {
-    const currentGet = cache.get(key);
+    const formattedKey = formatKey(key);
+    const currentGet = cache.get(formattedKey);
 
     // Reuse successful and pending queries as described above.
     if (
@@ -73,8 +77,8 @@ export default function createCache<A, R>({
       state: "running",
     };
     // Delete, then set, to ensure the key is bumped to the end.
-    cache.delete(key);
-    cache.set(key, newGet);
+    cache.delete(formattedKey);
+    cache.set(formattedKey, newGet);
 
     // Delete least-recently-used entries.
     if (cache.size > maxSize) {
@@ -86,7 +90,7 @@ export default function createCache<A, R>({
   }) as CachedGet<A, R>;
 
   cachedGet.invalidate = (key) => {
-    if (key) cache.delete(key);
+    if (key) cache.delete(formatKey(key));
     else cache.clear();
   };
 
