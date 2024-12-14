@@ -1,10 +1,12 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { NotFound } from "http-errors";
+import moment from "moment";
 import { Op } from "sequelize";
 
 import type {
   AdminEventPathParams,
   AdminEventResponse,
+  AdminSignupSchema,
   EventID,
   EventSlug,
   UserEventPathParams,
@@ -32,7 +34,7 @@ export const basicEventInfoCached = createCache({
   async get(eventSlug: EventSlug) {
     // First query general event information
     const event = await Event.scope("user").findOne({
-      where: { slug: eventSlug },
+      where: [{ slug: eventSlug }],
       attributes: eventGetEventAttrs,
       include: [
         {
@@ -54,6 +56,7 @@ export const basicEventInfoCached = createCache({
     return {
       event: {
         ...event.get({ plain: true }),
+        effectiveEndDate: event.effectiveEndDate,
         questions: event.questions!.map((question) => question.get({ plain: true })),
       },
       publicQuestions,
@@ -67,33 +70,40 @@ export const eventDetailsForUserCached = createCache({
   async get(eventSlug: EventSlug) {
     const { event, publicQuestions } = await basicEventInfoCached(eventSlug);
 
-    // Query all quotas for the event
-    const quotas = await Quota.findAll({
-      where: { eventId: event.id },
-      attributes: eventGetQuotaAttrs,
-      include: [
-        // Include all signups for the quota
-        {
-          model: Signup.scope("active"),
-          attributes: eventGetSignupAttrs,
-          required: false,
-          include: [
-            // ... and public answers of signups
-            {
-              model: Answer,
-              attributes: eventGetAnswerAttrs,
-              required: false,
-              where: { questionId: { [Op.in]: publicQuestions } },
-            },
-          ],
-        },
-      ],
-      // First sort by Quota order, then by signup creation date
-      order: [
-        ["order", "ASC"],
-        [Signup, "createdAt", "ASC"],
-      ],
-    });
+    // If event ended or registration closed than a week ago, don't return signups or quotas
+    const effectiveEnd = event.effectiveEndDate;
+    const isOld = effectiveEnd != null && effectiveEnd < moment().subtract(7, "days").valueOf();
+
+    let quotas: Quota[] = [];
+    if (!isOld) {
+      // Query all quotas for the event
+      quotas = await Quota.findAll({
+        where: { eventId: event.id },
+        attributes: eventGetQuotaAttrs,
+        include: [
+          // Include all signups for the quota
+          {
+            model: Signup.scope("active"),
+            attributes: eventGetSignupAttrs,
+            required: false,
+            include: [
+              // ... and public answers of signups
+              {
+                model: Answer,
+                attributes: eventGetAnswerAttrs,
+                required: false,
+                where: { questionId: { [Op.in]: publicQuestions } },
+              },
+            ],
+          },
+        ],
+        // First sort by Quota order, then by signup creation date
+        order: [
+          ["order", "ASC"],
+          [Signup, "createdAt", "ASC"],
+        ],
+      });
+    }
 
     return {
       event: {
@@ -144,6 +154,17 @@ export async function eventDetailsForUser(eventSlug: EventSlug): Promise<UserEve
     registrationClosed,
   };
   return res as unknown as StringifyApi<typeof res>;
+}
+
+/** Converts a signup with answers included to JSON for the admin API. */
+export function formatSignupForAdmin(signup: Signup): AdminSignupSchema {
+  const result = {
+    ...signup.get({ plain: true }),
+    status: signup.status,
+    answers: signup.answers!.map((answer) => answer.get({ plain: true })),
+    confirmed: Boolean(signup.confirmedAt),
+  };
+  return result as unknown as StringifyApi<typeof result>;
 }
 
 export async function eventDetailsForAdmin(eventID: EventID): Promise<AdminEventResponse> {
@@ -202,12 +223,7 @@ export async function eventDetailsForAdmin(eventID: EventID): Promise<AdminEvent
     updatedAt: event.updatedAt,
     quotas: quotas.map((quota) => ({
       ...quota.get({ plain: true }),
-      signups: quota.signups!.map((signup) => ({
-        ...signup.get({ plain: true }),
-        status: signup.status,
-        answers: signup.answers!.map((answer) => answer.get({ plain: true })),
-        confirmed: Boolean(signup.confirmedAt),
-      })),
+      signups: quota.signups!.map(formatSignupForAdmin),
       signupCount: quota.signups!.length,
     })),
   };
