@@ -1,5 +1,9 @@
 extends ../layout.pug
 
+block alertContent
+  td.alert.alert-good
+    p.alertText Ei vissii mikää neliö...
+
 block mainContent
   if admin && type == "signup"
     div.content-block
@@ -12,7 +16,7 @@ block mainContent
       p.bodyText #{event.verificationEmail}
   if queuePosition
     div.content-block
-      p.bodyText #[strong Olet jonossa sijalla #{queuePosition}.] Jos saat paikan jonosta, sinulle lähetetään ilmoitus sähköpostitse.
+      p.bodyText #[strong ...mutta olet jonossa sijalla #{queuePosition}.] Jos saat paikan jonosta, sinulle lähetetään ilmoitus sähköpostitse.
   div.content-block
     p.bodyText Tapahtuman tiedot:
     ul
@@ -29,5 +33,5 @@ block mainContent
       li #[strong Kiintiö:] #{quota}
       each val in answers
         li #[strong #{val.label}:] #{val.answer}
-  div.content-block
-    p.bodyText Mikäli haluat muokata tai perua ilmoittautumisesi, voit tehdä sen painamalla tätä #[a(href=cancelLink) linkkiä].
+  div.content-block-last
+    p.bodyText #[strong Mikäli haluat muokata tai perua ilmoittautumisesi, voit tehdä sen painamalla tätä #[a(href=cancelLink) linkkiä].]

@@ -3,8 +3,8 @@
     "dateFormat.general": "DD.MM.YYYY HH:mm",
     "emails.confirmation.signup.subject": "Signup confirmation: {{event}}",
     "emails.confirmation.edit.subject": "Edit confirmation: {{event}}",
-    "emails.newUser.subject": "User created for Ilmomasiina",
+    "emails.newUser.subject": "User created for AS Ilmokone",
     "emails.promotedFromQueue.subject": "You got into {{event}} from the queue",
-    "emails.resetPassword.subject": "Your Ilmomasiina password has been reset"
+    "emails.resetPassword.subject": "Your AS Ilmokone password has been reset"
   }
 }

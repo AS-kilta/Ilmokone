@@ -1,9 +1,14 @@
 extends ../layout.pug
 
+block alertContent
+  td.alert.alert-neutral
+    p.alertText All this power, in your hands?!
+
 block mainContent
   div.content-block
     p.bodyText AS Ilmokone admin credentials have been created for you.
     ul
       li #[strong Email:] #{email}
       li #[strong Password:] #{password}
-  p.bodyText You can log in at #[a(href=siteUrl) #{siteUrl}]. Please change the password as soon as possible in the admin panel.
+  div.content-block-last
+    p.bodyText You can log in at #[a(href=siteUrl) #{siteUrl}]. Please change the password as soon as possible in the admin panel.

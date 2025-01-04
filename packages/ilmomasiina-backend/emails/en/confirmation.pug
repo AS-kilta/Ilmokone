@@ -1,5 +1,9 @@
 extends ../layout.pug
 
+block alertContent
+  td.alert.alert-good
+    p.alertText Not a square, I see!
+
 block mainContent
   if admin && type == "signup"
     div.content-block
@@ -12,7 +16,7 @@ block mainContent
       p.bodyText #{event.verificationEmail}
   if queuePosition
     div.content-block
-      p.bodyText #[strong You are in the queue in position #{queuePosition}.] If you get accepted from the queue, you will be notified by email.
+      p.bodyText #[strong Although are in the queue in position #{queuePosition}.] If you get accepted from the queue, you will be notified by email.
   div.content-block
     p.bodyText Event details:
     ul
@@ -29,5 +33,5 @@ block mainContent
       li #[strong Quota:] #{quota}
       each val in answers
         li #[strong #{val.label}:] #{val.answer}
-  div.content-block
-    p.bodyText If you want to edit or cancel your signup, you can do it by clicking #[a(href=cancelLink) this link].
+  div.content-block-last
+    p.bodyText #[strong If you want to edit or cancel your signup, you can do it by clicking #[a(href=cancelLink) this link].]
