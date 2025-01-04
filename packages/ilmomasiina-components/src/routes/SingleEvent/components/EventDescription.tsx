@@ -10,7 +10,8 @@ import { usePaths } from "../../../contexts";
 import AuthContext from "../../../contexts/auth";
 import { useSingleEventContext } from "../../../modules/singleEvent";
 import { useEventDateTimeFormatter } from "../../../utils/dateFormat";
-import CCText from "../defaultCCText";
+import CCTextEn from "../CCTextEn";
+import CCTextFi from "../CCTextFi";
 
 const EventDescription = () => {
   const event = useSingleEventContext().event!;
@@ -18,8 +19,10 @@ const EventDescription = () => {
   const { loggedIn } = useContext(AuthContext);
   const Link = linkComponent();
   const paths = usePaths();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const eventDateFormat = useEventDateTimeFormatter();
+  const ccText = i18n.language === "en" ? CCTextEn : CCTextFi;
+
   return (
     <>
       <nav className="ilmo--title-nav">
@@ -78,7 +81,9 @@ const EventDescription = () => {
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{event.description || ""}</ReactMarkdown>
       </div>
       <div className="ilmo--cc-text">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{CCText}</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {ccText}
+        </ReactMarkdown>
       </div>
     </>
   );
