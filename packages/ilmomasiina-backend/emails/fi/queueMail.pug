@@ -1,5 +1,9 @@
 extends ../layout.pug
 
+block alertContent
+  td.alert.alert-good
+    p.alertText Pitkä oli jonottajan pinna!
+
 block mainContent
   div.content-block
     p.bodyText Olet päässyt mukaan tapahtumaan #{event.title} varasijalta.
@@ -11,4 +15,4 @@ block mainContent
       if date
         li #[strong Aika:] #{date}
   div.content-block-last
-    p.bodyText Mikäli haluat muokata tai perua ilmoittautumisesi, voit tehdä sen painamalla tätä #[a(href=cancelLink) linkkiä].
+    p.bodyText #[strong Mikäli haluat muokata tai perua ilmoittautumisesi, voit tehdä sen painamalla tätä #[a(href=cancelLink) linkkiä].]

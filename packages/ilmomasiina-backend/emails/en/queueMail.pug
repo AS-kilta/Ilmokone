@@ -1,5 +1,9 @@
 extends ../layout.pug
 
+block alertContent
+  td.alert.alert-good
+    p.alertText Queueing is a virtue.
+
 block mainContent
   div.content-block
     p.bodyText Your signup to #{event.title} was accepted from the queue.
@@ -11,4 +15,4 @@ block mainContent
       if date
         li #[strong Time:] #{date}
   div.content-block-last
-    p.bodyText If you want to edit or cancel your signup, you can do it by clicking #[a(href=cancelLink) this link].
+    p.bodyText #[strong If you want to edit or cancel your signup, you can do it by clicking #[a(href=cancelLink) this link].]
