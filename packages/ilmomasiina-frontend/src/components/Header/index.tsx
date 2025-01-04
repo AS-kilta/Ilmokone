@@ -27,7 +27,7 @@ const Header = () => {
         <Link to={appPaths.eventsList} className="navbar-brand mr-auto">
           <img className="navbar-logo" src={logo} alt="Logo" />
           <span className="d-none d-sm-inline larger-text">{branding.headerTitle}</span>
-          <span className="d-sm-none">{branding.headerTitleShort}</span>
+          <span className="d-sm-none larger-text">{branding.headerTitleShort}</span>
         </Link>
         {language !== "fi" && (
           <Button onClick={() => i18n.changeLanguage("fi")}>{t("header.switchLanguage", { lng: "fi" })}</Button>
