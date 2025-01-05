@@ -221,6 +221,10 @@ a {
     font-size: 16px !important;
   }
 
+  .alertText {
+    font-size: 28px !important;
+  }
+
   .container {
     padding: 0 !important;
     width: 100% !important;
