@@ -8,7 +8,7 @@ env:
   branding_header_title_text: "AS Ilmokone"
   branding_header_title_text_short: "Ilmokone"
   branding_footer_gdpr_text: "Tietosuoja"
-  branding_footer_gdpr_link: "https://as.fi/guild/legal/privacy-policy-ilmomasiina"
+  branding_footer_gdpr_link: "https://as.fi/guild/legal/privacy-policy-ilmokone"
   branding_footer_home_text: "as.fi"
   branding_footer_home_link: "https://as.fi"
   branding_login_placeholder_email: "admin@as.fi"
