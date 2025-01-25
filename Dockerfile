@@ -62,9 +62,23 @@ COPY --from=builder /opt/ilmomasiina/packages/ilmomasiina-backend/dist /opt/ilmo
 # Copy built frontend from build stage
 COPY --from=builder /opt/ilmomasiina/packages/ilmomasiina-frontend/build /opt/ilmomasiina/frontend
 
+# Copy SSH configuration and entrypoint script
+COPY sshd_config /etc/ssh/
+COPY entrypoint.sh /opt/ilmomasiina/
+
+# Start and enable SSH
+RUN apk add openssh \
+     && echo "root:Docker!" | chpasswd \
+     && chmod +x /opt/ilmomasiina/entrypoint.sh \
+     && cd /etc/ssh/ \
+     && ssh-keygen -A
+
+EXPOSE 2222
+
 # Create user for running
-RUN adduser -D -h /opt/ilmomasiina ilmomasiina
-USER ilmomasiina
+#RUN adduser -D -h /opt/ilmomasiina ilmomasiina
+#USER ilmomasiina
 
 # Start server
-CMD ["node", "packages/ilmomasiina-backend/dist/bin/server.js"]
+ENTRYPOINT /opt/ilmomasiina/entrypoint.sh
+#CMD ["node", "packages/ilmomasiina-backend/dist/bin/server.js"]
