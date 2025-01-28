@@ -60,6 +60,11 @@ const EventDescription = () => {
             <strong>{t("singleEvent.info.price")}</strong> {event.price}
           </p>
         )}
+        {event.paymentBarcode && (
+          <p>
+            <strong>{t("singleEvent.info.price")}</strong> {event.price}
+          </p>
+        )}
         {event.webpageUrl && (
           <p>
             <strong>{t("singleEvent.info.website")}</strong>{" "}

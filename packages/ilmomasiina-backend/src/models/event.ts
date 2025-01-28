@@ -33,6 +33,11 @@ export interface EventCreationAttributes
     | "openQuotaSize"
     | "description"
     | "price"
+    | "paymentBarcode"
+    | "receiver"
+    | "message"
+    | "dueDate"
+    | "bankId"
     | "location"
     | "facebookUrl"
     | "webpageUrl"
@@ -56,6 +61,11 @@ export class Event extends Model<EventManualAttributes, EventCreationAttributes>
   public openQuotaSize!: number;
   public description!: string | null;
   public price!: string | null;
+  public paymentBarcode!: string | null;
+  public receiver!: string | null;
+  public message!: string | null;
+  public dueDate!: string | null;
+  public bankId!: string | null;
   public location!: string | null;
   public facebookUrl!: string | null;
   public webpageUrl!: string | null;
@@ -151,6 +161,21 @@ export default function setupEventModel(sequelize: Sequelize) {
         type: DataTypes.TEXT,
       },
       price: {
+        type: DataTypes.STRING,
+      },
+      paymentBarcode: {
+        type: DataTypes.STRING,
+      },
+      receiver: {
+        type: DataTypes.STRING,
+      },
+      message: {
+        type: DataTypes.STRING,
+      },
+      dueDate: {
+        type: DataTypes.STRING,
+      },
+      bankId: {
         type: DataTypes.STRING,
       },
       location: {

@@ -43,6 +43,11 @@ export const defaultEvent = (): EditorEvent => ({
   location: "",
   description: "",
   price: "",
+  bankid: "",
+  receiver: "",
+  message: "",
+  dueDate: "",
+  paymentBarcode: "",
   signupsPublic: false,
 
   registrationStartDate: null,

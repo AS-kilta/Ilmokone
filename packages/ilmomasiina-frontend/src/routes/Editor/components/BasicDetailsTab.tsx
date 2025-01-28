@@ -191,6 +191,10 @@ const BasicDetailsTab = () => {
       <FieldRow name="facebookUrl" label={t("editor.basic.facebook")} maxLength={255} formatError={formatError} />
       <FieldRow name="location" label={t("editor.basic.location")} maxLength={255} formatError={formatError} />
       <FieldRow name="price" label={t("editor.basic.price")} maxLength={255} formatError={formatError} />
+      <FieldRow name="bankid" label={t("editor.basic.bankid")} maxLength={255} formatError={formatError} />
+      <FieldRow name="dueDate" label={t("editor.basic.dueDate")} maxLength={255} formatError={formatError} />
+      <FieldRow name="receiver" label={t("editor.basic.receiver")} maxLength={255} formatError={formatError} />
+      <FieldRow name="message" label={t("editor.basic.message")} maxLength={255} formatError={formatError} />
       <FieldRow
         name="description"
         label={t("editor.basic.description")}
