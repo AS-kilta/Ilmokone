@@ -209,23 +209,20 @@ const BasicDetailsTab = () => {
             <tr>
               <th>{t("editor.basic.markdownGuide.write")}</th>
               <th>{t("editor.basic.markdownGuide.toGet")}</th>
-              <th>{t("editor.basic.markdownGuide.notices")}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>*Italic*</td>
+              <td>*Italic* <em>{t("editor.basic.markdownGuide.or")}</em> _Italic_</td>
               <td>
                 <em>Italic</em>
               </td>
-              <td>{t("editor.basic.markdownGuide.italic")}</td>
             </tr>
             <tr>
-              <td>**Bold**</td>
+              <td>**Bold** <em>{t("editor.basic.markdownGuide.or")}</em> __Bold__</td>
               <td>
                 <strong>Bold</strong>
               </td>
-              <td>{t("editor.basic.markdownGuide.bold")}</td>
             </tr>
             <tr>
               <td>~{t("editor.basic.markdownGuide.strike")}~</td>
@@ -263,9 +260,9 @@ const BasicDetailsTab = () => {
 
             </tr>
             <tr>
-              <td>![AS-Ilmokone](https://ilmo.as.fi/favicon-32x32.png)</td>
+              <td>![{t("editor.basic.markdownGuide.image")}](https://ilmo.as.fi/favicon-32x32.png)</td>
               <td>
-                <img src="https://ilmo.as.fi/favicon-32x32.png" alt="AS-Ilmokone" />
+                <img src="https://ilmo.as.fi/favicon-32x32.png" alt={t("editor.basic.markdownGuide.image")} />
               </td>
 
             </tr>
@@ -284,6 +281,10 @@ const BasicDetailsTab = () => {
                 * {t("editor.basic.markdownGuide.list")}
                 <br />* {t("editor.basic.markdownGuide.list")}
                 <br />* {t("editor.basic.markdownGuide.list")}
+                <br />{t("editor.basic.markdownGuide.or")}
+                <br />- {t("editor.basic.markdownGuide.list")}
+                <br />- {t("editor.basic.markdownGuide.list")}
+                <br />- {t("editor.basic.markdownGuide.list")}
               </td>
               <td>
                 <ul>
@@ -314,15 +315,13 @@ const BasicDetailsTab = () => {
             <tr>
               <td>---</td>
               {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-              <td><hr /></td>
-              <td>{t("editor.basic.markdownGuide.divider")}</td>
+              <td><hr /><em>{t("editor.basic.markdownGuide.divider")}</em></td>
             </tr>
             <tr>
               <td>`{t("editor.basic.markdownGuide.code")}`</td>
               <td>
                 <code>{t("editor.basic.markdownGuide.codeResult")}</code>
               </td>
-              <td>{t("editor.basic.markdownGuide.codeNotice")}</td>
             </tr>
             <tr>
               <td>
@@ -341,8 +340,8 @@ const BasicDetailsTab = () => {
               <td>https://ilmo.as.fi</td>
               <td>
                 <a href="https://ilmo.as.fi/">https://ilmo.as.fi</a>
+                <em>({t("editor.basic.markdownGuide.urlNotice")})</em>
               </td>
-              <td>{t("editor.basic.markdownGuide.urlNotice")}</td>
             </tr>
 
             <tr>
@@ -357,7 +356,6 @@ const BasicDetailsTab = () => {
                 <br />
                 1. {t("editor.basic.markdownGuide.footnoteResult")}
               </td>
-              <td>{t("editor.basic.markdownGuide.footnoteNotice")}</td>
             </tr>
             <tr>
               <td>
@@ -388,7 +386,6 @@ const BasicDetailsTab = () => {
                   </tbody>
                 </table>
               </td>
-              <td>{t("editor.basic.markdownGuide.tableNotice")}</td>
             </tr>
           </tbody>
         </table>
