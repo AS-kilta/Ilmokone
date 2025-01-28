@@ -11,10 +11,11 @@ export default function paymentBarcode(
     return null;
   }
 
-  const cents = parseFloat(amount) * 100;
-  const reference = "00000";
+  const cents = parseFloat(amount) * 100; // TODO: Input validation in case of currency symbols
+  const reference = "00000"; // TODO: Input validation (text versus real reference number)
   const due = dueDate.toISOString().slice(2, 10).replace(/-/g, "");
 
+  // TODO: Better error handling
   if (iban.length === 24) {
     throw new Error("IBAN must be a string of length 24");
   }

@@ -2,6 +2,7 @@ import { DataTypes } from "sequelize";
 
 import { defineMigration } from "./util";
 
+// TODO verify these work as expected
 export default defineMigration({
   name: "0006-add-payment-info",
   async up({ context: { sequelize, transaction } }) {

@@ -23,6 +23,7 @@ const EventDescription = () => {
   const eventDateFormat = useEventDateTimeFormatter();
   const ccText = i18n.language === "en" ? CCTextEn : CCTextFi;
 
+  // TODO: Better looking UI
   return (
     <>
       <nav className="ilmo--title-nav">
