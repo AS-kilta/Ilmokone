@@ -38,6 +38,7 @@ export interface EventCreationAttributes
     | "message"
     | "dueDate"
     | "bankId"
+    | "showBarcode"
     | "location"
     | "facebookUrl"
     | "webpageUrl"
@@ -64,8 +65,9 @@ export class Event extends Model<EventManualAttributes, EventCreationAttributes>
   public paymentBarcode!: string | null;
   public receiver!: string | null;
   public message!: string | null;
-  public dueDate!: string | null;
+  public dueDate!: Date | null;
   public bankId!: string | null;
+  public showBarcode!: boolean;
   public location!: string | null;
   public facebookUrl!: string | null;
   public webpageUrl!: string | null;
@@ -173,10 +175,15 @@ export default function setupEventModel(sequelize: Sequelize) {
         type: DataTypes.STRING,
       },
       dueDate: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
       },
       bankId: {
         type: DataTypes.STRING,
+      },
+      showBarcode: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
       location: {
         type: DataTypes.STRING,

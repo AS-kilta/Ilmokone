@@ -34,6 +34,7 @@ export default async function createEvent(
         endDate: toDate(request.body.endDate),
         registrationStartDate: toDate(request.body.registrationStartDate),
         registrationEndDate: toDate(request.body.registrationEndDate),
+        dueDate: toDate(request.body.dueDate),
       } as CreationAttributes<Event>,
       {
         transaction,

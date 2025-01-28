@@ -12,7 +12,8 @@ export default interface EventAttributes {
   paymentBarcode: string | null;
   receiver: string | null;
   message: string | null;
-  dueDate: string | null;
+  dueDate: Date | null;
+  showBarcode: boolean;
   bankId: string | null;
   location: string | null;
   facebookUrl: string | null;

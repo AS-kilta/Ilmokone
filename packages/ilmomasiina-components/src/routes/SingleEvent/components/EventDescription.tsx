@@ -60,9 +60,28 @@ const EventDescription = () => {
             <strong>{t("singleEvent.info.price")}</strong> {event.price}
           </p>
         )}
+        {event.bankId && (
+          <p>
+            <strong>{t("singleEvent.info.message")}</strong> {event.bankId}
+          </p>
+        )}
+        {event.receiver && (
+          <p>
+            <strong>{t("singleEvent.info.receiver")}</strong> {event.receiver}
+          </p>
+        )}
+        {event.message && (
+          <p>
+            <strong>{t("singleEvent.info.message")}</strong> {event.message}
+          </p>
+        )}
         {event.paymentBarcode && (
           <p>
-            <strong>{t("singleEvent.info.price")}</strong> {event.price}
+            <strong>{t("singleEvent.info.paymentBarcode")}</strong> {event.paymentBarcode}
+            <br />
+            <Button variant="primary" onClick={() => {navigator.clipboard.writeText(event.paymentBarcode)}}>
+            {t("singleEvent.copyBarcode")}
+            </Button>
           </p>
         )}
         {event.webpageUrl && (

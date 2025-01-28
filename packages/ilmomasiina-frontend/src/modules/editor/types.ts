@@ -41,6 +41,7 @@ export interface EditorEvent
       | "questions"
       | "date"
       | "endDate"
+      | "dueDate"
       | "registrationStartDate"
       | "registrationEndDate"
       | "openQuotaSize"
@@ -53,6 +54,8 @@ export interface EditorEvent
 
   date: Date | null;
   endDate: Date | null;
+
+  dueDate: Date | null;
 
   questions: EditorQuestion[];
 

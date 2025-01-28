@@ -24,7 +24,7 @@ services:
       - ./data:/var/lib/mysql
     ports:
       # Port open to the host. ilmomasiina-dev container uses default MariaDB port 3306.
-      - 5432:5432
+      - 3306:3306
 
   ilmomasiina-dev:
     build:

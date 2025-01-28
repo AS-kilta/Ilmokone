@@ -9,6 +9,7 @@ import { FieldRow } from "@tietokilta/ilmomasiina-components";
 import { checkingSlugAvailability, checkSlugAvailability, loadCategories } from "../../../modules/editor/actions";
 import { EditorEventType } from "../../../modules/editor/types";
 import { useTypedDispatch, useTypedSelector } from "../../../store/reducers";
+import CustomDatePicker from "./DatePicker";
 import DateTimePicker from "./DateTimePicker";
 import useEditorErrors from "./errors";
 import { useFieldTouched, useFieldValue } from "./hooks";
@@ -191,10 +192,39 @@ const BasicDetailsTab = () => {
       <FieldRow name="facebookUrl" label={t("editor.basic.facebook")} maxLength={255} formatError={formatError} />
       <FieldRow name="location" label={t("editor.basic.location")} maxLength={255} formatError={formatError} />
       <FieldRow name="price" label={t("editor.basic.price")} maxLength={255} formatError={formatError} />
-      <FieldRow name="bankid" label={t("editor.basic.bankid")} maxLength={255} formatError={formatError} />
-      <FieldRow name="dueDate" label={t("editor.basic.dueDate")} maxLength={255} formatError={formatError} />
-      <FieldRow name="receiver" label={t("editor.basic.receiver")} maxLength={255} formatError={formatError} />
-      <FieldRow name="message" label={t("editor.basic.message")} maxLength={255} formatError={formatError} />
+      <FieldRow
+        name="bankId"
+        label={t("editor.basic.payment.bankId")}
+        minLength={20}
+        maxLength={24}
+        formatError={formatError}
+        help={t("editor.basic.payment.bankId.info")}
+      />
+      <FieldRow
+          name="dueDate"
+          label={t("editor.basic.payment.dueDate")}
+          as={CustomDatePicker}
+          help={t("editor.basic.payment.dueDate.info")}
+          formatError={formatError}
+      />
+      <FieldRow name="receiver" label={t("editor.basic.payment.receiver")} maxLength={255} formatError={formatError} />
+      <FieldRow
+        name="message"
+        label={t("editor.basic.payment.message")}
+        maxLength={255}
+        formatError={formatError}
+        help={t("editor.basic.payment.message.info")}
+      />
+      <FieldRow
+          name="showBarcode"
+          label={t("editor.basic.payment.useBarcode")}
+          as={Form.Check}
+          type="checkbox"
+          checkAlign
+          checkLabel={t("editor.basic.payment.useBarcode.check")}
+          help={t("editor.basic.payment.useBarcode.info")}
+          formatError={formatError}
+        />
       <FieldRow
         name="description"
         label={t("editor.basic.description")}
@@ -344,6 +374,7 @@ const BasicDetailsTab = () => {
               <td>https://ilmo.as.fi</td>
               <td>
                 <a href="https://ilmo.as.fi/">https://ilmo.as.fi</a>
+
                 <em>({t("editor.basic.markdownGuide.urlNotice")})</em>
               </td>
             </tr>

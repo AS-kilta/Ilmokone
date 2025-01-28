@@ -34,13 +34,21 @@ export default defineMigration({
       "event",
       "dueDate",
       {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
       },
       { transaction },
     );
     await query.addColumn(
       "event",
-      "paymentInfo",
+      "showBarcode",
+      {
+        type: DataTypes.BOOLEAN,
+      },
+      { transaction },
+    );
+    await query.addColumn(
+      "event",
+      "paymentBarcode",
       {
         type: DataTypes.STRING,
       },
