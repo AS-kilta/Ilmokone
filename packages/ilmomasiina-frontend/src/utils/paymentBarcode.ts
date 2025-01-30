@@ -7,21 +7,43 @@ export default function paymentBarcode(
   amount: string | null,
   dueDate: Date | null,
 ): string | null {
-  if (iban === null || message === null || amount === null || dueDate === null) {
+
+  let reference: string;
+  let cents: number;
+  let due: string;
+
+  if (iban === null ) {
     return null;
   }
 
-  const cents = parseFloat(amount) * 100; // TODO: Input validation in case of currency symbols
-  const reference = "00000"; // TODO: Input validation (text versus real reference number)
-  const due = dueDate.toISOString().slice(2, 10).replace(/-/g, "");
-
-  // TODO: Better error handling
-  if (iban.length === 24) {
-    throw new Error("IBAN must be a string of length 24");
+  switch (message) {
+    case null:
+      reference = "00000";
+      break;
+    default:
+      reference = message.replace(/\D/g, "");
+      if (reference.length < 4) {
+        reference = "00000";
+      }
+      break;
   }
 
-  if (due.length !== 6) {
-    throw new Error("Due date must be 6 chars long.");
+  switch (amount) {
+    case null:
+      cents = 0;
+      break;
+    default:
+      cents = parseFloat(amount.replace(/,/g, ".").replace(/\D\./g, "")) * 100;
+      break;
+  }
+
+  switch (dueDate) {
+    case null:
+      due = "000000";
+      break;
+    default:
+      due = dueDate.toISOString().slice(2, 10).replace(/-/g, "");
+      break;
   }
 
   const options = {
@@ -31,5 +53,9 @@ export default function paymentBarcode(
     due,
   };
 
-  return virtuaaliviivakoodi(options);
+  try {
+    return virtuaaliviivakoodi(options);
+  } catch (error) {
+    return null;
+  }
 }
