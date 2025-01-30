@@ -6,7 +6,7 @@ export default function paymentBarcode(
   message: string | null,
   amount: string | null,
   dueDate: Date | null,
-  ): string | null {
+): string | null {
   if (iban === null || message === null || amount === null || dueDate === null) {
     return null;
   }
@@ -31,11 +31,5 @@ export default function paymentBarcode(
     due,
   };
 
-  const barcode = virtuaaliviivakoodi(options);
-
-  if (barcode.length === 54) {
-    return barcode;
-  }
-
-  return null;
+  return virtuaaliviivakoodi(options);
 }

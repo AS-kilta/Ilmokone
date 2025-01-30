@@ -41,7 +41,8 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-simple-import-sort": "^12.0.0",
     "prettier": "^3.3.3",
-    "typescript": "~5.2.2"
+    "typescript": "~5.2.2",
+    "virtuaaliviivakoodi": "^2.0.0"
   },
   "browserslist": {
     "production": [

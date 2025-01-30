@@ -23,7 +23,6 @@ const EventDescription = () => {
   const eventDateFormat = useEventDateTimeFormatter();
   const ccText = i18n.language === "en" ? CCTextEn : CCTextFi;
 
-  // TODO: Better looking UI
   return (
     <>
       <nav className="ilmo--title-nav">
@@ -63,7 +62,7 @@ const EventDescription = () => {
         )}
         {event.bankId && (
           <p>
-            <strong>{t("singleEvent.info.message")}</strong> {event.bankId}
+            <strong>{t("singleEvent.info.bankId")}</strong> {event.bankId}
           </p>
         )}
         {event.receiver && (
@@ -78,10 +77,12 @@ const EventDescription = () => {
         )}
         {event.paymentBarcode && (
           <p>
-            <strong>{t("singleEvent.info.paymentBarcode")}</strong> {event.paymentBarcode}
-            <br />
-            <Button variant="primary" onClick={() => {navigator.clipboard.writeText(event.paymentBarcode)}}>
-            {t("singleEvent.copyBarcode")}
+            <Button
+              variant="secondary"
+              className="ilmo--copy-barcode"
+              onClick={() => {navigator.clipboard.writeText(event.paymentBarcode || "");}}
+            >
+              {t("singleEvent.info.copyBarcode")}
             </Button>
           </p>
         )}
