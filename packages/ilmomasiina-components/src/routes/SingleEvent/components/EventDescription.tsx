@@ -57,7 +57,7 @@ const EventDescription = () => {
         )}
         {event.price && (
           <p>
-            <strong>{t("singleEvent.info.price")}</strong> {event.price}
+            <strong>{t("singleEvent.info.price")}</strong> {event.price} <strong>€</strong>
           </p>
         )}
         {event.bankId && (
@@ -76,7 +76,6 @@ const EventDescription = () => {
           </p>
         )}
         {event.paymentBarcode && (
-          <p>
             <Button
               variant="secondary"
               className="ilmo--copy-barcode"
@@ -84,7 +83,6 @@ const EventDescription = () => {
             >
               {t("singleEvent.info.copyBarcode")}
             </Button>
-          </p>
         )}
         {event.webpageUrl && (
           <p>

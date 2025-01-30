@@ -195,7 +195,7 @@ const BasicDetailsTab = () => {
       <FieldRow
         name="bankId"
         label={t("editor.basic.payment.bankId")}
-        minLength={20}
+        minLength={18}
         maxLength={24}
         formatError={formatError}
         help={t("editor.basic.payment.bankId.info")}
