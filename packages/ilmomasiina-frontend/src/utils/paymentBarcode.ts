@@ -7,12 +7,11 @@ export default function paymentBarcode(
   amount: string | null,
   dueDate: Date | null,
 ): string | null {
-
   let reference: string;
   let cents: number;
   let due: string;
 
-  if (iban === null ) {
+  if (iban === null) {
     return null;
   }
 
