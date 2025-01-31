@@ -65,9 +65,9 @@ const EventDescription = () => {
             <strong>{t("singleEvent.info.bankId")}</strong> {event.bankId}
           </p>
         )}
-        {event.receiver && (
+        {event.recipient && (
           <p>
-            <strong>{t("singleEvent.info.receiver")}</strong> {event.receiver}
+            <strong>{t("singleEvent.info.recipient")}</strong> {event.recipient}
           </p>
         )}
         {event.message && (

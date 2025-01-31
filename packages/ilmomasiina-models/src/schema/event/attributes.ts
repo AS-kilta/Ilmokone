@@ -59,8 +59,8 @@ export const userEventListAttributes = Type.Object({
   price: Nullable(Type.String({ maxLength: 255 }), {
     description: "Free-form pricing information for the event.",
   }),
-  receiver: Nullable(Type.String({ maxLength: 255 }), {
-    description: "Payment receiver name.",
+  recipient: Nullable(Type.String({ maxLength: 255 }), {
+    description: "Payment recipient name.",
   }),
   message: Nullable(Type.String({ maxLength: 255 }), {
     description: "Bank transfer message.",

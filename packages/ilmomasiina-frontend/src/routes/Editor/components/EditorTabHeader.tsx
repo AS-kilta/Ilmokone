@@ -42,7 +42,7 @@ const tabForField: Record<keyof EditorEvent, EditorTab | null> = {
   price: EditorTab.BASIC_DETAILS,
   message: EditorTab.BASIC_DETAILS,
   bankId: EditorTab.BASIC_DETAILS,
-  receiver: EditorTab.BASIC_DETAILS,
+  recipient: EditorTab.BASIC_DETAILS,
   dueDate: EditorTab.BASIC_DETAILS,
   paymentBarcode: EditorTab.BASIC_DETAILS,
   showBarcode: EditorTab.BASIC_DETAILS,

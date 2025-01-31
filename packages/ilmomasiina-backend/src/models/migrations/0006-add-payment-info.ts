@@ -24,7 +24,7 @@ export default defineMigration({
     );
     await query.addColumn(
       "event",
-      "receiver",
+      "recipient",
       {
         type: DataTypes.STRING,
       },

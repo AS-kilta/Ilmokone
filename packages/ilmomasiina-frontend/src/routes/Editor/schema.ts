@@ -28,7 +28,7 @@ const editorSchema: ZodType<EditorEvent> = z
     description: z.nullable(z.string()),
     price: z.nullable(z.string().max(255)),
     bankId: z.nullable(z.string().max(255)),
-    receiver: z.nullable(z.string().max(255)),
+    recipient: z.nullable(z.string().max(255)),
     message: z.nullable(z.string().max(255)),
     dueDate: z.nullable(z.date()),
     paymentBarcode: z.nullable(z.string().max(255)),

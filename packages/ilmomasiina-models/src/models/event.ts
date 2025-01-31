@@ -10,7 +10,7 @@ export default interface EventAttributes {
   description: string | null;
   price: string | null;
   paymentBarcode: string | null;
-  receiver: string | null;
+  recipient: string | null;
   message: string | null;
   dueDate: Date | null;
   showBarcode: boolean;

@@ -207,7 +207,10 @@ const BasicDetailsTab = () => {
           help={t("editor.basic.payment.dueDate.info")}
           formatError={formatError}
       />
-      <FieldRow name="receiver" label={t("editor.basic.payment.receiver")} maxLength={255} formatError={formatError} />
+      <FieldRow name="recipient"
+                label={t("editor.basic.payment.recipient")}
+                maxLength={255}
+                formatError={formatError} />
       <FieldRow
         name="message"
         label={t("editor.basic.payment.message")}

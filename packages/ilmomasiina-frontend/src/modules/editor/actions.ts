@@ -45,7 +45,7 @@ export const defaultEvent = (): EditorEvent => ({
   description: "",
   price: "",
   bankId: "",
-  receiver: "",
+  recipient: "",
   message: "",
   dueDate: null,
   paymentBarcode: "",

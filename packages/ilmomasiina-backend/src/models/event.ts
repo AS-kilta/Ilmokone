@@ -34,7 +34,7 @@ export interface EventCreationAttributes
     | "description"
     | "price"
     | "paymentBarcode"
-    | "receiver"
+    | "recipient"
     | "message"
     | "dueDate"
     | "bankId"
@@ -63,7 +63,7 @@ export class Event extends Model<EventManualAttributes, EventCreationAttributes>
   public description!: string | null;
   public price!: string | null;
   public paymentBarcode!: string | null;
-  public receiver!: string | null;
+  public recipient!: string | null;
   public message!: string | null;
   public dueDate!: Date | null;
   public bankId!: string | null;
@@ -168,7 +168,7 @@ export default function setupEventModel(sequelize: Sequelize) {
       paymentBarcode: {
         type: DataTypes.STRING,
       },
-      receiver: {
+      recipient: {
         type: DataTypes.STRING,
       },
       message: {
