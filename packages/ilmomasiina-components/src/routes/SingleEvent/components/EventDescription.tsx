@@ -76,13 +76,15 @@ const EventDescription = () => {
           </p>
         )}
         {event.paymentBarcode && (
-            <Button
-              variant="secondary"
-              className="ilmo--copy-barcode"
-              onClick={() => {navigator.clipboard.writeText(event.paymentBarcode || "");}}
-            >
-              {t("singleEvent.info.copyBarcode")}
-            </Button>
+          <Button
+            variant="secondary"
+            className="ilmo--copy-barcode"
+            onClick={() => {
+              navigator.clipboard.writeText(event.paymentBarcode || "");
+            }}
+          >
+            {t("singleEvent.info.copyBarcode")}
+          </Button>
         )}
         {event.webpageUrl && (
           <p>
@@ -105,9 +107,7 @@ const EventDescription = () => {
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{event.description || ""}</ReactMarkdown>
       </div>
       <div className="ilmo--cc-text">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {ccText}
-        </ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{ccText}</ReactMarkdown>
       </div>
     </>
   );

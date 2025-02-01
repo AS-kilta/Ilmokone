@@ -13,8 +13,8 @@
     "build": "pnpm run -r --workspace-concurrency=1 build",
     "start": "pnpm run -r --parallel start",
     "lint": "eslint packages",
-    "lint:fix": "npm run lint -- --fix",
-    "format": "prettier -w packages/*/{src,test}/**/*.{ts,tsx,scss}",
+    "lint:fix": "pnpm run lint --fix",
+    "format": "prettier -w packages/",
     "typecheck": "pnpm run -r --workspace-concurrency=1 typecheck",
     "test": "pnpm run -r test",
     "test:backend": "pnpm run --filter ilmomasiina-backend test"

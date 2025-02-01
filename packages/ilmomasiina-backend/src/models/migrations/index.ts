@@ -18,7 +18,7 @@ const migrations: RunnableMigration<Sequelize>[] = [
   _0004_answers_to_json,
   _0005_add_indexes,
   _0006_add_payment_info,
-  _0007_date_include_ms
+  _0007_date_include_ms,
 ];
 
 export default migrations;
