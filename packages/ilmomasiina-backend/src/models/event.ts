@@ -141,16 +141,16 @@ export default function setupEventModel(sequelize: Sequelize) {
         },
       },
       date: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATE(3),
       },
       endDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATE(3),
       },
       registrationStartDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATE(3),
       },
       registrationEndDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATE(3),
       },
       openQuotaSize: {
         type: DataTypes.INTEGER,
@@ -175,7 +175,7 @@ export default function setupEventModel(sequelize: Sequelize) {
         type: DataTypes.STRING,
       },
       dueDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATE(3),
       },
       bankId: {
         type: DataTypes.STRING,

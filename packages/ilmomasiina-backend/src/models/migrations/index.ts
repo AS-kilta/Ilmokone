@@ -8,6 +8,7 @@ import _0003_add_signup_language from "./0003-add-signup-language";
 import _0004_answers_to_json from "./0004-answers-to-json";
 import _0005_add_indexes from "./0005-add-indexes";
 import _0006_add_payment_info from "./0006-add-payment-info";
+import _0007_date_include_ms from "./0007-date-include-ms";
 
 const migrations: RunnableMigration<Sequelize>[] = [
   _0000_initial,
@@ -16,7 +17,8 @@ const migrations: RunnableMigration<Sequelize>[] = [
   _0003_add_signup_language,
   _0004_answers_to_json,
   _0005_add_indexes,
-  _0006_add_payment_info
+  _0006_add_payment_info,
+  _0007_date_include_ms
 ];
 
 export default migrations;

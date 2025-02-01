@@ -34,7 +34,7 @@ export default defineMigration({
       "event",
       "dueDate",
       {
-        type: DataTypes.DATE,
+        type: DataTypes.DATE(3),
       },
       { transaction },
     );
