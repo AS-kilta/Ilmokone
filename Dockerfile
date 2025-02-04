@@ -20,6 +20,7 @@ COPY packages /opt/ilmomasiina/packages
 WORKDIR /opt/ilmomasiina
 
 # Install dependencies (we're running as root, so the postinstall script doesn't run automatically)
+RUN npm install --global corepack@latest
 RUN corepack enable && pnpm install --frozen-lockfile
 
 # Default to production (after pnpm install, so we get our types etc.)
@@ -51,6 +52,7 @@ COPY packages /opt/ilmomasiina/packages
 WORKDIR /opt/ilmomasiina
 
 # Install dependencies for backend only
+RUN npm install --global corepack@latest
 RUN corepack enable && pnpm install --frozen-lockfile --prod --filter @tietokilta/ilmomasiina-backend --filter @tietokilta/ilmomasiina-models
 
 # Copy compiled ilmomasiina-models from build stage
