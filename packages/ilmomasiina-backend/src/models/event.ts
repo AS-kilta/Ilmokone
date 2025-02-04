@@ -33,6 +33,12 @@ export interface EventCreationAttributes
     | "openQuotaSize"
     | "description"
     | "price"
+    | "paymentBarcode"
+    | "recipient"
+    | "message"
+    | "dueDate"
+    | "bankId"
+    | "showBarcode"
     | "location"
     | "facebookUrl"
     | "webpageUrl"
@@ -56,6 +62,12 @@ export class Event extends Model<EventManualAttributes, EventCreationAttributes>
   public openQuotaSize!: number;
   public description!: string | null;
   public price!: string | null;
+  public paymentBarcode!: string | null;
+  public recipient!: string | null;
+  public message!: string | null;
+  public dueDate!: Date | null;
+  public bankId!: string | null;
+  public showBarcode!: boolean;
   public location!: string | null;
   public facebookUrl!: string | null;
   public webpageUrl!: string | null;
@@ -129,16 +141,16 @@ export default function setupEventModel(sequelize: Sequelize) {
         },
       },
       date: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATE(3),
       },
       endDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATE(3),
       },
       registrationStartDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATE(3),
       },
       registrationEndDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATE(3),
       },
       openQuotaSize: {
         type: DataTypes.INTEGER,
@@ -152,6 +164,26 @@ export default function setupEventModel(sequelize: Sequelize) {
       },
       price: {
         type: DataTypes.STRING,
+      },
+      paymentBarcode: {
+        type: DataTypes.STRING,
+      },
+      recipient: {
+        type: DataTypes.STRING,
+      },
+      message: {
+        type: DataTypes.STRING,
+      },
+      dueDate: {
+        type: DataTypes.DATE(3),
+      },
+      bankId: {
+        type: DataTypes.STRING,
+      },
+      showBarcode: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
       location: {
         type: DataTypes.STRING,

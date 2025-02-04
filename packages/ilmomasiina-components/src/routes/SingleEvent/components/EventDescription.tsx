@@ -57,8 +57,34 @@ const EventDescription = () => {
         )}
         {event.price && (
           <p>
-            <strong>{t("singleEvent.info.price")}</strong> {event.price}
+            <strong>{t("singleEvent.info.price")}</strong> {event.price} <strong>€</strong>
           </p>
+        )}
+        {event.bankId && (
+          <p>
+            <strong>{t("singleEvent.info.bankId")}</strong> {event.bankId}
+          </p>
+        )}
+        {event.recipient && (
+          <p>
+            <strong>{t("singleEvent.info.recipient")}</strong> {event.recipient}
+          </p>
+        )}
+        {event.message && (
+          <p>
+            <strong>{t("singleEvent.info.message")}</strong> {event.message}
+          </p>
+        )}
+        {event.paymentBarcode && (
+          <Button
+            variant="secondary"
+            className="ilmo--copy-barcode"
+            onClick={() => {
+              navigator.clipboard.writeText(event.paymentBarcode || "");
+            }}
+          >
+            {t("singleEvent.info.copyBarcode")}
+          </Button>
         )}
         {event.webpageUrl && (
           <p>
@@ -81,9 +107,7 @@ const EventDescription = () => {
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{event.description || ""}</ReactMarkdown>
       </div>
       <div className="ilmo--cc-text">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {ccText}
-        </ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{ccText}</ReactMarkdown>
       </div>
     </>
   );

@@ -10,6 +10,7 @@ import {
 } from "@tietokilta/ilmomasiina-models";
 import adminApiFetch from "../../api";
 import type { DispatchAction, GetState } from "../../store/types";
+import paymentBarcode from "../../utils/paymentBarcode";
 import {
   CATEGORIES_LOADED,
   EDIT_CONFLICT,
@@ -43,8 +44,13 @@ export const defaultEvent = (): EditorEvent => ({
   location: "",
   description: "",
   price: "",
+  bankId: "",
+  recipient: "",
+  message: "",
+  dueDate: null,
+  paymentBarcode: "",
+  showBarcode: false,
   signupsPublic: false,
-
   registrationStartDate: null,
   registrationEndDate: null,
 
@@ -172,6 +178,7 @@ export const serverEventToEditor = (event: AdminEventResponse): EditorEvent => (
   eventType: eventType(event),
   date: event.date ? new Date(event.date) : null,
   endDate: event.endDate ? new Date(event.endDate) : null,
+  dueDate: event.dueDate ? new Date(event.dueDate) : null,
   registrationStartDate: event.registrationStartDate ? new Date(event.registrationStartDate) : null,
   registrationEndDate: event.registrationEndDate ? new Date(event.registrationEndDate) : null,
   quotas: event.quotas.map((quota) => ({
@@ -190,6 +197,8 @@ export const editorEventToServer = (form: EditorEvent): ConvertedEditorEvent => 
   ...form,
   date: form.eventType === EditorEventType.ONLY_SIGNUP ? null : (form.date?.toISOString() ?? null),
   endDate: form.eventType === EditorEventType.ONLY_SIGNUP ? null : (form.endDate?.toISOString() ?? null),
+  dueDate: form.dueDate ? form.dueDate.toISOString() : null,
+  paymentBarcode: form.showBarcode ? paymentBarcode(form.bankId, form.message, form.price, form.dueDate) : null,
   registrationStartDate:
     form.eventType === EditorEventType.ONLY_EVENT ? null : (form.registrationStartDate?.toISOString() ?? null),
   registrationEndDate:
