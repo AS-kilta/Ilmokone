@@ -184,7 +184,7 @@
     "editor.basic.payment.message": "Message or reference number",
     "editor.basic.payment.message.info": "The message or reference number is shown with the event details. The reference number is also added to the virtual barcode.",
     "editor.basic.payment.dueDate": "Due date",
-    "editor.basic.payment.dueDate.info": "The due date is shown with the event details. The due date is also added to the virtual barcode.",
+    "editor.basic.payment.dueDate.info": "The due date is added to the virtual barcode. Not necessary.",
     "editor.basic.payment.useBarcode": "Use virtual barcode",
     "editor.basic.payment.useBarcode.check": "The payment information can be copied as a virtual barcode.",
     "editor.basic.payment.useBarcode.info": "The barcode is generated from the account number, payment amount, message and due date. The barcode copy button is shown with the other payment information for easy payment.",

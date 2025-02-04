@@ -186,7 +186,7 @@
     "editor.basic.payment.message": "Viesti tai viitenumero",
     "editor.basic.payment.message.info": "Viesti tai viitenumero näytetään tapahtumatiedoissa. Viitenumero tulee myös osaksi virtuaaliviivakoodia.",
     "editor.basic.payment.dueDate": "Eräpäivä",
-    "editor.basic.payment.dueDate.info": "Eräpäivä näytetään tapahtumatiedoissa. Se myös lisätään virtuaaliviivakoodiin.",
+    "editor.basic.payment.dueDate.info": "Eräpäivä lisätään virtuaaliviivakoodiin. Ei pakollinen.",
     "editor.basic.payment.useBarcode": "Käytä virtuaaliviivakoodia",
     "editor.basic.payment.useBarcode.check": "Maksutiedot voi kopioida virtuaaliviivakoodina.",
     "editor.basic.payment.useBarcode.info": "Virtuaaliviivakoodi generoidaan tilinumerosta, viittestä, maksun summasta sekä eräpäivästä. Viivakoodin kopiointi näppäin näytetään maksutietojen ohella ja se helpoittaa maksamista.",
