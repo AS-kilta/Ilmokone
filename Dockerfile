@@ -22,6 +22,7 @@ WORKDIR /opt/ilmomasiina
 COPY --parents .eslint* package.json pnpm-*.yaml packages/*/package.json /opt/ilmomasiina/
 
 # Install dependencies (we're running as root, so the postinstall script doesn't run automatically)
+RUN npm install --global corepack@latest
 RUN corepack enable && pnpm install --frozen-lockfile
 
 # Copy rest of source files
@@ -56,6 +57,7 @@ WORKDIR /opt/ilmomasiina
 COPY --parents package.json pnpm-*.yaml packages/*/package.json /opt/ilmomasiina/
 
 # Install dependencies for backend only
+RUN npm install --global corepack@latest
 RUN corepack enable && pnpm install --frozen-lockfile --prod --filter @tietokilta/ilmomasiina-backend --filter @tietokilta/ilmomasiina-models
 
 # Copy rest of source files

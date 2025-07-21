@@ -84,6 +84,7 @@ export default async function updateEvent(
         registrationStartDate: toDate(request.body.registrationStartDate),
         date: toDate(request.body.date),
         endDate: toDate(request.body.endDate),
+        dueDate: toDate(request.body.dueDate),
       },
       { transaction },
     );

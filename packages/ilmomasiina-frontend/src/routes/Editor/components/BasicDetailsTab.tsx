@@ -9,6 +9,7 @@ import { FieldRow } from "@tietokilta/ilmomasiina-components";
 import { checkingSlugAvailability, checkSlugAvailability, loadCategories } from "../../../modules/editor/actions";
 import { EditorEventType } from "../../../modules/editor/types";
 import { useTypedDispatch, useTypedSelector } from "../../../store/reducers";
+import CustomDatePicker from "./DatePicker";
 import DateTimePicker from "./DateTimePicker";
 import useEditorErrors from "./errors";
 import { useFieldTouched, useFieldValue } from "./hooks";
@@ -192,6 +193,44 @@ const BasicDetailsTab = () => {
       <FieldRow name="location" label={t("editor.basic.location")} maxLength={255} formatError={formatError} />
       <FieldRow name="price" label={t("editor.basic.price")} maxLength={255} formatError={formatError} />
       <FieldRow
+        name="bankId"
+        label={t("editor.basic.payment.bankId")}
+        minLength={18}
+        maxLength={24}
+        formatError={formatError}
+        help={t("editor.basic.payment.bankId.info")}
+      />
+      <FieldRow
+        name="dueDate"
+        label={t("editor.basic.payment.dueDate")}
+        as={CustomDatePicker}
+        help={t("editor.basic.payment.dueDate.info")}
+        formatError={formatError}
+      />
+      <FieldRow
+        name="recipient"
+        label={t("editor.basic.payment.recipient")}
+        maxLength={255}
+        formatError={formatError}
+      />
+      <FieldRow
+        name="message"
+        label={t("editor.basic.payment.message")}
+        maxLength={255}
+        formatError={formatError}
+        help={t("editor.basic.payment.message.info")}
+      />
+      <FieldRow
+        name="showBarcode"
+        label={t("editor.basic.payment.useBarcode")}
+        as={Form.Check}
+        type="checkbox"
+        checkAlign
+        checkLabel={t("editor.basic.payment.useBarcode.check")}
+        help={t("editor.basic.payment.useBarcode.info")}
+        formatError={formatError}
+      />
+      <FieldRow
         name="description"
         label={t("editor.basic.description")}
         help={t("editor.basic.description.info")}
@@ -209,65 +248,60 @@ const BasicDetailsTab = () => {
             <tr>
               <th>{t("editor.basic.markdownGuide.write")}</th>
               <th>{t("editor.basic.markdownGuide.toGet")}</th>
-              <th>{t("editor.basic.markdownGuide.notices")}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>*Italic*</td>
+              <td>
+                *Italic* <em>{t("editor.basic.markdownGuide.or")}</em> _Italic_
+              </td>
               <td>
                 <em>Italic</em>
               </td>
-              <td>{t("editor.basic.markdownGuide.italic")}</td>
             </tr>
             <tr>
-              <td>**Bold**</td>
+              <td>
+                **Bold** <em>{t("editor.basic.markdownGuide.or")}</em> __Bold__
+              </td>
               <td>
                 <strong>Bold</strong>
               </td>
-              <td>{t("editor.basic.markdownGuide.bold")}</td>
             </tr>
             <tr>
               <td>~{t("editor.basic.markdownGuide.strike")}~</td>
               <td>
                 <s>{t("editor.basic.markdownGuide.strike")}</s>
               </td>
-
             </tr>
             <tr>
               <td># {t("editor.basic.markdownGuide.h1")}</td>
               <td>
                 <h1>{t("editor.basic.markdownGuide.h1")}</h1>
               </td>
-
             </tr>
             <tr>
               <td>## {t("editor.basic.markdownGuide.h2")}</td>
               <td>
                 <h2>{t("editor.basic.markdownGuide.h2")}</h2>
               </td>
-
             </tr>
             <tr>
               <td>### {t("editor.basic.markdownGuide.h3")}</td>
               <td>
                 <h3>{t("editor.basic.markdownGuide.h3")}</h3>
               </td>
-
             </tr>
             <tr>
               <td>[{t("editor.basic.markdownGuide.link")}](https://ilmo.as.fi/)</td>
               <td>
                 <a href="https://ilmo.as.fi/">{t("editor.basic.markdownGuide.link")}</a>
               </td>
-
             </tr>
             <tr>
-              <td>![AS-Ilmokone](https://ilmo.as.fi/favicon-32x32.png)</td>
+              <td>![{t("editor.basic.markdownGuide.image")}](https://ilmo.as.fi/favicon-32x32.png)</td>
               <td>
-                <img src="https://ilmo.as.fi/favicon-32x32.png" alt="AS-Ilmokone" />
+                <img src="https://ilmo.as.fi/favicon-32x32.png" alt={t("editor.basic.markdownGuide.image")} />
               </td>
-
             </tr>
             <tr>
               <td>
@@ -277,13 +311,17 @@ const BasicDetailsTab = () => {
               <td>
                 <blockquote>{t("editor.basic.markdownGuide.quote")}</blockquote>
               </td>
-
             </tr>
             <tr>
               <td>
                 * {t("editor.basic.markdownGuide.list")}
                 <br />* {t("editor.basic.markdownGuide.list")}
                 <br />* {t("editor.basic.markdownGuide.list")}
+                <br />
+                {t("editor.basic.markdownGuide.or")}
+                <br />- {t("editor.basic.markdownGuide.list")}
+                <br />- {t("editor.basic.markdownGuide.list")}
+                <br />- {t("editor.basic.markdownGuide.list")}
               </td>
               <td>
                 <ul>
@@ -292,7 +330,6 @@ const BasicDetailsTab = () => {
                   <li>{t("editor.basic.markdownGuide.list")}</li>
                 </ul>
               </td>
-
             </tr>
             <tr>
               <td>
@@ -309,20 +346,20 @@ const BasicDetailsTab = () => {
                   <li>{t("editor.basic.markdownGuide.list")}</li>
                 </ol>
               </td>
-
             </tr>
             <tr>
               <td>---</td>
               {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-              <td><hr /></td>
-              <td>{t("editor.basic.markdownGuide.divider")}</td>
+              <td>
+                <hr />
+                <em>{t("editor.basic.markdownGuide.divider")}</em>
+              </td>
             </tr>
             <tr>
               <td>`{t("editor.basic.markdownGuide.code")}`</td>
               <td>
                 <code>{t("editor.basic.markdownGuide.codeResult")}</code>
               </td>
-              <td>{t("editor.basic.markdownGuide.codeNotice")}</td>
             </tr>
             <tr>
               <td>
@@ -335,14 +372,14 @@ const BasicDetailsTab = () => {
               <td>
                 <code>{t("editor.basic.markdownGuide.codeBlock")}</code>
               </td>
-
             </tr>
             <tr>
               <td>https://ilmo.as.fi</td>
               <td>
                 <a href="https://ilmo.as.fi/">https://ilmo.as.fi</a>
+
+                <em>({t("editor.basic.markdownGuide.urlNotice")})</em>
               </td>
-              <td>{t("editor.basic.markdownGuide.urlNotice")}</td>
             </tr>
 
             <tr>
@@ -357,7 +394,6 @@ const BasicDetailsTab = () => {
                 <br />
                 1. {t("editor.basic.markdownGuide.footnoteResult")}
               </td>
-              <td>{t("editor.basic.markdownGuide.footnoteNotice")}</td>
             </tr>
             <tr>
               <td>
@@ -388,7 +424,6 @@ const BasicDetailsTab = () => {
                   </tbody>
                 </table>
               </td>
-              <td>{t("editor.basic.markdownGuide.tableNotice")}</td>
             </tr>
           </tbody>
         </table>

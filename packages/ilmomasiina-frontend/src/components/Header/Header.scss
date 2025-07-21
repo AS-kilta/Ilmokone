@@ -9,9 +9,17 @@
   display: flex !important;
   align-items: center;
   color: color-yiq($primary) !important;
-  text-transform: uppercase;
-  font-weight: 600;
+  text-transform: none;
   letter-spacing: 1px;
+  font-family: "Anta", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+// dirty hack to make the brand header appear larger without messing up the flexbox size
+.larger-text {
+  font-size: 2rem;
+  line-height: 2rem;
 }
 
 .navbar-logo {

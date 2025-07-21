@@ -1,7 +1,6 @@
 .alert {
-  padding: 20px;
+  padding: 10px;
   text-align: center;
-  border-radius: 3px 3px 0 0;
 }
 .alert a {
   color: #fff;
@@ -11,9 +10,11 @@
 }
 
 .alertText {
-  font-size: 24px;
+  font-size: 35px;
   color: #fff;
-  font-weight: 500;
+  font-family: "Jacquard 12", "Brush Script MT", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .alert.alert-warning {
@@ -23,10 +24,10 @@
   background-color: #f00f27;
 }
 .alert.alert-good {
-  background-color: #07cfba;
+  background-color: #1daa26;
 }
 .alert.alert-neutral {
-  background-color: #0a0d10;
+  background-color: #07cfba;
 }
 
 .bodyText {

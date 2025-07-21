@@ -9,6 +9,12 @@ export default interface EventAttributes {
   openQuotaSize: number;
   description: string | null;
   price: string | null;
+  paymentBarcode: string | null;
+  recipient: string | null;
+  message: string | null;
+  dueDate: Date | null;
+  showBarcode: boolean;
+  bankId: string | null;
   location: string | null;
   facebookUrl: string | null;
   webpageUrl: string | null;
