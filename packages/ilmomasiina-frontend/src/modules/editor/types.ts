@@ -21,7 +21,8 @@ export type AdminSignupWithQuota = SignupWithQuota<AdminEventResponse>;
 
 // For new signups, the local state has all creation fields initialized (some to null), plus id: null as a tag.
 export type EditorNewSignup = Required<AdminSignupCreateBody> & { id: null; keepEditing: boolean };
-// For existing signups, the local state has all update fields initialized from the existing signup, plus id and quotaId.
+// For existing signups, the local state has all update fields initialized from the existing signup,
+// plus id and quotaId.
 export type EditorExistingSignup = Required<AdminSignupUpdateBody> &
   Pick<AdminSignupSchema, "id"> &
   SignupCreateBody & { keepEditing: boolean };

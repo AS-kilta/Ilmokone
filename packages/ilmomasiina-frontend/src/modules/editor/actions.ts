@@ -360,7 +360,7 @@ export const saveSignup = (formData: EditorSignup) => async (dispatch: DispatchA
 
   if (formData.id == null) {
     const saved = await adminApiFetch<AdminSignupSchema>(
-      `admin/signups`,
+      "admin/signups",
       {
         accessToken,
         method: "POST",
