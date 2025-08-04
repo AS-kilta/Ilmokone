@@ -1,6 +1,6 @@
 {
   "name": "ilmomasiina",
-  "version": "2.0.0-alpha38",
+  "version": "2.0.0-alpha41",
   "private": true,
   "license": "MIT",
   "engines": {
@@ -72,7 +72,7 @@
       ]
     },
     "overrides": {
-      "@types/react": "^17.0.47"
+      "@types/react": "^17"
     }
   }
 }

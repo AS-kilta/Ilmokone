@@ -1,6 +1,9 @@
 import { ApiError } from "@tietokilta/ilmomasiina-components";
 import {
   AdminEventResponse,
+  AdminSignupCreateBody,
+  AdminSignupSchema,
+  AdminSignupUpdateBody,
   CategoriesResponse,
   CheckSlugResponse,
   EditConflictError,
@@ -15,6 +18,8 @@ import {
   CATEGORIES_LOADED,
   EDIT_CONFLICT,
   EDIT_CONFLICT_DISMISSED,
+  EDIT_NEW_SIGNUP,
+  EDIT_SIGNUP,
   EVENT_LOAD_FAILED,
   EVENT_LOADED,
   EVENT_SAVING,
@@ -23,8 +28,10 @@ import {
   MOVE_TO_QUEUE_CANCELED,
   MOVE_TO_QUEUE_WARNING,
   RESET,
+  SAVED_SIGNUP,
+  SIGNUP_EDIT_CANCELED,
 } from "./actionTypes";
-import type { ConvertedEditorEvent, EditorEvent } from "./types";
+import type { AdminSignupWithQuota, ConvertedEditorEvent, EditorEvent, EditorSignup } from "./types";
 
 export enum EditorEventType {
   ONLY_EVENT = "event",
@@ -149,6 +156,29 @@ export const categoriesLoaded = (categories: string[]) =>
     payload: categories,
   };
 
+export const editSignup = (signup: AdminSignupWithQuota) =>
+  <const>{
+    type: EDIT_SIGNUP,
+    payload: signup,
+  };
+
+export const editNewSignup = (payload: { language: string }) =>
+  <const>{
+    type: EDIT_NEW_SIGNUP,
+    payload,
+  };
+
+export const savedSignup = (payload: { saved: AdminSignupSchema; formData: EditorSignup }) =>
+  <const>{
+    type: SAVED_SIGNUP,
+    payload,
+  };
+
+export const signupEditCanceled = () =>
+  <const>{
+    type: SIGNUP_EDIT_CANCELED,
+  };
+
 export type EditorActions =
   | ReturnType<typeof resetState>
   | ReturnType<typeof loaded>
@@ -161,7 +191,11 @@ export type EditorActions =
   | ReturnType<typeof moveToQueueCanceled>
   | ReturnType<typeof editConflictDetected>
   | ReturnType<typeof editConflictDismissed>
-  | ReturnType<typeof categoriesLoaded>;
+  | ReturnType<typeof categoriesLoaded>
+  | ReturnType<typeof editSignup>
+  | ReturnType<typeof editNewSignup>
+  | ReturnType<typeof savedSignup>
+  | ReturnType<typeof signupEditCanceled>;
 
 function eventType(event: AdminEventResponse): EditorEventType {
   if (event.date === null) {
@@ -318,5 +352,33 @@ export const deleteSignup = (id: SignupID) => async (dispatch: DispatchAction, g
     return true;
   } catch (e) {
     return false;
+  }
+};
+
+export const saveSignup = (formData: EditorSignup) => async (dispatch: DispatchAction, getState: GetState) => {
+  const { accessToken } = getState().auth;
+
+  if (formData.id == null) {
+    const saved = await adminApiFetch<AdminSignupSchema>(
+      "admin/signups",
+      {
+        accessToken,
+        method: "POST",
+        body: formData satisfies AdminSignupCreateBody,
+      },
+      dispatch,
+    );
+    dispatch(savedSignup({ saved, formData }));
+  } else {
+    const saved = await adminApiFetch<AdminSignupSchema>(
+      `admin/signups/${formData.id}`,
+      {
+        accessToken,
+        method: "PATCH",
+        body: formData satisfies AdminSignupUpdateBody,
+      },
+      dispatch,
+    );
+    dispatch(savedSignup({ saved, formData }));
   }
 };
