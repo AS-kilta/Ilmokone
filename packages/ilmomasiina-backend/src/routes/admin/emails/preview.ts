@@ -1,47 +1,89 @@
-// filepath: packages/ilmomasiina-backend/src/routes/admin/emails/previewConfirmation.ts
-import type { Static } from "@sinclair/typebox";
-import { Type } from "@sinclair/typebox";
 import { FastifyReply, FastifyRequest } from "fastify";
 
-import EmailService from "../../../mail";
+import EmailService, { ConfirmationMailParams } from "../../../mail";
+import { Event } from "../../../models/event";
 
-export const previewConfirmationBody = Type.Object({
-  language: Type.Optional(Type.Union([Type.String(), Type.Null()])),
-  params: Type.Object({
-    name: Type.String(),
-    email: Type.String(),
-    quota: Type.String(),
-    answers: Type.Array(
-      Type.Object({
-        label: Type.String(),
-        answer: Type.String(),
-      }),
-    ),
-    queuePosition: Type.Union([Type.Integer(), Type.Null()]),
-    type: Type.Union([Type.Literal("signup"), Type.Literal("edit")]),
-    admin: Type.Boolean(),
-    date: Type.Union([Type.String(), Type.Null()]),
-    event: Type.Object({
-      title: Type.String(),
-      location: Type.Union([Type.String(), Type.Null()]),
-      verificationEmail: Type.Union([Type.String(), Type.Null()]),
-    }),
-    cancelLink: Type.String(),
-  }),
-});
+export interface PreviewConfirmationBody {
+  language?: string | null;
+  params: Omit<ConfirmationMailParams, "event"> & { event: string };
+}
 
-export type PreviewConfirmationBody = Static<typeof previewConfirmationBody>;
+export const previewConfirmationBody = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    language: { type: ["string", "null"] },
+    params: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        name: { type: "string" },
+        email: { type: "string" },
+        quota: { type: "string" },
+        answers: {
+          type: "array",
+          items: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              label: { type: "string" },
+              answer: { type: "string" },
+            },
+            required: ["label", "answer"],
+          },
+        },
+        queuePosition: { type: ["integer", "null"] },
+        type: { enum: ["signup", "edit"] },
+        admin: { type: "boolean" },
+        date: { type: ["string", "null"] },
+        event: { type: "string" },
+        cancelLink: { type: "string" },
+      },
+      required: [
+        "name",
+        "email",
+        "quota",
+        "answers",
+        "queuePosition",
+        "type",
+        "admin",
+        "date",
+        "event",
+        "cancelLink",
+      ],
+    },
+  },
+  required: ["params"],
+} as const;
 
-export const previewConfirmationResponse = Type.Object({
-  html: Type.String(),
-});
+export const previewConfirmationResponse = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    html: { type: "string" },
+  },
+  required: ["html"],
+} as const;
 
 export default async function preview(
-  req: FastifyRequest<{ Body: { language?: string | null; params: any } }>,
+  request: FastifyRequest<{ Body: PreviewConfirmationBody }>,
   reply: FastifyReply,
 ) {
-  const { language = null, params } = req.body;
+
+  const { language = null, params } = request.body;
+
+  // Resolve event id or slug to an Event instance for the template
+  const eventIdOrSlug = params.event;
+  const event =
+    (await Event.findByPk(eventIdOrSlug)) || (await Event.findOne({ where: { slug: eventIdOrSlug } }));
+
+  if (!event) {
+    reply.status(400);
+    return reply.send({ error: "Invalid event id or slug" });
+  }
+
   const html =
-    (await EmailService.createConfirmationEmailPreview(language, params)) ?? "<p>Failed to render preview.</p>";
-  reply.send({ html });
+    (await EmailService.createConfirmationEmailPreview(language, { ...params, event } as ConfirmationMailParams)) ??
+    "<p>Email service failed to render a preview.</p>";
+  return reply.send({ html });
 }

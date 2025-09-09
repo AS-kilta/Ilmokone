@@ -292,9 +292,6 @@ importers:
       '@sentry/browser':
         specifier: ^9.27.0
         version: 9.27.0
-      '@tietokilta/ilmomasiina-backend':
-        specifier: workspace:*
-        version: link:../ilmomasiina-backend
       '@tietokilta/ilmomasiina-components':
         specifier: workspace:*
         version: link:../ilmomasiina-components

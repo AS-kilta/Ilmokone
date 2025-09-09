@@ -297,7 +297,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
   server.post<{
     Body: PreviewConfirmationBody;
   }>(
-    "/emails/preview/confirmation",
+    "/emails/preview",
     {
       schema: {
         body: previewConfirmationBody,
