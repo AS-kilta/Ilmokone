@@ -1,12 +1,19 @@
 import Email from "email-templates";
 import { existsSync } from "fs";
 import i18next from "i18next";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import marked from "marked";
 import path from "path";
 
 import config from "../config";
 import i18n from "../i18n";
 import { Event } from "../models/event";
 import mailTransporter from "./config";
+
+// Configure marked to allow simple text formatting for custom event verification emails
+function md(text: string) {
+  return marked.parse(text);
+}
 
 export interface ConfirmationMailParams {
   name: string;
@@ -80,6 +87,7 @@ export default class EmailService {
           footerText: config.brandingMailFooterText,
           footerLink: config.brandingMailFooterLink,
         },
+        md,
       };
       const { template, lng } = getTemplate(language, "confirmation");
       const html = await email.render(template, brandedParams);
