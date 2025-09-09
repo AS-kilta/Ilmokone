@@ -253,6 +253,7 @@
     "editor.questions.questionOptions.add": "Add answer option",
     "editor.questions.questionOptions.delete": "Delete",
     "editor.emails.verificationEmail": "Confirmation email",
+    "editor.emails.verificationEmail.info": "You can use Markdown in the message.",
     "editor.signups.noSignups": "There are currently no signups for this event. When people sign up, they will appear here.",
     "editor.signups.emptyQuota": "There are currently no signups for this quota. When people sign up, they will appear here.",
     "editor.signups.download": "Download list of participants",

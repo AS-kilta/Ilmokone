@@ -10,13 +10,16 @@ const EmailsTab = () => {
   const { t } = useTranslation();
   const formatError = useEditorErrors();
   return (
-    <FieldRow
-      name="verificationEmail"
-      as={Textarea}
-      label={t("editor.emails.verificationEmail")}
-      rows={10}
-      formatError={formatError}
-    />
+    <div>
+      <FieldRow
+        name="verificationEmail"
+        as={Textarea}
+        label={t("editor.emails.verificationEmail")}
+        rows={10}
+        formatError={formatError}
+        help={t("editor.emails.verificationEmail.info")}
+      />
+    </div>
   );
 };
 
