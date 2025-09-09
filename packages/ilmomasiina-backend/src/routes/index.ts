@@ -7,6 +7,11 @@ import { addLogEventHook } from "../auditlog";
 import AdminAuthSession from "../authentication/adminAuthSession";
 import getAuditLogItems from "./admin/auditlog/getAuditLogs";
 import getCategoriesList from "./admin/categories/getCategoriesList";
+import type { PreviewConfirmationBody } from "./admin/emails/preview";
+import preview, {
+  previewConfirmationBody,
+  previewConfirmationResponse,
+} from "./admin/emails/preview";
 import createEvent from "./admin/events/createEvent";
 import deleteEvent from "./admin/events/deleteEvent";
 import updateEvent from "./admin/events/updateEvent";
@@ -286,6 +291,23 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance, opts: RouteOpt
       },
     },
     changePassword,
+  );
+
+  // Admin route for confirmation email preview
+  server.post<{
+    Body: PreviewConfirmationBody;
+  }>(
+    "/emails/preview/confirmation",
+    {
+      schema: {
+        body: previewConfirmationBody,
+        response: {
+          ...errorResponses,
+          200: previewConfirmationResponse,
+        },
+      },
+    },
+    preview,
   );
 }
 

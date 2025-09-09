@@ -3,6 +3,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { FieldRow } from "@tietokilta/ilmomasiina-components";
+import EmailPreview from "./EmailPreview";
 import useEditorErrors from "./errors";
 import Textarea from "./Textarea";
 
@@ -19,6 +20,7 @@ const EmailsTab = () => {
         formatError={formatError}
         help={t("editor.emails.verificationEmail.info")}
       />
+      <EmailPreview />
     </div>
   );
 };
