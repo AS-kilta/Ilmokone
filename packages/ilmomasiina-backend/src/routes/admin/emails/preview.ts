@@ -44,7 +44,6 @@ export const previewConfirmationBody = {
         "email",
         "quota",
         "answers",
-        "queuePosition",
         "type",
         "admin",
         "date",

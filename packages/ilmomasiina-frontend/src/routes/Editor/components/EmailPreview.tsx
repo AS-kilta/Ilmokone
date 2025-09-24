@@ -13,33 +13,34 @@ interface PreviewResponse {
 }
 
 type MailType = "signup" | "edit";
+type LangType = "fi" | "en";
+type QueuePos = 5 | null;
 
 const EmailPreview = () => {
   const { values } = useFormState<EditorEvent>();
+  const eventId = useTypedSelector((s) => s.editor.event?.id);
   const { i18n } = useTranslation();
   const dispatch = useTypedDispatch();
   const accessToken = useTypedSelector((s) => s.auth.accessToken);
 
   const [admin, setAdmin] = useState(false);
   const [type, setType] = useState<MailType>("signup");
+  const [lang, setLang] = useState<LangType>("fi");
+  const [queuePos, setQueuePos] = useState<QueuePos>(null);
   const [html, setHtml] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const derived = useMemo(() => {
-    const title = values?.title || "";
-    const location = values?.location ?? null;
-    const verificationEmail = values?.verificationEmail ?? null;
+    const event = eventId;
 
     const quotaTitle = values?.quotas?.[0]?.title || "Quota";
-    const answers = (values?.questions || []).map((q) => ({ label: q.question, answer: "—" }));
+    const answers = (values?.questions || []).map((q) => ({ label: q.question, answer: "vastaus" }));
 
     const dateStr = values?.date ? values.date.toLocaleString(i18n.language || "fi-FI") : null;
 
-    return { title, location, verificationEmail, quotaTitle, answers, dateStr };
-  }, [values?.title,
-    values?.location,
-    values?.verificationEmail,
+    return { event, quotaTitle, answers, dateStr };
+  }, [eventId,
     values?.quotas,
     values?.questions,
     values?.date,
@@ -53,26 +54,22 @@ const EmailPreview = () => {
       setError(null);
       try {
         const body = {
-          language: i18n.language || null,
+          language: lang || null,
           params: {
             name: "Example User",
             email: "user@example.com",
             quota: derived.quotaTitle,
             answers: derived.answers,
-            queuePosition: null,
+            ...(queuePos !== null ? { queuePosition: queuePos } : {}),
             type,
             admin,
             date: derived.dateStr,
-            event: {
-              title: derived.title,
-              location: derived.location,
-              verificationEmail: derived.verificationEmail,
-            },
+            event: derived.event,
             cancelLink: "https://as.fi",
           },
         };
         const resp = await adminApiFetch<PreviewResponse>(
-          "admin/emails/preview/confirmation",
+          "admin/emails/preview",
           { accessToken, method: "POST", body },
           dispatch,
         );
@@ -89,15 +86,23 @@ const EmailPreview = () => {
     return () => {
       cancelled = true;
     };
-  }, [admin, type, derived, i18n.language, accessToken, dispatch]);
+  }, [admin, type, queuePos, derived, lang, accessToken, dispatch]);
+
+  // TODO: fix reload jump
+  // TODO: dynamic custom message lang in emails
+  // TODO: Translations
+  // TODO: set some guide text in editor
+  // TODO: styles
 
   return (
-    <div>
-      <div>
+    <div className="email-preview-container">
+      <h2>Esikatselu</h2>
+      <p>Alla olevilla valinnoilla voi esikatsella miltä vahvistusviesti näyttää eri tilanteissa</p>
+      <div className="email-preview-options">
         <Form.Check
           type="switch"
           id="email-preview-admin"
-          label="Admin"
+          label="Adminin tekemä toimenpide"
           checked={admin}
           onChange={(e) => setAdmin(e.currentTarget.checked)}
         />
@@ -111,7 +116,7 @@ const EmailPreview = () => {
             checked={type === "signup"}
             onChange={() => setType("signup")}
           >
-            signup
+            Ilmo
           </ToggleButton>
           <ToggleButton
             id="email-type-edit"
@@ -122,7 +127,55 @@ const EmailPreview = () => {
             checked={type === "edit"}
             onChange={() => setType("edit")}
           >
-            edit
+            Ilmon muokkaus
+          </ToggleButton>
+        </ButtonGroup>
+        <ButtonGroup>
+          <ToggleButton
+            id="email-lang-fi"
+            type="radio"
+            variant={lang === "fi" ? "primary" : "outline-primary"}
+            name="email-lang"
+            value="email-lang"
+            checked={lang === "fi"}
+            onChange={() => setLang("fi")}
+          >
+            Suomeksi
+          </ToggleButton>
+          <ToggleButton
+            id="email-lang-en"
+            type="radio"
+            variant={lang === "en" ? "primary" : "outline-primary"}
+            name="email-lang"
+            value="email-lang"
+            checked={lang === "en"}
+            onChange={() => setLang("en")}
+          >
+            Englanniksi
+          </ToggleButton>
+        </ButtonGroup>
+        <ButtonGroup>
+          <ToggleButton
+            id="email-queue-pos-0"
+            type="radio"
+            variant={queuePos === null ? "primary" : "outline-primary"}
+            name="email-queue-pos"
+            value="email-queue-pos"
+            checked={queuePos === null}
+            onChange={() => setQueuePos(null)}
+          >
+            Tapahtumassa
+          </ToggleButton>
+          <ToggleButton
+            id="email-queue-pos-5"
+            type="radio"
+            variant={queuePos === 5 ? "primary" : "outline-primary"}
+            name="email-queue-pos"
+            value="email-queue-pos"
+            checked={queuePos === 5}
+            onChange={() => setQueuePos(5)}
+          >
+            Jonossa
           </ToggleButton>
         </ButtonGroup>
       </div>
@@ -130,8 +183,15 @@ const EmailPreview = () => {
       {loading && <div>Loading preview…</div>}
       {error && <div className="text-danger">{error}</div>}
       {!loading && !error && html && (
-        // eslint-disable-next-line react/no-danger
-        <div className="email-preview" dangerouslySetInnerHTML={{ __html: html }} />
+
+        <iframe
+  title="Email preview"
+  className="email-preview"
+  sandbox=""
+  srcDoc={html}
+/>
+
+
       )}
     </div>
   );
