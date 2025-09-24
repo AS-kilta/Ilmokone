@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { ButtonGroup, Form, ToggleButton } from "react-bootstrap";
 import { useFormState } from "react-final-form";
@@ -15,6 +15,32 @@ interface PreviewResponse {
 type MailType = "signup" | "edit";
 type LangType = "fi" | "en";
 type QueuePos = 5 | null;
+
+const PreviewIFrame = ({ htmlString }) => {
+  const previewRef = useRef<HTMLIFrameElement>();
+  const [previewHeight, setPreviewHeight] = useState("0px");
+
+  const onPreviewLoad = () => {
+    setPreviewHeight(`${previewRef.current?.contentWindow?.document.body.scrollHeight}px`);
+  };
+
+  useEffect(() => {
+    onPreviewLoad();
+  }, []);
+
+  return (
+     <iframe
+        ref={previewRef}
+        onLoad={onPreviewLoad}
+        title="Email preview"
+        className="email-preview"
+        sandbox="allow-same-origin"
+        srcDoc={htmlString}
+        height={previewHeight}
+        scrolling="no"
+        />
+  );
+};
 
 const EmailPreview = () => {
   const { values } = useFormState<EditorEvent>();
@@ -89,7 +115,6 @@ const EmailPreview = () => {
   }, [admin, type, queuePos, derived, lang, accessToken, dispatch]);
 
   // TODO: fix reload jump
-  // TODO: dynamic custom message lang in emails
   // TODO: Translations
   // TODO: set some guide text in editor
   // TODO: styles
@@ -183,17 +208,10 @@ const EmailPreview = () => {
       {loading && <div>Loading preview…</div>}
       {error && <div className="text-danger">{error}</div>}
       {!loading && !error && html && (
-
-        <iframe
-  title="Email preview"
-  className="email-preview"
-  sandbox=""
-  srcDoc={html}
-/>
-
-
+        <PreviewIFrame htmlString={html} />
       )}
-    </div>
+
+</div>
   );
 };
 

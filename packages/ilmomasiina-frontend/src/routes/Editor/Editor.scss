@@ -140,3 +140,32 @@
     max-width: 100% !important;
   }
 }
+
+.email-preview-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  .email-preview-options {
+    margin-bottom: 10px;
+    div {
+      margin: 0 10px 10px 0;
+    }
+
+    label {
+      margin: 0;
+      text-align: center;
+    }
+
+    input {
+      display: none;
+    }
+  }
+
+  .email-preview {
+    width: 80%;
+    border: 0;
+    align-self: center;
+  }
+}
