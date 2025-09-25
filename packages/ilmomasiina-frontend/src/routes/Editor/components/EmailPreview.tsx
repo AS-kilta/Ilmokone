@@ -41,7 +41,10 @@ const EmailPreview = () => {
   const derived = useMemo(() => {
     const event = eventId;
     const quotaTitle = values?.quotas?.[0]?.title || "Kiintiö / Quota";
-    const answers = (values?.questions || []).map((q) => ({ label: q.question, answer: "Todella hauska ja samaistuttava vastaus / A really funny and relatable answer" }));
+    const answers = (values?.questions || []).map((q) => ({
+      label: q.question,
+      answer: "Todella hauska ja samaistuttava vastaus / A really funny and relatable answer",
+    }));
     const dateStr = values?.date ? values.date.toLocaleString(i18n.language || "fi-FI") : null;
     return { event, quotaTitle, answers, dateStr };
   }, [eventId, values?.quotas, values?.questions, values?.date, i18n.language]);
@@ -119,7 +122,19 @@ const EmailPreview = () => {
       controller.abort();
       if (timer) clearTimeout(timer);
     };
-  }, [fetchKey, accessToken, dispatch, admin, type, queuePos, lang, derived.quotaTitle, derived.answers, derived.dateStr, derived.event]);
+  }, [
+    fetchKey,
+    accessToken,
+    dispatch,
+    admin,
+    type,
+    queuePos,
+    lang,
+    derived.quotaTitle,
+    derived.answers,
+    derived.dateStr,
+    derived.event,
+  ]);
 
   return (
     <div className="email-preview-container">
@@ -208,10 +223,7 @@ const EmailPreview = () => {
       </div>
 
       {error && <div className="text-danger">{error}</div>}
-      <div
-        ref={wrapperRef}
-        className="email-preview-frame-wrapper"
-      >
+      <div ref={wrapperRef} className="email-preview-frame-wrapper">
         <iframe
           ref={previewRef}
           onLoad={onPreviewLoad}
@@ -243,4 +255,3 @@ const EmailPreview = () => {
 };
 
 export default EmailPreview;
-

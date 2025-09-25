@@ -39,17 +39,7 @@ export const previewConfirmationBody = {
         event: { type: "string" },
         cancelLink: { type: "string" },
       },
-      required: [
-        "name",
-        "email",
-        "quota",
-        "answers",
-        "type",
-        "admin",
-        "date",
-        "event",
-        "cancelLink",
-      ],
+      required: ["name", "email", "quota", "answers", "type", "admin", "date", "event", "cancelLink"],
     },
   },
   required: ["params"],
@@ -64,17 +54,12 @@ export const previewConfirmationResponse = {
   required: ["html"],
 } as const;
 
-export default async function preview(
-  request: FastifyRequest<{ Body: PreviewConfirmationBody }>,
-  reply: FastifyReply,
-) {
-
+export default async function preview(request: FastifyRequest<{ Body: PreviewConfirmationBody }>, reply: FastifyReply) {
   const { language = null, params } = request.body;
 
   // Resolve event id or slug to an Event instance for the template
   const eventIdOrSlug = params.event;
-  const event =
-    (await Event.findByPk(eventIdOrSlug)) || (await Event.findOne({ where: { slug: eventIdOrSlug } }));
+  const event = (await Event.findByPk(eventIdOrSlug)) || (await Event.findOne({ where: { slug: eventIdOrSlug } }));
 
   if (!event) {
     reply.status(400);

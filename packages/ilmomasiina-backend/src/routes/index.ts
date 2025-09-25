@@ -8,10 +8,7 @@ import AdminAuthSession from "../authentication/adminAuthSession";
 import getAuditLogItems from "./admin/auditlog/getAuditLogs";
 import getCategoriesList from "./admin/categories/getCategoriesList";
 import type { PreviewConfirmationBody } from "./admin/emails/preview";
-import preview, {
-  previewConfirmationBody,
-  previewConfirmationResponse,
-} from "./admin/emails/preview";
+import preview, { previewConfirmationBody, previewConfirmationResponse } from "./admin/emails/preview";
 import createEvent from "./admin/events/createEvent";
 import deleteEvent from "./admin/events/deleteEvent";
 import updateEvent from "./admin/events/updateEvent";
