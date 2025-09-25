@@ -16,34 +16,9 @@ type MailType = "signup" | "edit";
 type LangType = "fi" | "en";
 type QueuePos = 5 | null;
 
-const PreviewIFrame = ({ htmlString }) => {
-  const previewRef = useRef<HTMLIFrameElement>();
-  const [previewHeight, setPreviewHeight] = useState("0px");
-
-  const onPreviewLoad = () => {
-    setPreviewHeight(`${previewRef.current?.contentWindow?.document.body.scrollHeight}px`);
-  };
-
-  useEffect(() => {
-    onPreviewLoad();
-  }, []);
-
-  return (
-     <iframe
-        ref={previewRef}
-        onLoad={onPreviewLoad}
-        title="Email preview"
-        className="email-preview"
-        sandbox="allow-same-origin"
-        srcDoc={htmlString}
-        height={previewHeight}
-        scrolling="no"
-        />
-  );
-};
-
 const EmailPreview = () => {
-  const { values } = useFormState<EditorEvent>();
+  // Narrow subscription (avoid rerenders for untouched form meta)
+  const { values } = useFormState<EditorEvent>({ subscription: { values: true } });
   const eventId = useTypedSelector((s) => s.editor.event?.id);
   const { i18n } = useTranslation();
   const dispatch = useTypedDispatch();
@@ -56,67 +31,102 @@ const EmailPreview = () => {
   const [html, setHtml] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const previewRef = useRef<HTMLIFrameElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  // Use a non-zero default height to reserve space and avoid layout jump
+  const [previewHeight, setPreviewHeight] = useState("400px");
+
+  // Store absolute top position (document coordinates) before updating HTML so we can compensate scroll
+  const prevWrapperTopRef = useRef<number | null>(null);
 
   const derived = useMemo(() => {
     const event = eventId;
-
     const quotaTitle = values?.quotas?.[0]?.title || "Quota";
     const answers = (values?.questions || []).map((q) => ({ label: q.question, answer: "vastaus" }));
-
     const dateStr = values?.date ? values.date.toLocaleString(i18n.language || "fi-FI") : null;
-
     return { event, quotaTitle, answers, dateStr };
-  }, [eventId,
-    values?.quotas,
-    values?.questions,
-    values?.date,
-    i18n.language]);
+  }, [eventId, values?.quotas, values?.questions, values?.date, i18n.language]);
+
+  const onPreviewLoad = () => {
+    const body = previewRef.current?.contentWindow?.document?.body;
+    if (!body) return;
+    requestAnimationFrame(() => {
+      const newHeight = body.scrollHeight;
+      if (newHeight) setPreviewHeight(`${newHeight}px`);
+      // Compensate scroll so page doesn't jump when iframe height changes
+      if (prevWrapperTopRef.current != null && wrapperRef.current) {
+        const newAbsTop = wrapperRef.current.getBoundingClientRect().top + window.scrollY;
+        const diff = newAbsTop - prevWrapperTopRef.current;
+        if (Math.abs(diff) > 1) {
+          window.scrollBy({ top: diff, behavior: "auto" });
+        }
+        prevWrapperTopRef.current = null; // reset
+      }
+    });
+  };
+
+  // Debounced key for fetching preview (prevents rapid toggles causing multiple requests)
+  const fetchKey = useMemo(
+    () => JSON.stringify({ admin, type, queuePos, lang, d: derived }),
+    [admin, type, queuePos, lang, derived],
+  );
 
   useEffect(() => {
     let cancelled = false;
-    async function loadPreview() {
-      if (!accessToken) return;
-      setLoading(true);
-      setError(null);
-      try {
-        const body = {
-          language: lang || null,
-          params: {
-            name: "Example User",
-            email: "user@example.com",
-            quota: derived.quotaTitle,
-            answers: derived.answers,
-            ...(queuePos !== null ? { queuePosition: queuePos } : {}),
-            type,
-            admin,
-            date: derived.dateStr,
-            event: derived.event,
-            cancelLink: "https://as.fi",
-          },
-        };
-        const resp = await adminApiFetch<PreviewResponse>(
-          "admin/emails/preview",
-          { accessToken, method: "POST", body },
-          dispatch,
-        );
-        if (!cancelled) setHtml(resp.html);
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error("Email preview failed", e);
-        if (!cancelled) setError("Failed to load preview");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
+    const controller = new AbortController();
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    if (accessToken) {
+      timer = setTimeout(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const body = {
+            language: lang || null,
+            params: {
+              name: "Example User",
+              email: "user@example.com",
+              quota: derived.quotaTitle,
+              answers: derived.answers,
+              ...(queuePos !== null ? { queuePosition: queuePos } : {}),
+              type,
+              admin,
+              date: derived.dateStr,
+              event: derived.event,
+              cancelLink: "https://as.fi",
+            },
+          };
+          // Record wrapper top before HTML swap for scroll compensation
+          if (wrapperRef.current) {
+            prevWrapperTopRef.current = wrapperRef.current.getBoundingClientRect().top + window.scrollY;
+          }
+          const resp = await adminApiFetch<PreviewResponse>(
+            "admin/emails/preview",
+            { accessToken, method: "POST", body, signal: controller.signal },
+            dispatch,
+          );
+          if (!cancelled) {
+            setHtml(resp.html);
+          }
+        } catch (e: any) {
+          if (e?.name === "AbortError") return; // ignore aborts
+          // eslint-disable-next-line no-console
+          console.error("Email preview failed", e);
+          if (!cancelled) setError("Failed to load preview");
+        } finally {
+          if (!cancelled) setLoading(false);
+        }
+      }, 200); // 200ms debounce
     }
-    loadPreview();
+
     return () => {
       cancelled = true;
+      controller.abort();
+      if (timer) clearTimeout(timer);
     };
-  }, [admin, type, queuePos, derived, lang, accessToken, dispatch]);
+  }, [fetchKey, accessToken, dispatch, admin, type, queuePos, lang, derived.quotaTitle, derived.answers, derived.dateStr, derived.event]);
 
-  // TODO: fix reload jump
   // TODO: Translations
-  // TODO: set some guide text in editor
   // TODO: styles
 
   return (
@@ -205,13 +215,38 @@ const EmailPreview = () => {
         </ButtonGroup>
       </div>
 
-      {loading && <div>Loading preview…</div>}
       {error && <div className="text-danger">{error}</div>}
-      {!loading && !error && html && (
-        <PreviewIFrame htmlString={html} />
-      )}
-
-</div>
+      <div
+        ref={wrapperRef}
+        className="email-preview-frame-wrapper"
+      >
+        <iframe
+          ref={previewRef}
+          onLoad={onPreviewLoad}
+          title="Email preview"
+          className="email-preview"
+          sandbox="allow-same-origin"
+          srcDoc={html}
+          height={previewHeight}
+        />
+        {loading && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "rgba(255,255,255,0.6)",
+              fontWeight: 500,
+            }}
+            aria-live="polite"
+          >
+            Ladataan esikatselua…
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
