@@ -35,7 +35,6 @@ const EmailPreview = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   // Use a non-zero default height to reserve space and avoid layout jump
   const [previewHeight, setPreviewHeight] = useState("400px");
-
   // Store absolute top position (document coordinates) before updating HTML so we can compensate scroll
   const prevWrapperTopRef = useRef<number | null>(null);
 
@@ -105,13 +104,9 @@ const EmailPreview = () => {
             { accessToken, method: "POST", body, signal: controller.signal },
             dispatch,
           );
-          if (!cancelled) {
-            setHtml(resp.html);
-          }
+          if (!cancelled) setHtml(resp.html);
         } catch (e: any) {
           if (e?.name === "AbortError") return; // ignore aborts
-          // eslint-disable-next-line no-console
-          console.error("Email preview failed", e);
           if (!cancelled) setError("Failed to load preview");
         } finally {
           if (!cancelled) setLoading(false);
@@ -125,8 +120,6 @@ const EmailPreview = () => {
       if (timer) clearTimeout(timer);
     };
   }, [fetchKey, accessToken, dispatch, admin, type, queuePos, lang, derived.quotaTitle, derived.answers, derived.dateStr, derived.event]);
-
-  // TODO: styles
 
   return (
     <div className="email-preview-container">
@@ -190,7 +183,7 @@ const EmailPreview = () => {
         </ButtonGroup>
         <ButtonGroup>
           <ToggleButton
-            id="email-queue-pos-0"
+            id="email-queue-pos-null"
             type="radio"
             variant={queuePos === null ? "primary" : "outline-primary"}
             name="email-queue-pos"
