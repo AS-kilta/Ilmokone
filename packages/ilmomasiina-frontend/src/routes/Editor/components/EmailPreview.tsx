@@ -20,7 +20,7 @@ const EmailPreview = () => {
   // Narrow subscription (avoid rerenders for untouched form meta)
   const { values } = useFormState<EditorEvent>({ subscription: { values: true } });
   const eventId = useTypedSelector((s) => s.editor.event?.id);
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useTypedDispatch();
   const accessToken = useTypedSelector((s) => s.auth.accessToken);
 
@@ -41,8 +41,8 @@ const EmailPreview = () => {
 
   const derived = useMemo(() => {
     const event = eventId;
-    const quotaTitle = values?.quotas?.[0]?.title || "Quota";
-    const answers = (values?.questions || []).map((q) => ({ label: q.question, answer: "vastaus" }));
+    const quotaTitle = values?.quotas?.[0]?.title || "Kiintiö / Quota";
+    const answers = (values?.questions || []).map((q) => ({ label: q.question, answer: "Todella hauska ja samaistuttava vastaus / A really funny and relatable answer" }));
     const dateStr = values?.date ? values.date.toLocaleString(i18n.language || "fi-FI") : null;
     return { event, quotaTitle, answers, dateStr };
   }, [eventId, values?.quotas, values?.questions, values?.date, i18n.language]);
@@ -84,8 +84,8 @@ const EmailPreview = () => {
           const body = {
             language: lang || null,
             params: {
-              name: "Example User",
-              email: "user@example.com",
+              name: "aASi Asiakas",
+              email: "aasi@as.fi",
               quota: derived.quotaTitle,
               answers: derived.answers,
               ...(queuePos !== null ? { queuePosition: queuePos } : {}),
@@ -126,18 +126,17 @@ const EmailPreview = () => {
     };
   }, [fetchKey, accessToken, dispatch, admin, type, queuePos, lang, derived.quotaTitle, derived.answers, derived.dateStr, derived.event]);
 
-  // TODO: Translations
   // TODO: styles
 
   return (
     <div className="email-preview-container">
-      <h2>Esikatselu</h2>
-      <p>Alla olevilla valinnoilla voi esikatsella miltä vahvistusviesti näyttää eri tilanteissa</p>
+      <h2>{t("editor.emails.verificationEmail.preview")}</h2>
+      <p>{t("editor.emails.verificationEmail.preview.desc")}</p>
       <div className="email-preview-options">
         <Form.Check
           type="switch"
           id="email-preview-admin"
-          label="Adminin tekemä toimenpide"
+          label={t("editor.emails.verificationEmail.preview.adminEvent")}
           checked={admin}
           onChange={(e) => setAdmin(e.currentTarget.checked)}
         />
@@ -151,7 +150,7 @@ const EmailPreview = () => {
             checked={type === "signup"}
             onChange={() => setType("signup")}
           >
-            Ilmo
+            {t("editor.emails.verificationEmail.preview.mailType.signup")}
           </ToggleButton>
           <ToggleButton
             id="email-type-edit"
@@ -162,7 +161,7 @@ const EmailPreview = () => {
             checked={type === "edit"}
             onChange={() => setType("edit")}
           >
-            Ilmon muokkaus
+            {t("editor.emails.verificationEmail.preview.mailType.edit")}
           </ToggleButton>
         </ButtonGroup>
         <ButtonGroup>
@@ -175,7 +174,7 @@ const EmailPreview = () => {
             checked={lang === "fi"}
             onChange={() => setLang("fi")}
           >
-            Suomeksi
+            {t("editor.emails.verificationEmail.preview.language.fi")}
           </ToggleButton>
           <ToggleButton
             id="email-lang-en"
@@ -186,7 +185,7 @@ const EmailPreview = () => {
             checked={lang === "en"}
             onChange={() => setLang("en")}
           >
-            Englanniksi
+            {t("editor.emails.verificationEmail.preview.language.en")}
           </ToggleButton>
         </ButtonGroup>
         <ButtonGroup>
@@ -199,7 +198,7 @@ const EmailPreview = () => {
             checked={queuePos === null}
             onChange={() => setQueuePos(null)}
           >
-            Tapahtumassa
+            {t("editor.emails.verificationEmail.preview.queue.inQuota")}
           </ToggleButton>
           <ToggleButton
             id="email-queue-pos-5"
@@ -210,7 +209,7 @@ const EmailPreview = () => {
             checked={queuePos === 5}
             onChange={() => setQueuePos(5)}
           >
-            Jonossa
+            {t("editor.emails.verificationEmail.preview.queue.inQueue")}
           </ToggleButton>
         </ButtonGroup>
       </div>
@@ -242,7 +241,7 @@ const EmailPreview = () => {
             }}
             aria-live="polite"
           >
-            Ladataan esikatselua…
+            {t("editor.emails.verificationEmail.preview.loading")}
           </div>
         )}
       </div>
@@ -251,3 +250,4 @@ const EmailPreview = () => {
 };
 
 export default EmailPreview;
+
