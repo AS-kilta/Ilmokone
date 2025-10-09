@@ -378,7 +378,7 @@ const BasicDetailsTab = () => {
               <td>
                 <a href="https://ilmo.as.fi/">https://ilmo.as.fi</a>
 
-                <em>({t("editor.basic.markdownGuide.urlNotice")})</em>
+                <em> ({t("editor.basic.markdownGuide.urlNotice")})</em>
               </td>
             </tr>
 

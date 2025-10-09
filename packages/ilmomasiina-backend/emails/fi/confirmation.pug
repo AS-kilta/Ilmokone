@@ -11,12 +11,11 @@ block mainContent
   if admin && type == "edit"
     div.content-block
       p.bodyText #[strong Ylläpitäjä on muokannut ilmoittautumistasi.]
-  if event.verificationEmail
-    div.content-block
-      p.bodyText #{event.verificationEmail}
   if queuePosition
     div.content-block
       p.bodyText #[strong ...mutta olet jonossa sijalla #{queuePosition}.] Jos saat paikan jonosta, sinulle lähetetään ilmoitus sähköpostitse.
+  if event.verificationEmail
+    div.content-block!= md(event.verificationEmail)
   div.content-block
     p.bodyText Tapahtuman tiedot:
     ul

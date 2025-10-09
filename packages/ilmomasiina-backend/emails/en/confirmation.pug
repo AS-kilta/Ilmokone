@@ -11,12 +11,11 @@ block mainContent
   if admin && type == "edit"
     div.content-block
       p.bodyText #[strong An administrator has edited your signup.]
-  if event.verificationEmail
-    div.content-block
-      p.bodyText #{event.verificationEmail}
   if queuePosition
     div.content-block
       p.bodyText #[strong Although are in the queue in position #{queuePosition}.] If you get accepted from the queue, you will be notified by email.
+  if event.verificationEmail
+    div.content-block!= md(event.verificationEmail)
   div.content-block
     p.bodyText Event details:
     ul
