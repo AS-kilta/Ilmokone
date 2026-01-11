@@ -10,8 +10,8 @@ import { usePaths } from "../../../contexts";
 import AuthContext from "../../../contexts/auth";
 import { useSingleEventContext } from "../../../modules/singleEvent";
 import { useEventDateTimeFormatter } from "../../../utils/dateFormat";
-import CCTextEn from "../CCTextEn";
-import CCTextFi from "../CCTextFi";
+import CCTextEn from "./CCTextEn";
+import CCTextFi from "./CCTextFi";
 
 const EventDescription = () => {
   const event = useSingleEventContext().event!;

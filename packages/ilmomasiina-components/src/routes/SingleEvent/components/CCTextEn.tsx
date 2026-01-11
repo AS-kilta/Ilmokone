@@ -4,13 +4,13 @@ please contact a Confidential Counselor or a member of the board.
 
 Our guild has Confidential Counselors for this purpose:
 
-- Jenny Ruokolainen [@jequilaaa](https://t.me/jequilaaa)
-- Joel Forsström [@joel_forsstrom](https:/t.me/joel_forsstrom)
-- Kiira Metsoila [@Kiiraiitu](https:/t.me/Kiiraiitu)
-- Kaisla Haapoja [@Kaislakettu](https://t.me/Kaislakettu)
-- Pyry Kiviluoma [@pyrykiviluoma](https://t.me/pyrykiviluoma)
-- Sonja Annala [@SoiQ3](https://t.me/SoiQ3)
 - Venla Mäkelä [@venlamakela](https://t.me/venlamakela)
+- Jenny Ruokolainen [@jequilaaa](https://t.me/jequilaaa)
+- Joel Ventola [@jvetola](https://t.me/jvetola)
+- Otto Peltonen [@LahenLevein](https://t.me/LahenLevein)
+- Pyry Kiviluoma [@pyrykiviluoma](https://t.me/pyrykiviluoma)
+- Saara Miettinen [@saaratoniini](https://t.me/saaratoniini)
+- Sonja Annala [@SoiQ3](https://t.me/SoiQ3)
 
 Everyone participating in guild activities need to follow
 [the Code of Conduct](https://as.fi/en/guild/docs/code-of-conduct)
