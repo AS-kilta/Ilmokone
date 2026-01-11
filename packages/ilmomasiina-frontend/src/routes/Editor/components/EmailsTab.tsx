@@ -2,9 +2,11 @@ import React from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { FieldRow } from "@tietokilta/ilmomasiina-components";
+// TODO: fix language selection for email preview
 import EmailPreview from "./EmailPreview";
 import useEditorErrors from "./errors";
+import LanguageSelect from "./LanguageSelect";
+import LocalizedFieldRow from "./LocalizedFieldRow";
 import Textarea from "./Textarea";
 
 const EmailsTab = () => {
@@ -12,8 +14,10 @@ const EmailsTab = () => {
   const formatError = useEditorErrors();
   return (
     <div>
-      <FieldRow
+      <LanguageSelect />
+      <LocalizedFieldRow
         name="verificationEmail"
+        defaultAsPlaceholder
         as={Textarea}
         label={t("editor.emails.verificationEmail")}
         rows={10}

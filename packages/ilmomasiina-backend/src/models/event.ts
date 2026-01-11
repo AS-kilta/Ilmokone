@@ -17,11 +17,14 @@ import {
   Sequelize,
 } from "sequelize";
 
-import type { EventAttributes } from "@tietokilta/ilmomasiina-models/dist/models";
+import type { QuestionCreate, QuotaCreate } from "@tietokilta/ilmomasiina-models";
+import type { EventAttributes, EventLanguage } from "@tietokilta/ilmomasiina-models/dist/models";
 import config from "../config";
-import type { Question } from "./question";
-import type { Quota } from "./quota";
+import { EventValidationError } from "./errors";
+import type { Question, QuestionCreationAttributes } from "./question";
+import type { Quota, QuotaCreationAttributes } from "./quota";
 import { generateRandomId, RANDOM_ID_LENGTH } from "./randomId";
+import { jsonColumnGetter } from "./util/json";
 
 // Drop updatedAt so we don't need to define it manually in Event.init()
 interface EventManualAttributes extends Omit<EventAttributes, "updatedAt"> {}
@@ -49,7 +52,14 @@ export interface EventCreationAttributes
     | "nameQuestion"
     | "emailQuestion"
     | "verificationEmail"
+    | "languages"
+    | "defaultLanguage"
   > {}
+
+export interface EventCreationWithInclude extends EventCreationAttributes {
+  questions: Omit<QuestionCreationAttributes, "eventId">[];
+  quotas: Omit<QuotaCreationAttributes, "eventId">[];
+}
 
 export class Event extends Model<EventManualAttributes, EventCreationAttributes> implements EventAttributes {
   public id!: string;
@@ -78,6 +88,8 @@ export class Event extends Model<EventManualAttributes, EventCreationAttributes>
   public nameQuestion!: boolean;
   public emailQuestion!: boolean;
   public verificationEmail!: string | null;
+  public languages!: Record<string, EventLanguage>;
+  public defaultLanguage!: string;
 
   public questions?: Question[];
   public getQuestions!: HasManyGetAssociationsMixin<Question>;
@@ -113,6 +125,47 @@ export class Event extends Model<EventManualAttributes, EventCreationAttributes>
       .map((date) => date.getTime());
     if (!endDates.length) return null;
     return endDates.reduce((lhs, rhs) => Math.max(lhs, rhs));
+  }
+
+  /** Validates that the languages for the event contain match the given questions and quotas.
+   *
+   * Removes answer options from questions that do not have them defined in the default language.
+   * This expects that options have already been removed from questions that don't support options.
+   */
+  public validateLanguages(questions: QuestionCreate[], quotas: QuotaCreate[]) {
+    for (const [langKey, language] of Object.entries(this.languages)) {
+      // All array types have to be kept in sync or the editor experience will be very wonky.
+      // We cannot check by ID, because new questions/quotas do not have IDs at this point.
+
+      // Check that quota counts match.
+      if (language.quotas.length !== quotas.length)
+        throw new EventValidationError(`language ${langKey} has wrong number of quotas`);
+
+      // Check that question counts match.
+      if (language.questions.length !== questions.length)
+        throw new EventValidationError(`language ${langKey} has wrong number of questions`);
+
+      for (let i = 0; i < questions.length; i++) {
+        const question = questions[i];
+        const localizedQuestion = language.questions[i];
+        // Check that option counts match if present on both.
+        // Options being unnecessarily set for a language has no effect.
+        // Options being unset on a language just falls back to the default language.
+        if (
+          question.options &&
+          localizedQuestion.options &&
+          question.options.length !== localizedQuestion.options.length
+        ) {
+          throw new EventValidationError(`question ${i} in language ${langKey} has wrong number of options`);
+        }
+        // Remove options if the question does not have them.
+        // We expect createEvent/updateEvent to remove options from questions that don't support
+        // options before calling this.
+        if (!question.options) {
+          localizedQuestion.options = null;
+        }
+      }
+    }
   }
 }
 
@@ -227,6 +280,20 @@ export default function setupEventModel(sequelize: Sequelize) {
       verificationEmail: {
         type: DataTypes.TEXT,
       },
+      languages: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: {},
+        get: jsonColumnGetter<Record<string, EventLanguage>>("languages"),
+      },
+      defaultLanguage: {
+        type: DataTypes.STRING(8),
+        allowNull: false,
+        // The default value used for this depends on config, so we can't set it in the database easily.
+        get(): string {
+          return this.getDataValue("defaultLanguage") ?? config.defaultLanguage;
+        },
+      },
     },
     {
       sequelize,
@@ -234,15 +301,36 @@ export default function setupEventModel(sequelize: Sequelize) {
       freezeTableName: true,
       paranoid: true,
       validate: {
-        hasDateOrRegistration() {
+        noReversedDates(this: Event) {
+          if (this.date != null && this.endDate != null && this.date > this.endDate) {
+            throw new EventValidationError("endDate must be after or equal to date");
+          }
+        },
+        noReversedRegistrationDates(this: Event) {
+          if (
+            this.registrationStartDate != null &&
+            this.registrationEndDate != null &&
+            this.registrationStartDate > this.registrationEndDate
+          ) {
+            throw new EventValidationError("registrationEndDate must be after or equal to registrationStartDate");
+          }
+        },
+        hasDateOrRegistration(this: Event) {
           if (this.date === null && this.registrationStartDate === null) {
-            throw new Error("either date or registrationStartDate/registrationEndDate must be set");
+            throw new EventValidationError("either date or registrationStartDate/registrationEndDate must be set");
           }
           if (this.date === null && this.endDate !== null) {
-            throw new Error("endDate may only be set with date");
+            throw new EventValidationError("endDate may only be set with date");
           }
           if ((this.registrationStartDate === null) !== (this.registrationEndDate === null)) {
-            throw new Error("only neither or both of registrationStartDate and registrationEndDate may be set");
+            throw new EventValidationError(
+              "only neither or both of registrationStartDate and registrationEndDate may be set",
+            );
+          }
+        },
+        noDuplicateDefaultLanguage(this: Event) {
+          if (this.languages != null && this.languages[this.defaultLanguage]) {
+            throw new EventValidationError("defaultLanguage may not be present in languages");
           }
         },
       },

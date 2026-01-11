@@ -5,7 +5,7 @@ import i18next from "i18next";
 import marked from "marked";
 import path from "path";
 
-import config from "../config";
+import config, { adminUrl } from "../config";
 import i18n from "../i18n";
 import { Event } from "../models/event";
 import mailTransporter from "./config";
@@ -45,15 +45,15 @@ const TEMPLATE_DIR = path.join(__dirname, "../../emails");
 
 /** Gets a localized template for the given language, or a fallback one if it doesn't exist. */
 function getTemplate(language: string | null, template: string) {
-  const lng = language || config.mailDefaultLang;
+  const lng = language || config.defaultLanguage;
   // ensure no path injections
   if (!/^[a-zA-Z-]{2,}$/.test(lng)) throw new Error("invalid language");
 
   const localizedPath = path.join(TEMPLATE_DIR, lng, `${template}.pug`);
   if (existsSync(localizedPath)) return { template: localizedPath, lng };
 
-  const defaultPath = path.join(TEMPLATE_DIR, config.mailDefaultLang, `${template}.pug`);
-  return { template: defaultPath, lng: config.mailDefaultLang };
+  const defaultPath = path.join(TEMPLATE_DIR, config.defaultLanguage, `${template}.pug`);
+  return { template: defaultPath, lng: config.defaultLanguage };
 }
 
 const TEMPLATE_OPTIONS = {
@@ -129,7 +129,7 @@ export default class EmailService {
       const email = new Email(TEMPLATE_OPTIONS);
       const brandedParams = {
         ...params,
-        siteUrl: config.adminUrl.replace(/\{lang\}/g, language || config.mailDefaultLang),
+        siteUrl: adminUrl({ lang: language || config.defaultLanguage }),
         branding: {
           footerText: config.brandingMailFooterText,
           footerLink: config.brandingMailFooterLink,
@@ -149,7 +149,7 @@ export default class EmailService {
       const email = new Email(TEMPLATE_OPTIONS);
       const brandedParams = {
         ...params,
-        siteUrl: config.adminUrl.replace(/\{lang\}/g, language || config.mailDefaultLang),
+        siteUrl: adminUrl({ lang: language || config.defaultLanguage }),
         branding: {
           footerText: config.brandingMailFooterText,
           footerLink: config.brandingMailFooterLink,

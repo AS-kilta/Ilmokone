@@ -24,13 +24,13 @@ services:
       - ./data:/var/lib/mysql
     ports:
       # Port open to the host. ilmomasiina-dev container uses default MariaDB port 3306.
-      - 3306:3306
+      - "3306:3306"
 
   ilmomasiina-dev:
     build:
       context: .
       dockerfile: "Dockerfile.dev"
-    command: "npm start"
+    command: "pnpm start"
     restart: unless-stopped
     depends_on:
       - database-dev
@@ -56,8 +56,8 @@ services:
         source: ./packages/ilmomasiina-frontend/index.html
         target: /opt/ilmomasiina/packages/ilmomasiina-frontend/index.html
       - type: bind
-        source: ./packages/ilmomasiina-components/src
-        target: /opt/ilmomasiina/packages/ilmomasiina-components/src
+        source: ./packages/ilmomasiina-client/src
+        target: /opt/ilmomasiina/packages/ilmomasiina-client/src
       - type: bind
         source: ./packages/ilmomasiina-backend/src
         target: /opt/ilmomasiina/packages/ilmomasiina-backend/src

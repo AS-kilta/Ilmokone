@@ -56,6 +56,9 @@ beforeEach(async () => {
     await sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
     // Create a test user to ensure full functionality.
     global.adminUser = await testUser();
+
+    // Create a token for the admin.
+    global.adminToken = server.adminSession.createSession(global.adminUser);
   }
 });
 

@@ -1,3 +1,4 @@
+import type { EditorActions } from "./actions";
 import {
   CATEGORIES_LOADED,
   EDIT_CONFLICT,
@@ -9,18 +10,20 @@ import {
   EVENT_SAVING,
   EVENT_SLUG_CHECKED,
   EVENT_SLUG_CHECKING,
+  LANGUAGE_SELECTED,
   MOVE_TO_QUEUE_CANCELED,
   MOVE_TO_QUEUE_WARNING,
   RESET,
   SAVED_SIGNUP,
   SIGNUP_EDIT_CANCELED,
 } from "./actionTypes";
-import type { EditorActions, EditorExistingSignup, EditorNewSignup, EditorSignup, EditorState } from "./types";
+import type { EditorExistingSignup, EditorNewSignup, EditorSignup, EditorState } from "./types";
 
 const initialState: EditorState = {
   event: null,
   isNew: true,
   slugAvailability: null,
+  selectedLanguage: DEFAULT_LANGUAGE,
   allCategories: null,
   moveToQueueModal: null,
   editConflictModal: null,
@@ -45,6 +48,7 @@ export default function reducer(state = initialState, action: EditorActions): Ed
         ...state,
         event: action.payload.event,
         isNew: action.payload.isNew,
+        selectedLanguage: action.payload.event?.defaultLanguage ?? DEFAULT_LANGUAGE,
         loadError: undefined,
       };
     case EVENT_LOAD_FAILED:
@@ -61,6 +65,11 @@ export default function reducer(state = initialState, action: EditorActions): Ed
       return {
         ...state,
         slugAvailability: action.payload,
+      };
+    case LANGUAGE_SELECTED:
+      return {
+        ...state,
+        selectedLanguage: action.payload,
       };
     case EVENT_SAVING:
       return {
@@ -149,6 +158,7 @@ export default function reducer(state = initialState, action: EditorActions): Ed
         editedSignup: null,
       };
     default:
+      action satisfies never;
       return state;
   }
 }

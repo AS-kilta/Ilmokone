@@ -5,20 +5,23 @@ import { FieldInputProps, Form, FormRenderProps, useFormState } from "react-fina
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
-import { ApiError, EditSignupContextProvider, EditSignupState, FieldRow } from "@tietokilta/ilmomasiina-components";
-import CommonFields from "@tietokilta/ilmomasiina-components/dist/routes/EditSignup/components/CommonFields";
 import {
-  formDataToSignupUpdate,
-  SignupFormData,
-  signupToFormData,
-} from "@tietokilta/ilmomasiina-components/dist/routes/EditSignup/components/formData";
-import QuestionFields from "@tietokilta/ilmomasiina-components/dist/routes/EditSignup/components/QuestionFields";
-import { errorDesc } from "@tietokilta/ilmomasiina-components/dist/utils/errorMessage";
-import useEvent from "@tietokilta/ilmomasiina-components/dist/utils/useEvent";
+  ApiError,
+  EditSignupContextProvider,
+  EditSignupState,
+  errorDesc,
+  getLocalizedEvent,
+} from "@tietokilta/ilmomasiina-client";
 import type { QuotaID } from "@tietokilta/ilmomasiina-models";
+import FieldRow from "../../../components/FieldRow";
+import type { TKey } from "../../../i18n";
 import { saveSignup, signupEditCanceled } from "../../../modules/editor/actions";
 import type { EditorEvent, EditorSignup } from "../../../modules/editor/types";
 import { useTypedDispatch, useTypedSelector } from "../../../store/reducers";
+import useEvent from "../../../utils/useEvent";
+import CommonFields from "../../EditSignup/components/CommonFields";
+import { formDataToSignupUpdate, SignupFormData, signupToFormData } from "../../EditSignup/components/formData";
+import QuestionFields from "../../EditSignup/components/QuestionFields";
 import { editorEventToUserEvent, previewDummyQuota } from "./userComponentInterop";
 
 const QuotaField = (props: FieldInputProps<QuotaID>) => {
@@ -95,23 +98,26 @@ const EditSignupModal = () => {
   const editSignupCtx = useMemo((): EditSignupState | null => {
     if (!editedSignup) return null;
     const convertedEvent = editorEventToUserEvent(values);
+    const signup = {
+      createdAt: new Date().toISOString(),
+      status: null,
+      position: null,
+      confirmed: false,
+      editableForMillis: Infinity,
+      confirmableForMillis: Infinity,
+      // Override with values from signup if this is an existing signup.
+      ...editedSignup,
+      id: editedSignup.id ?? "new",
+      quota: previewDummyQuota(convertedEvent),
+    };
     return {
       pending: false,
       editToken: "",
       isNew: true,
       event: convertedEvent,
-      signup: {
-        createdAt: new Date().toISOString(),
-        status: null,
-        position: null,
-        confirmed: false,
-        editableForMillis: Infinity,
-        confirmableForMillis: Infinity,
-        // Override with values from signup if this is an existing signup.
-        ...editedSignup,
-        id: editedSignup.id ?? "new",
-        quota: previewDummyQuota(convertedEvent),
-      },
+      localizedEvent: getLocalizedEvent(convertedEvent, editedSignup?.language ?? values.defaultLanguage),
+      signup,
+      localizedSignup: signup, // No need for quota name localization
       editingClosedOnLoad: false,
       confirmableUntil: Infinity,
       editableUntil: Infinity,
@@ -127,7 +133,7 @@ const EditSignupModal = () => {
       await dispatch(saveSignup(update));
       toast.success(t("editor.editSignup.success"), { autoClose: 5000 });
     } catch (error) {
-      toast.error(errorDesc(t, error as ApiError, "editor.saveSignupError"), { autoClose: 5000 });
+      toast.error(t(errorDesc<TKey>(error as ApiError, "editor.saveSignupError")), { autoClose: 5000 });
     }
   });
   const cancel = useEvent(() => dispatch(signupEditCanceled()));

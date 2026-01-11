@@ -2,30 +2,53 @@ name: Build & deploy
 
 env:
   # Change this to upload the built image to your own organization.
-  docker_tag: "ghcr.io/AS-kilta/Ilmokone"
+  docker_tag: "ghcr.io/tietokilta/ilmomasiina"
 
   # Change these to customize your build.
-  branding_header_title_text: "AS Ilmokone"
-  branding_header_title_text_short: "Ilmokone"
+  branding_header_title_text: "Tietokillan ilmomasiina"
+  branding_header_title_text_short: "Ilmomasiina"
   branding_footer_gdpr_text: "Tietosuoja"
-  branding_footer_gdpr_link: "https://as.fi/guild/legal/privacy-policy-ilmokone"
-  branding_footer_home_text: "as.fi"
-  branding_footer_home_link: "https://as.fi"
-  branding_login_placeholder_email: "admin@as.fi"
+  branding_footer_gdpr_link: "https://tietokilta.fi/fi/kilta/ilmorekisteri"
+  branding_footer_home_text: "Tietokilta.fi"
+  branding_footer_home_link: "https://tietokilta.fi"
+  branding_login_placeholder_email: "admin@tietokilta.fi"
 
 on:
   push:
     branches:
-      - main
+      - dev
+    tags:
+      - "v*"
 
 jobs:
   lint:
     name: Lint & type-check
     uses: ./.github/workflows/lint-test.yml
 
+  packagejson:
+    name: Check package.json versions
+    runs-on: ubuntu-latest
+    if: github.ref_type == 'tag'
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Check package.json versions against tag
+        run: |
+          errors=0
+          for file in package.json packages/*/package.json
+          do
+            if cat $file | jq '"v" + .version' | grep -Fqvx '"${{ github.ref_name }}"'
+            then
+              echo "::error file=$file::The version here does not match the Git tag you pushed (${{ github.ref_name }}). This would cause no NPM packages to be published."
+              errors=1
+            fi
+          done
+          exit $errors
+
   docker:
     name: Push Docker image to GitHub Packages
-    needs: lint
+    needs: [lint, packagejson]
     runs-on: ubuntu-latest
     permissions:
       packages: write
