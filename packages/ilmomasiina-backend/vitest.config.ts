@@ -16,5 +16,9 @@ export default defineConfig({
     setupFiles: ["test/setup.ts"],
     // Running in parallel causes conflicts between global test resources.
     fileParallelism: false,
+    coverage: {
+      provider: "v8",
+      include: ["src/**/*.ts"],
+    },
   },
 });

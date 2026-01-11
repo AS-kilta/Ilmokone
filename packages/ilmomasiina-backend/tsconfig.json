@@ -1,7 +1,12 @@
 {
   "compilerOptions": {
     "target": "ES2019",
-    "lib": ["ES2019", "dom", "dom.iterable", "esnext"],
+    "lib": [
+      "ES2019",
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -23,7 +28,16 @@
       "@tietokilta/ilmomasiina-models/dist/*": ["../ilmomasiina-models/src/*"]
     }
   },
-  "exclude": ["node_modules", "dist"],
-  "include": ["src/**/*", "test/**/*", "vitest.config.ts"],
-  "references": [{ "path": "../ilmomasiina-models" }]
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "include": [
+    "src/**/*",
+    "test/**/*",
+    "vitest.config.ts"
+  ],
+  "references": [
+    { "path": "../ilmomasiina-models/tsconfig.cjs.json" }
+  ]
 }

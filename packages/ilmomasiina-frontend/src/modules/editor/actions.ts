@@ -1,4 +1,4 @@
-import { ApiError } from "@tietokilta/ilmomasiina-components";
+import { ApiError } from "@tietokilta/ilmomasiina-client";
 import {
   AdminEventResponse,
   AdminSignupCreateBody,
@@ -25,63 +25,15 @@ import {
   EVENT_SAVING,
   EVENT_SLUG_CHECKED,
   EVENT_SLUG_CHECKING,
+  LANGUAGE_SELECTED,
   MOVE_TO_QUEUE_CANCELED,
   MOVE_TO_QUEUE_WARNING,
   RESET,
   SAVED_SIGNUP,
   SIGNUP_EDIT_CANCELED,
 } from "./actionTypes";
-import type { AdminSignupWithQuota, ConvertedEditorEvent, EditorEvent, EditorSignup } from "./types";
-
-export enum EditorEventType {
-  ONLY_EVENT = "event",
-  EVENT_WITH_SIGNUP = "event+signup",
-  ONLY_SIGNUP = "signup",
-}
-
-export const defaultEvent = (): EditorEvent => ({
-  eventType: EditorEventType.EVENT_WITH_SIGNUP,
-  title: "",
-  slug: "",
-  date: null,
-  endDate: null,
-  webpageUrl: "",
-  facebookUrl: "",
-  category: "",
-  location: "",
-  description: "",
-  price: "",
-  bankId: "",
-  recipient: "",
-  message: "",
-  dueDate: null,
-  paymentBarcode: "",
-  showBarcode: false,
-  signupsPublic: false,
-  registrationStartDate: null,
-  registrationEndDate: null,
-
-  openQuotaSize: 0,
-  useOpenQuota: false,
-  quotas: [
-    {
-      key: "new",
-      title: "Kiintiö",
-      size: 20,
-    },
-  ],
-
-  nameQuestion: true,
-  emailQuestion: true,
-  questions: [],
-
-  verificationEmail: "",
-
-  draft: true,
-  listed: true,
-
-  updatedAt: "",
-});
+import { editorEventToServer } from "./selectors";
+import type { AdminSignupWithQuota, EditorEvent, EditorSignup } from "./types";
 
 export const resetState = () =>
   <const>{
@@ -94,6 +46,15 @@ export const loaded = (event: AdminEventResponse) =>
     payload: {
       event,
       isNew: false,
+    },
+  };
+
+export const loadedForCopy = (event: AdminEventResponse) =>
+  <const>{
+    type: EVENT_LOADED,
+    payload: {
+      event,
+      isNew: true,
     },
   };
 
@@ -121,6 +82,12 @@ export const slugAvailabilityChecked = (result: CheckSlugResponse | null) =>
   <const>{
     type: EVENT_SLUG_CHECKED,
     payload: result,
+  };
+
+export const languageSelected = (language: string) =>
+  <const>{
+    type: LANGUAGE_SELECTED,
+    payload: language,
   };
 
 export const saving = () =>
@@ -182,10 +149,12 @@ export const signupEditCanceled = () =>
 export type EditorActions =
   | ReturnType<typeof resetState>
   | ReturnType<typeof loaded>
+  | ReturnType<typeof loadedForCopy>
   | ReturnType<typeof newEvent>
   | ReturnType<typeof loadFailed>
   | ReturnType<typeof checkingSlugAvailability>
   | ReturnType<typeof slugAvailabilityChecked>
+  | ReturnType<typeof languageSelected>
   | ReturnType<typeof saving>
   | ReturnType<typeof moveToQueueWarning>
   | ReturnType<typeof moveToQueueCanceled>
@@ -197,60 +166,23 @@ export type EditorActions =
   | ReturnType<typeof savedSignup>
   | ReturnType<typeof signupEditCanceled>;
 
-function eventType(event: AdminEventResponse): EditorEventType {
-  if (event.date === null) {
-    return EditorEventType.ONLY_SIGNUP;
-  }
-  if (event.registrationStartDate === null) {
-    return EditorEventType.ONLY_EVENT;
-  }
-  return EditorEventType.EVENT_WITH_SIGNUP;
-}
-
-export const serverEventToEditor = (event: AdminEventResponse): EditorEvent => ({
-  ...event,
-  eventType: eventType(event),
-  date: event.date ? new Date(event.date) : null,
-  endDate: event.endDate ? new Date(event.endDate) : null,
-  dueDate: event.dueDate ? new Date(event.dueDate) : null,
-  registrationStartDate: event.registrationStartDate ? new Date(event.registrationStartDate) : null,
-  registrationEndDate: event.registrationEndDate ? new Date(event.registrationEndDate) : null,
-  quotas: event.quotas.map((quota) => ({
-    ...quota,
-    key: quota.id,
-  })),
-  useOpenQuota: event.openQuotaSize > 0,
-  questions: event.questions.map((question) => ({
-    ...question,
-    key: question.id,
-    options: question.options || [""],
-  })),
-});
-
-export const editorEventToServer = (form: EditorEvent): ConvertedEditorEvent => ({
-  ...form,
-  date: form.eventType === EditorEventType.ONLY_SIGNUP ? null : (form.date?.toISOString() ?? null),
-  endDate: form.eventType === EditorEventType.ONLY_SIGNUP ? null : (form.endDate?.toISOString() ?? null),
-  dueDate: form.dueDate ? form.dueDate.toISOString() : null,
-  paymentBarcode: form.showBarcode ? paymentBarcode(form.bankId, form.message, form.price, form.dueDate) : null,
-  registrationStartDate:
-    form.eventType === EditorEventType.ONLY_EVENT ? null : (form.registrationStartDate?.toISOString() ?? null),
-  registrationEndDate:
-    form.eventType === EditorEventType.ONLY_EVENT ? null : (form.registrationEndDate?.toISOString() ?? null),
-  quotas: form.quotas,
-  openQuotaSize: form.useOpenQuota && form.openQuotaSize ? form.openQuotaSize : 0,
-  questions: form.questions.map((question) => ({
-    ...question,
-    options: question.type === "select" || question.type === "checkbox" ? question.options : null,
-  })),
-});
-
 export const getEvent = (id: EventID) => async (dispatch: DispatchAction, getState: GetState) => {
   const { accessToken } = getState().auth;
 
   try {
     const response = await adminApiFetch<AdminEventResponse>(`admin/events/${id}`, { accessToken }, dispatch);
     dispatch(loaded(response));
+  } catch (e) {
+    dispatch(loadFailed(e as ApiError));
+  }
+};
+
+export const copyEvent = (id: EventID) => async (dispatch: DispatchAction, getState: GetState) => {
+  const { accessToken } = getState().auth;
+
+  try {
+    const response = await adminApiFetch<AdminEventResponse>(`admin/events/${id}`, { accessToken }, dispatch);
+    dispatch(loadedForCopy(response));
   } catch (e) {
     dispatch(loadFailed(e as ApiError));
   }

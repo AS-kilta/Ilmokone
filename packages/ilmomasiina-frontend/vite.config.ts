@@ -51,6 +51,24 @@ export default defineConfig(({ mode }) => ({
     sourcemap: true,
   },
 
+  css: {
+    preprocessorOptions: {
+      scss: {
+        // Silence deprecation warning spam from Bootstrap for now.
+        // We will get rid of Bootstrap eventually.
+        silenceDeprecations: [
+          "mixed-decls",
+          "slash-div",
+          "abs-percent",
+          "import",
+          "legacy-js-api",
+          "color-functions",
+          "global-builtin",
+        ],
+      },
+    },
+  },
+
   define: quoteValues({
     DEV: mode === "development",
     PROD: mode === "production",
@@ -69,6 +87,7 @@ export default defineConfig(({ mode }) => ({
     BRANDING_FOOTER_HOME_LINK: process.env.BRANDING_FOOTER_HOME_LINK || "",
     BRANDING_LOGIN_PLACEHOLDER_EMAIL: process.env.BRANDING_LOGIN_PLACEHOLDER_EMAIL || "admin@tietokilta.fi",
     TIMEZONE,
+    DEFAULT_LANGUAGE: process.env.DEFAULT_LANGUAGE || "fi",
   }),
 
   plugins: [

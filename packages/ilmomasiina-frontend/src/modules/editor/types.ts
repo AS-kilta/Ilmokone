@@ -1,5 +1,5 @@
-import type { ApiError } from "@tietokilta/ilmomasiina-components";
-import type { QuotaSignups, SignupWithQuota } from "@tietokilta/ilmomasiina-components/dist/utils/signupUtils";
+import type { ApiError } from "@tietokilta/ilmomasiina-client";
+import type { QuotaSignups, SignupWithQuota } from "@tietokilta/ilmomasiina-client/dist/utils/signupUtils";
 import type {
   AdminEventResponse,
   AdminSignupCreateBody,
@@ -14,7 +14,12 @@ import type {
   QuotaUpdate,
   SignupCreateBody,
 } from "@tietokilta/ilmomasiina-models";
-import type { EditorEventType } from "./actions";
+
+export enum EditorEventType {
+  ONLY_EVENT = "event",
+  EVENT_WITH_SIGNUP = "event+signup",
+  ONLY_SIGNUP = "signup",
+}
 
 export type AdminQuotaSignups = QuotaSignups<AdminEventResponse>;
 export type AdminSignupWithQuota = SignupWithQuota<AdminEventResponse>;
@@ -35,6 +40,7 @@ export interface EditorState {
   isNew: boolean;
   loadError?: ApiError;
   slugAvailability: null | "checking" | CheckSlugResponse;
+  selectedLanguage: string;
   allCategories: null | string[];
   moveToQueueModal: { count: number } | null;
   editConflictModal: EditConflictError | null;
@@ -88,6 +94,3 @@ export interface EditorEvent
 
 /** Stricter version of EventUpdateBody with fields we guarantee to return from `editorEventToServer`. */
 export type ConvertedEditorEvent = Omit<Required<EventUpdateBody>, "moveSignupsToQueue">;
-
-export { EditorEventType } from "./actions";
-export type { EditorActions } from "./actions";

@@ -5,11 +5,19 @@ both for [production](#production) and [development](#development).
 
 ## Customization
 
+> [!IMPORTANT]
+> The `dev` branch is currently used for major changes upcoming to Ilmomasiina 3.0. Significant instability and
+> breaking changes are expected. If you maintain a fork of Ilmomasiina, we **strongly recommend** tracking `2.x` until
+> 3.0 is more stable.
+>
+> We expect to release a version of Ilmomasiina 2.x in 2026 that will allow making most customizations from the UI,
+> removing the need for most users to fork Ilmomasiina.
+
 If you want to change any of the following, you'll need to modify the code slightly and
 build your own Docker image (if using Docker):
 
 - Hosting in a subfolder (instead of directly at `https://ilmo.your.domain/`)
-- Colors ([`packages/ilmomasiina-components/src/styles/_definitions.scss`](../packages/ilmomasiina-components/src/styles/_definitions.scss))
+- Colors ([`packages/ilmomasiina-frontend/src/styles/_definitions.scss`](../packages/ilmomasiina-frontend/src/styles/_definitions.scss))
 - Header logo (`packages/ilmomasiina-frontend/src/assets/logo.svg`) (can also be disabled from `_definitions.scss`)
 - Favicon (`packages/ilmomasiina-frontend/public/*.png`)
 - Header title (build args or [`packages/ilmomasiina-frontend/src/branding.ts`](../packages/ilmomasiina-frontend/src/branding.ts))
@@ -90,6 +98,9 @@ generate passwords with at least 32 characters, or e.g. run `openssl rand -hex 3
 
 ### Database setup
 
+> [!NOTE]
+> Ilmomasiina 3.0 will not support MySQL. Consider using PostgreSQL for new installations.
+
 You'll need a MySQL/MariaDB or PostgreSQL database, and a user with full privileges to the DB.
 Instructions are provided here for [PostgreSQL in Docker](#postgresql-with-docker),
 and both [MariaDB](#ubuntudebian-mariadb-installation) and [PostgreSQL](#ubuntudebian-postgresql-installation)
@@ -118,7 +129,8 @@ Especially for development, running PostgreSQL with Docker may be the easiest op
 
 #### Ubuntu/Debian MariaDB installation
 
-**NOTE:** MySQL will not be supported by Ilmomasiina 3.0.
+> [!NOTE]
+> Ilmomasiina 3.0 will not support MySQL. Consider using PostgreSQL for new installations.
 
 If you intend to run your own database, you can follow these instructions to install one on a Ubuntu or Debian system.
 
