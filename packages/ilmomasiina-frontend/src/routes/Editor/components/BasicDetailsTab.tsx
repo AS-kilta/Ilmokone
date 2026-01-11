@@ -230,7 +230,6 @@ const BasicDetailsTab = () => {
         maxLength={255}
         formatError={formatError}
       />
-      <LocalizedFieldRow
       <FieldRow
         name="bankId"
         label={t("editor.basic.payment.bankId")}

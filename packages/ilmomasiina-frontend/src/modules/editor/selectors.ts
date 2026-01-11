@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import { AdminEventResponse } from "@tietokilta/ilmomasiina-models";
 import i18n from "../../i18n";
 import type { AppState } from "../../store/types";
+import paymentBarcode from "../../utils/paymentBarcode";
 import { ConvertedEditorEvent, EditorEvent, EditorEventType } from "./types";
 
 export const defaultEvent = (): EditorEvent => ({
@@ -17,6 +18,12 @@ export const defaultEvent = (): EditorEvent => ({
   location: "",
   description: "",
   price: "",
+  bankId: "",
+  recipient: "",
+  message: "",
+  dueDate: null,
+  paymentBarcode: "",
+  showBarcode: false,
   signupsPublic: false,
   languages: {},
   defaultLanguage: DEFAULT_LANGUAGE,
@@ -55,6 +62,7 @@ export const serverEventToEditor = (event: AdminEventResponse): EditorEvent => (
   eventType: eventType(event),
   date: event.date ? new Date(event.date) : null,
   endDate: event.endDate ? new Date(event.endDate) : null,
+  dueDate: event.dueDate ? new Date(event.dueDate) : null,
   registrationStartDate: event.registrationStartDate ? new Date(event.registrationStartDate) : null,
   registrationEndDate: event.registrationEndDate ? new Date(event.registrationEndDate) : null,
   quotas: event.quotas.map((quota) => ({
@@ -85,6 +93,8 @@ export const editorEventToServer = (form: EditorEvent): ConvertedEditorEvent => 
   ...form,
   date: form.eventType === EditorEventType.ONLY_SIGNUP ? null : (form.date?.toISOString() ?? null),
   endDate: form.eventType === EditorEventType.ONLY_SIGNUP ? null : (form.endDate?.toISOString() ?? null),
+  dueDate: form.dueDate ? form.dueDate.toISOString() : null,
+  paymentBarcode: form.showBarcode ? paymentBarcode(form.bankId, form.message, form.price, form.dueDate) : null,
   registrationStartDate:
     form.eventType === EditorEventType.ONLY_EVENT ? null : (form.registrationStartDate?.toISOString() ?? null),
   registrationEndDate:

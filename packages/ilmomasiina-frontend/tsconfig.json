@@ -26,8 +26,5 @@
   },
   "exclude": ["dist"],
   "include": ["src", "vite.config.ts"],
-  "references": [
-    { "path": "../ilmomasiina-client" },
-    { "path": "../ilmomasiina-models" }
-  ]
+  "references": [{ "path": "../ilmomasiina-client" }, { "path": "../ilmomasiina-models" }]
 }

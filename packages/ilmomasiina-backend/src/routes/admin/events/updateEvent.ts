@@ -91,6 +91,7 @@ export default async function updateEvent(
         registrationStartDate: toDate(request.body.registrationStartDate),
         date: toDate(request.body.date),
         endDate: toDate(request.body.endDate),
+        dueDate: toDate(request.body.dueDate),
       });
       // Validate and fixup data within languages. This uses event.languages and is thus done after set()
       event.validateLanguages(updatedQuestions ?? event.questions!, updatedQuotas ?? event.quotas!);

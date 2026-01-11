@@ -13,7 +13,6 @@ import {
 } from "@tietokilta/ilmomasiina-models";
 import adminApiFetch from "../../api";
 import type { DispatchAction, GetState } from "../../store/types";
-import paymentBarcode from "../../utils/paymentBarcode";
 import {
   CATEGORIES_LOADED,
   EDIT_CONFLICT,

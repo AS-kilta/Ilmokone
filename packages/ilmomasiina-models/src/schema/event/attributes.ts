@@ -48,6 +48,24 @@ export const publicEventAttributes = Type.Object({
   registrationEndDate: Nullable(Type.String({ format: "date-time" }), {
     description: "Event signup closing date.",
   }),
+  recipient: Nullable(Type.String({ maxLength: 255 }), {
+    description: "Payment recipient name.",
+  }),
+  message: Nullable(Type.String({ maxLength: 255 }), {
+    description: "Bank transfer message.",
+  }),
+  bankId: Nullable(Type.String({ maxLength: 255 }), {
+    description: "Bank ID in IBAN format.",
+  }),
+  dueDate: Nullable(Type.String({ format: "date-time" }), {
+    description: "Payment due date.",
+  }),
+  paymentBarcode: Nullable(Type.String({ maxLength: 255 }), {
+    description: "Virtual payment barcode.",
+  }),
+  showBarcode: Type.Boolean({
+    description: "Is virtual payment barcode shown.",
+  }),
   openQuotaSize: Type.Integer({
     description: "The size of the open quota, which will be filled with signups overflowing their dedicated quota.",
     minimum: 0,
@@ -91,24 +109,6 @@ export const publicCommonAttributes = Type.Object({
   }),
   price: Nullable(Type.String({ maxLength: 255 }), {
     description: "Free-form pricing information for the event.",
-  }),
-  recipient: Nullable(Type.String({ maxLength: 255 }), {
-    description: "Payment recipient name.",
-  }),
-  message: Nullable(Type.String({ maxLength: 255 }), {
-    description: "Bank transfer message.",
-  }),
-  bankId: Nullable(Type.String({ maxLength: 255 }), {
-    description: "Bank ID in IBAN format.",
-  }),
-  dueDate: Nullable(Type.String({ format: "date-time" }), {
-    description: "Payment due date.",
-  }),
-  paymentBarcode: Nullable(Type.String({ maxLength: 255 }), {
-    description: "Virtual payment barcode.",
-  }),
-  showBarcode: Type.Boolean({
-    description: "Is virtual payment barcode shown.",
   }),
   location: Nullable(Type.String({ maxLength: 255 }), {
     description: "Free-form location information for the event.",

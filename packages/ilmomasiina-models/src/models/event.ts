@@ -1,5 +1,6 @@
 import type { QuestionLanguage, QuotaLanguage } from "../schema";
 
+// TODO: make price not dependent on language
 interface EventPerLanguageAttributes {
   title: string;
   description: string | null;

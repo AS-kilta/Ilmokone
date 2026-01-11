@@ -5,7 +5,5 @@
     "tsBuildInfoFile": "dist/cjs/tsconfig.tsbuildinfo",
     "module": "CommonJS"
   },
-  "references": [
-    { "path": "../ilmomasiina-models/tsconfig.cjs.json" }
-  ]
+  "references": [{ "path": "../ilmomasiina-models/tsconfig.cjs.json" }]
 }

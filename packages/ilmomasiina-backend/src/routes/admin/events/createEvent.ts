@@ -26,6 +26,7 @@ export default async function createEvent(
         endDate: toDate(request.body.endDate),
         registrationStartDate: toDate(request.body.registrationStartDate),
         registrationEndDate: toDate(request.body.registrationEndDate),
+        dueDate: toDate(request.body.dueDate),
       });
       // Remove options from question types that don't support them. This must be done before validateLanguages().
       const questionsToCreate = request.body.questions.map((question) => ({

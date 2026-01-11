@@ -3,7 +3,7 @@ import { DataTypes } from "sequelize";
 import { defineMigration } from "./util";
 
 export default defineMigration({
-  name: "0006-json-datatype",
+  name: "0008-json-datatype",
   async up({ context: { sequelize, transaction } }) {
     if (sequelize.getDialect() === "postgres") {
       // Postgres requires USING to convert to JSON, which we can't provide via QueryInterface.

@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 
+import i18n from "i18next";
 import { Button } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";

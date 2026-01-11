@@ -2,6 +2,8 @@ import React from "react";
 
 import { useTranslation } from "react-i18next";
 
+// TODO: fix language selection for email preview
+import EmailPreview from "./EmailPreview";
 import useEditorErrors from "./errors";
 import LanguageSelect from "./LanguageSelect";
 import LocalizedFieldRow from "./LocalizedFieldRow";
@@ -20,7 +22,9 @@ const EmailsTab = () => {
         label={t("editor.emails.verificationEmail")}
         rows={10}
         formatError={formatError}
+        help={t("editor.emails.verificationEmail.info")}
       />
+      <EmailPreview />
     </div>
   );
 };

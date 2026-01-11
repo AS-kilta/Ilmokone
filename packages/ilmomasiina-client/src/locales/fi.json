@@ -91,6 +91,7 @@
     "signupState.notOpened.short": "Alkaa {{date}}.",
     "signupState.open": "Ilmoittautuminen auki {{date}} asti.",
     "signupState.open.short": "Auki {{date}} asti.",
+    "singleEvent.copyBarcode": "Kopioi maksutiedot",
     "signupState.closed": "Ilmoittautuminen päättyi {{date}}.",
     "signupState.closed.short": "Päättyi {{date}}.",
     "singleEvent.editEvent": "Muokkaa",

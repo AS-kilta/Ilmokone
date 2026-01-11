@@ -3,7 +3,7 @@ import { DataTypes } from "sequelize";
 import { defineMigration } from "./util";
 
 export default defineMigration({
-  name: "0007-add-languages",
+  name: "0009-add-languages",
   async up({ context: { sequelize, transaction } }) {
     const query = sequelize.getQueryInterface();
     await query.addColumn(
