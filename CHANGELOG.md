@@ -11,6 +11,7 @@
 - Enabled code splitting for the frontend, halving the initial page load from its previous size
 - Upgraded backend dependencies to latest versions, including Node 24 and Fastify 5
 - Upgraded most frontend dependencies to modern versions, including React 19 and Bootstrap 5
+- Accessing signups on deleted events no longer causes internal server errors
 
 ## 2.0.0
 
