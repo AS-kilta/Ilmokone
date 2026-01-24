@@ -1,23 +1,16 @@
 # Changelog
 
-## 2.1.0-beta.3
+## 2.1.0
+
+**Features:**
+
+- **ilmomasiina-client:** Now officially supports React 19
 
 **Bug fixes and improvements:**
 
 - Enabled code splitting for the frontend, halving the initial page load from its previous size
-
-## 2.1.0-beta.2
-
-**Bug fixes and improvements:**
-
 - Upgraded backend dependencies to latest versions, including Node 24 and Fastify 5
-
-## 2.1.0-beta.1
-
-**Bug fixes and improvements:**
-
 - Upgraded most frontend dependencies to modern versions, including React 19 and Bootstrap 5
-- **ilmomasiina-client:** Now officially supports React 19
 
 ## 2.0.0
 
