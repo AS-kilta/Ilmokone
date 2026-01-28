@@ -97,7 +97,7 @@ generate passwords with at least 32 characters, or e.g. run `openssl rand -hex 3
 ### Database setup
 
 > [!NOTE]
-> Ilmomasiina 3.0 will not support MySQL. Consider using PostgreSQL for new installations.
+> Ilmomasiina 3.0 will not support MySQL/MariaDB. Consider using PostgreSQL for new installations.
 
 You'll need a MySQL/MariaDB or PostgreSQL database, and a user with full privileges to the DB.
 Instructions are provided here for [PostgreSQL in Docker](#postgresql-with-docker),
@@ -128,7 +128,7 @@ Especially for development, running PostgreSQL with Docker may be the easiest op
 #### Ubuntu/Debian MariaDB installation
 
 > [!NOTE]
-> Ilmomasiina 3.0 will not support MySQL. Consider using PostgreSQL for new installations.
+> Ilmomasiina 3.0 will not support MySQL/MariaDB. Consider using PostgreSQL for new installations.
 
 If you intend to run your own database, you can follow these instructions to install one on a Ubuntu or Debian system.
 
@@ -400,9 +400,8 @@ Currently Prettier is not used in the project, so here is a recommended `.vscode
 
 1. Install a suitable Node version (e.g. using nvm).
 2. Install a database.
-    - See [_Database setup_](#database-setup) for instructions on setting up MySQL.
+    - See [_Database setup_](#database-setup) for instructions on setting up PostgreSQL.
     - You can also use Docker for a database.
-    - SQLite may also work, but is currently untested.
 3. Create a `.env` file at the root of this repository. You can copy [.env.example](../.env.example) to begin and read the instructions within.
 4. Run `npm install -g pnpm@8` to install pnpm. Then run `pnpm install --frozen-lockfile` to setup cross-dependencies
    between packages and install other dependencies.
@@ -432,7 +431,7 @@ dependencies, package.json or ESLint configs. You'll also need Node.js and pnpm 
 To run tests, you'll likely want another test database so test data doesn't clutter your manual development database.
 
 1. Follow the same steps as in [the usual database setup](#database-setup), but name the database something different. This example uses `ilmo_test`.
-2. Create a `.env.test` file at the root of this repository. Assuming your test database runs on the same MySQL/Postgres server, just put this in:
+2. Create a `.env.test` file at the root of this repository. Assuming your test database runs on the same database server, just put this in:
     ```shell
     DB_DATABASE=ilmo_test
     THIS_IS_A_TEST_DB_AND_CAN_BE_WIPED=1

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.1
+
+**Bug fixes and improvements:**
+
+- Added official support for the `mariadb` database dialect to fix errors when using MariaDB >= 10.5.2
+  - **Important:** If you are using MariaDB, please update your `.env` file to set `DB_DIALECT=mariadb`
+- Fixed the slug availability check request failing
+
 ## 2.1.0
 
 **Features:**
