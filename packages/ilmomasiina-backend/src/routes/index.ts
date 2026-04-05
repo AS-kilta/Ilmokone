@@ -1,6 +1,6 @@
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
-import { Type } from "@sinclair/typebox";
 import { FastifyInstance } from "fastify";
+import { Type } from "typebox";
 
 import * as schema from "@tietokilta/ilmomasiina-models";
 import { addLogEventHook } from "../auditlog";
@@ -127,7 +127,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance) {
         params: schema.adminEventPathParams,
         response: {
           ...errorResponses,
-          204: {},
+          204: Type.Null(),
         },
       },
     },
@@ -179,7 +179,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance) {
         params: schema.signupPathParams,
         response: {
           ...errorResponses,
-          204: {},
+          204: Type.Null(),
         },
       },
     },
@@ -251,7 +251,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance) {
         params: schema.userPathParams,
         response: {
           ...errorResponses,
-          204: {},
+          204: Type.Null(),
         },
       },
     },
@@ -265,7 +265,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance) {
         params: schema.userPathParams,
         response: {
           ...errorResponses,
-          204: {},
+          204: Type.Null(),
         },
       },
     },
@@ -278,7 +278,7 @@ async function setupAdminRoutes(fastifyInstance: FastifyInstance) {
         body: schema.userChangePasswordSchema,
         response: {
           ...errorResponses,
-          204: {},
+          204: Type.Null(),
         },
       },
     },
@@ -352,7 +352,7 @@ async function setupPublicRoutes(fastifyInstance: FastifyInstance) {
         params: schema.signupPathParams,
         response: {
           ...errorResponses,
-          204: {},
+          204: Type.Null(),
         },
       },
       // Require valid edit token:

@@ -17,12 +17,12 @@ The package dependencies are slighly complicated to manage properly, so that all
 - All files are imported from `@tietokilta/ilmomasiina-foo` or `@tietokilta/ilmomasiina-foo/dist`, just as they would
   in external code that depends on Ilmomasiina.
 - Each importable `package.json` specifies `exports`, including a root export and potentially other files in `./dist`.
-  - These main exports point to the compiled `.js` and `.d.ts` files under `./dist`.
-  - `./src` is also exported and points to `.ts` files for TypeScript compilation.
+    - These main exports point to the compiled `.js` and `.d.ts` files under `./dist`.
+    - `./src` is also exported and points to `.ts` files for TypeScript compilation.
 - `references` in each `tsconfig.json` points to other `tsconfig`s.
-  - This allows us to import files from other packages as if they were already compiled, and the TypeScript compiler
-    will automatically compile them on demand, even if the target `dist` doesn't exist already.
-  - This also requires using `tsc --build` for both type checking and building.
+    - This allows us to import files from other packages as if they were already compiled, and the TypeScript compiler
+      will automatically compile them on demand, even if the target `dist` doesn't exist already.
+    - This also requires using `tsc --build` for both type checking and building.
 - `ts-node` (and by extension `ts-node-dev`), which we use for the backend, doesn't understand `references`.
   Therefore, the cross-package imports are also defined in `paths` in `tsconfig.json`, which `ts-node` _does_ understand.
 - Vite (used for frontend builds) also doesn't understand `references`, so we use `paths` again, along with the
@@ -36,9 +36,9 @@ project's `package.json` specifies `--workspace-concurrency=1` to prevent pnpm f
 The project is divided into four packages. Source folders are listed under each, roughly in order of importance.
 
 - `ilmomasiina-models` contains the single source of truth for the data model and API:
-  - `src/schema`: TypeBox OpenAPI schema for the API layer.
-  - `src/models`: The JS column types for DB models. These are implemented by the Sequelize models in `ilmomasiina-backend`.
-  - `src/attrs`: Defines the attribute names used included in responses, passed to Sequelize `attributes`.
+    - `src/schema`: TypeBox OpenAPI schema for the API layer.
+    - `src/models`: The JS column types for DB models. These are implemented by the Sequelize models in `ilmomasiina-backend`.
+    - `src/attrs`: Defines the attribute names used included in responses, passed to Sequelize `attributes`.
 - `ilmomasiina-backend` contains the backend code and depends on `ilmomasiina-models`.
     - `src/config.ts`: Config loading and validation. All environment variable access goes through here.
     - `src/models`: Sequelize models implementing the interfaces from `ilmomasiina-models`.
@@ -91,13 +91,12 @@ The frontend is built with [Vite](https://vitejs.dev/).
 
 Libraries:
 
-- [React v17](https://reactjs.org/) with mostly functional components
-  - React upgrade is dependent on switching/upgrading from React-Bootstrap v1, which is a major upgrade
-- [Bootstrap v4](https://getbootstrap.com/docs/4.6/getting-started/introduction/) and
-  [React-Bootstrap v1](https://react-bootstrap-v4.netlify.app/) for UI components
+- [React v19](https://reactjs.org/) with mostly functional components
+- [Bootstrap v5](https://getbootstrap.com/docs/5.3/getting-started/introduction/) and
+  [React-Bootstrap v3](https://react-bootstrap.netlify.app/) for UI components
 - [SCSS](https://sass-lang.com/)
-- [Redux](https://redux.js.org/) and [React Redux](https://react-redux.js.org/)
-  - Some state is handled locally, if there's no need to share it between components
+- [Zustand](https://zustand.docs.pmnd.rs/)
+    - Some state is handled locally, if there's no need to share it between components
 - [React Router](https://reactrouter.com/)
 - [i18next](https://www.i18next.com/) for internationalization
 - [Formik](https://formik.org/)

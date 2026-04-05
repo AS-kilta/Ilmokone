@@ -2,7 +2,7 @@ import { createSelector } from "reselect";
 
 import { AdminEventResponse } from "@tietokilta/ilmomasiina-models";
 import i18n from "../../i18n";
-import type { AppState } from "../../store/types";
+import type { Root } from "../store";
 import paymentBarcode from "../../utils/paymentBarcode";
 import { ConvertedEditorEvent, EditorEvent, EditorEventType } from "./types";
 
@@ -47,6 +47,7 @@ export const defaultEvent = (): EditorEvent => ({
   updatedAt: "",
 });
 
+/** Determines the event type, which is only a thing in the frontend. */
 export function eventType(event: AdminEventResponse): EditorEventType {
   if (event.date === null) {
     return EditorEventType.ONLY_SIGNUP;
@@ -103,8 +104,8 @@ export const editorEventToServer = (form: EditorEvent): ConvertedEditorEvent => 
 });
 
 export const selectFormData = createSelector(
-  (state: AppState) => state.editor.isNew,
-  (state: AppState) => state.editor.event,
+  (state: Root) => state.editor.isNew,
+  (state: Root) => state.editor.event,
   (isNew, event) => {
     if (!event) return defaultEvent();
     const converted = serverEventToEditor(event);

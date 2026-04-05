@@ -48,9 +48,12 @@ async function getSignupAndEventForUpdate(id: SignupID, transaction: Transaction
     ],
     transaction,
   });
-  const event = quota.event!;
+  if (!quota || !quota.event) {
+    // Quota or event soft deleted
+    throw new NoSuchSignup("Signup expired or already deleted");
+  }
 
-  return { signup, event };
+  return { signup, event: quota.event };
 }
 
 /** Internal function to update the contents of a signup. Performs no validation at all. */

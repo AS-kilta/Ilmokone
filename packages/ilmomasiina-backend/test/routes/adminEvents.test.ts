@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { sortBy } from "lodash";
+import { sortBy, sumBy } from "lodash";
 import moment from "moment";
 import { describe, expect, test } from "vitest";
 
@@ -10,11 +10,13 @@ import {
   EventCreateBody,
   EventUpdateBody,
   QuestionType,
+  SignupStatus,
 } from "@tietokilta/ilmomasiina-models";
 import { AuditLog } from "../../src/models/auditlog";
 import { Event } from "../../src/models/event";
 import { Question } from "../../src/models/question";
 import { Quota } from "../../src/models/quota";
+import { refreshSignupPositions } from "../../src/routes/signups/computeSignupPosition";
 import { toDate } from "../../src/routes/utils";
 import { fetchSignups, testEvent, testEventAttributes, testQuestionOptions, testSignups } from "../testData";
 
@@ -714,6 +716,7 @@ describe("PATCH /api/admin/events/:id", () => {
   test("checks moving signups to queue", async () => {
     const event = await testEvent({ quotaCount: 1, quotaOverrides: { size: 3 } }, { openQuotaSize: 3 });
     await testSignups(event, { count: 5, confirmed: true });
+    await refreshSignupPositions(event);
 
     const [before] = await fetchAdminEventDetails(event);
     let { updatedAt } = before;
@@ -730,9 +733,14 @@ describe("PATCH /api/admin/events/:id", () => {
     });
     expect(response.statusCode).toBe(409);
 
-    // Verify that nothing was changed
+    // Verify that event was not changed
     const [after] = await fetchAdminEventDetails(event);
-    expect(after).toEqual(before);
+    expect(after.quotas[0].size).toEqual(before.quotas[0].size);
+    // Verify that all signups are still in quota
+    expect(sumBy(after.quotas[0].signups, (s) => (s.status === SignupStatus.IN_QUOTA ? 1 : 0))).toBe(
+      before.quotas[0].size,
+    );
+    // NOTE: We can't compare the entire before<->after responses, because answer DB order can be flaky
 
     // Reducing and moving between normal/open quota should be legal, though
     [{ updatedAt }, response] = await updateEvent(event, {

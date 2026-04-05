@@ -29,8 +29,8 @@ async function deleteSignup(id: string, auditLogger: AuditLogger, admin: boolean
       ],
       transaction,
     });
-    if (signup === null) {
-      throw new NoSuchSignup("No signup found with id");
+    if (!signup || !signup.quota || !signup.quota.event) {
+      throw new NoSuchSignup("Signup expired or already deleted");
     }
     if (!admin && !signupEditable(signup.quota!.event!, signup)) {
       throw new SignupsClosed("Signups closed for this event.");

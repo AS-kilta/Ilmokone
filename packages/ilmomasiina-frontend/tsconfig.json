@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react",
@@ -25,6 +25,9 @@
     }
   },
   "exclude": ["dist"],
-  "include": ["src", "vite.config.ts"],
-  "references": [{ "path": "../ilmomasiina-client" }, { "path": "../ilmomasiina-models" }]
+  "include": ["src", "vite.config.mts"],
+  "references": [
+    { "path": "../ilmomasiina-client" },
+    { "path": "../ilmomasiina-models" }
+  ]
 }

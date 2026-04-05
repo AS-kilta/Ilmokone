@@ -1,5 +1,26 @@
 # Changelog
 
+## 2.1.1
+
+**Bug fixes and improvements:**
+
+- Added official support for the `mariadb` database dialect to fix errors when using MariaDB >= 10.5.2
+  - **Important:** If you are using MariaDB, please update your `.env` file to set `DB_DIALECT=mariadb`
+- Fixed the slug availability check request failing
+
+## 2.1.0
+
+**Features:**
+
+- **ilmomasiina-client:** Now officially supports React 19
+
+**Bug fixes and improvements:**
+
+- Enabled code splitting for the frontend, halving the initial page load from its previous size
+- Upgraded backend dependencies to latest versions, including Node 24 and Fastify 5
+- Upgraded most frontend dependencies to modern versions, including React 19 and Bootstrap 5
+- Accessing signups on deleted events no longer causes internal server errors
+
 ## 2.0.0
 
 - **First stable release of Ilmomasiina 2.0!** The `dev` branch will be used for Ilmomasiina 3.0 in the
