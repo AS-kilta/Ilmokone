@@ -2,8 +2,8 @@ import { createSelector } from "reselect";
 
 import { AdminEventResponse } from "@tietokilta/ilmomasiina-models";
 import i18n from "../../i18n";
-import type { Root } from "../store";
 import paymentBarcode from "../../utils/paymentBarcode";
+import type { Root } from "../store";
 import { ConvertedEditorEvent, EditorEvent, EditorEventType } from "./types";
 
 export const defaultEvent = (): EditorEvent => ({

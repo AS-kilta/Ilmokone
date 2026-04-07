@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Button } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -16,7 +17,7 @@ const EventDescription = () => {
   const event = useSingleEventContext().localizedEvent!;
   const { preview } = useSingleEventContext();
   const loggedIn = useStore((state) => state.auth.loggedIn);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const eventDateFormat = useEventDateTimeFormatter();
   const ccText = i18n.language === "en" ? CCTextEn : CCTextFi;
 

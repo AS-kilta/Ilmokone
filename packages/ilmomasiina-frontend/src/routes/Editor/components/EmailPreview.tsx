@@ -4,9 +4,8 @@ import { ButtonGroup, Form, ToggleButton } from "react-bootstrap";
 import { useFormState } from "react-final-form";
 import { useTranslation } from "react-i18next";
 
-import adminApiFetch from "../../../api";
 import type { EditorEvent } from "../../../modules/editor/types";
-import { useTypedDispatch, useTypedSelector } from "../../../store/reducers";
+import useStore from "../../../modules/store";
 
 interface PreviewResponse {
   html: string;
@@ -19,10 +18,10 @@ type QueuePos = 5 | null;
 const EmailPreview = () => {
   // Narrow subscription (avoid rerenders for untouched form meta)
   const { values } = useFormState<EditorEvent>({ subscription: { values: true } });
-  const eventId = useTypedSelector((s) => s.editor.event?.id);
+  const eventId = useStore((s) => s.editor.event?.id);
   const { t, i18n } = useTranslation();
-  const dispatch = useTypedDispatch();
-  const accessToken = useTypedSelector((s) => s.auth.accessToken);
+  const adminApiFetch = useStore((s) => s.auth.adminApiFetch);
+  const accessToken = useStore((s) => s.auth.accessToken);
 
   const [admin, setAdmin] = useState(false);
   const [type, setType] = useState<MailType>("signup");
@@ -104,8 +103,7 @@ const EmailPreview = () => {
           }
           const resp = await adminApiFetch<PreviewResponse>(
             "admin/emails/preview",
-            { accessToken, method: "POST", body, signal: controller.signal },
-            dispatch,
+            { method: "POST", body, signal: controller.signal },
           );
           if (!cancelled) setHtml(resp.html);
         } catch (e: any) {
@@ -125,7 +123,7 @@ const EmailPreview = () => {
   }, [
     fetchKey,
     accessToken,
-    dispatch,
+    adminApiFetch,
     admin,
     type,
     queuePos,

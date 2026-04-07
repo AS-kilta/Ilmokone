@@ -196,7 +196,7 @@ export const editorSlice = storeSlice<Root>()("editor", (set, get, store, getSli
   saveSignup: async (formData: EditorSignup): Promise<void> => {
     const saved =
       formData.id == null
-        ? await get().auth.adminApiFetch<AdminSignupSchema>(`admin/signups`, {
+        ? await get().auth.adminApiFetch<AdminSignupSchema>("admin/signups", {
             method: "POST",
             body: formData satisfies AdminSignupCreateBody,
           })

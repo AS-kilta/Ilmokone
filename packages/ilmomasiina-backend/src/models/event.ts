@@ -29,32 +29,31 @@ import { jsonColumnGetter } from "./util/json";
 // Drop updatedAt so we don't need to define it manually in Event.init()
 interface EventManualAttributes extends Omit<EventAttributes, "updatedAt"> {}
 
-export interface EventCreationAttributes
-  extends Optional<
-    EventManualAttributes,
-    | "id"
-    | "openQuotaSize"
-    | "description"
-    | "price"
-    | "paymentBarcode"
-    | "recipient"
-    | "message"
-    | "dueDate"
-    | "bankId"
-    | "showBarcode"
-    | "location"
-    | "facebookUrl"
-    | "webpageUrl"
-    | "category"
-    | "draft"
-    | "listed"
-    | "signupsPublic"
-    | "nameQuestion"
-    | "emailQuestion"
-    | "verificationEmail"
-    | "languages"
-    | "defaultLanguage"
-  > {}
+export interface EventCreationAttributes extends Optional<
+  EventManualAttributes,
+  | "id"
+  | "openQuotaSize"
+  | "description"
+  | "price"
+  | "paymentBarcode"
+  | "recipient"
+  | "message"
+  | "dueDate"
+  | "bankId"
+  | "showBarcode"
+  | "location"
+  | "facebookUrl"
+  | "webpageUrl"
+  | "category"
+  | "draft"
+  | "listed"
+  | "signupsPublic"
+  | "nameQuestion"
+  | "emailQuestion"
+  | "verificationEmail"
+  | "languages"
+  | "defaultLanguage"
+> {}
 
 export interface EventCreationWithInclude extends EventCreationAttributes {
   questions: Omit<QuestionCreationAttributes, "eventId">[];
