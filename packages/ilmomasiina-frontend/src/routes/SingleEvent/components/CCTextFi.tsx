@@ -5,7 +5,7 @@ Killassamme toimii häirintäyhdyshenkilöinä:
 
 - Venla Mäkelä [@venlamakela](https://t.me/venlamakela)
 - Jenny Ruokolainen [@jequilaaa](https://t.me/jequilaaa)
-- Joel Ventola [@jvetola](https://t.me/jvetola)
+- Joel Ventola [@jventola](https://t.me/jventola)
 - Otto Peltonen [@LahenLevein](https://t.me/LahenLevein)
 - Pyry Kiviluoma [@pyrykiviluoma](https://t.me/pyrykiviluoma)
 - Saara Miettinen [@saaratoniini](https://t.me/saaratoniini)
