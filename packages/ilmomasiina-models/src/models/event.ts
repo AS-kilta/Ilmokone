@@ -4,7 +4,7 @@ import type { QuestionLanguage, QuotaLanguage } from "../schema";
 interface EventPerLanguageAttributes {
   title: string;
   description: string | null;
-  price: string | null;
+  message: string | null;
   location: string | null;
   webpageUrl: string | null;
   facebookUrl: string | null;
@@ -24,6 +24,7 @@ export default interface EventAttributes extends EventPerLanguageAttributes {
   registrationStartDate: Date | null;
   registrationEndDate: Date | null;
   openQuotaSize: number;
+  price: string | null;
   paymentBarcode: string | null;
   recipient: string | null;
   message: string | null;

@@ -61,7 +61,7 @@ const editorSchema: ZodType<EditorEvent> = z
       z.object({
         title: z.string().max(255),
         description: z.nullable(z.string()),
-        price: z.nullable(z.string().max(255)),
+        message: z.nullable(z.string().max(255)),
         location: z.nullable(z.string().max(255)),
         webpageUrl: z.nullable(z.string().max(255)),
         facebookUrl: z.nullable(z.string().max(255)),

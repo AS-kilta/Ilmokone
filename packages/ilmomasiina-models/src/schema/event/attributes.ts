@@ -48,11 +48,11 @@ export const publicEventAttributes = Type.Object({
   registrationEndDate: Nullable(Type.String({ format: "date-time" }), {
     description: "Event signup closing date.",
   }),
+  price: Nullable(Type.String({ maxLength: 255 }), {
+    description: "Free-form pricing information for the event.",
+  }),
   recipient: Nullable(Type.String({ maxLength: 255 }), {
     description: "Payment recipient name.",
-  }),
-  message: Nullable(Type.String({ maxLength: 255 }), {
-    description: "Bank transfer message.",
   }),
   bankId: Nullable(Type.String({ maxLength: 255 }), {
     description: "Bank ID in IBAN format.",
@@ -107,8 +107,8 @@ export const publicCommonAttributes = Type.Object({
   description: Nullable(Type.String(), {
     description: "Description for the event. Supports Markdown.",
   }),
-  price: Nullable(Type.String({ maxLength: 255 }), {
-    description: "Free-form pricing information for the event.",
+  message: Nullable(Type.String({ maxLength: 255 }), {
+    description: "Bank transfer message.",
   }),
   location: Nullable(Type.String({ maxLength: 255 }), {
     description: "Free-form location information for the event.",
