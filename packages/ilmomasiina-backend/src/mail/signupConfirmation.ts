@@ -5,7 +5,7 @@ import config, { editSignupUrl } from "../config";
 import i18n from "../i18n";
 import { Signup } from "../models/signup";
 import { generateToken } from "../routes/signups/editTokens";
-import EmailService, { ConfirmationMailParams } from ".";
+import EmailService, { ConfirmationMailParams, MailEvent } from ".";
 
 export default async function sendSignupConfirmationMail(
   signup: Signup,
@@ -21,15 +21,19 @@ export default async function sendSignupConfirmationMail(
   const quota = await signup.getQuota();
   const event = await quota.getEvent();
   const questions = await event.getQuestions();
+  const quotas = await event.getQuotas();
+
+  const locale = (lng && event.languages?.[lng]) || null;
+  const quotaIndex = quotas.findIndex((q) => q.id === quota.id);
 
   // Show name only if filled
   const fullName = `${signup.firstName ?? ""} ${signup.lastName ?? ""}`.trim();
 
   const questionFields = questions
-    .map((question) => <const>[question, answers.find((answer) => answer.questionId === question.id)])
-    .filter(([, answer]) => answer)
-    .map(([question, answer]) => ({
-      label: question.question,
+    .map((question, qIndex) => <const>[question, qIndex, answers.find((answer) => answer.questionId === question.id)])
+    .filter(([, , answer]) => answer)
+    .map(([question, qIndex, answer]) => ({
+      label: (locale?.questions && locale.questions[qIndex]?.question) || question.question,
       answer: Array.isArray(answer!.answer) ? answer!.answer.join(", ") : answer!.answer,
     }));
 
@@ -39,16 +43,23 @@ export default async function sendSignupConfirmationMail(
   const editToken = generateToken(signup.id);
   const cancelLink = editSignupUrl({ id: signup.id, editToken, lang: signup.language || config.defaultLanguage });
 
+  const localizedEvent = {
+    ...event.get({ plain: true }),
+    title: locale?.title || event.title,
+    location: locale?.location ?? event.location,
+    verificationEmail: locale?.verificationEmail ?? event.verificationEmail,
+  };
+
   const params = {
     name: fullName,
     email: signup.email,
-    quota: quota.title,
+    quota: (locale?.quotas && locale.quotas[quotaIndex]?.title) || quota.title,
     answers: questionFields,
     queuePosition: signup.status === SignupStatus.IN_QUEUE ? signup.position : null,
     type,
     admin,
     date,
-    event,
+    event: localizedEvent as MailEvent,
     cancelLink,
   };
 

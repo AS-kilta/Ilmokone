@@ -15,6 +15,13 @@ function md(text: string) {
   return marked.parse(text);
 }
 
+export interface MailEvent {
+  title: string;
+  location?: string | null;
+  verificationEmail?: string | null;
+  [key: string]: any;
+}
+
 export interface ConfirmationMailParams {
   name: string;
   email: string;
@@ -27,7 +34,7 @@ export interface ConfirmationMailParams {
   type: "signup" | "edit";
   admin: boolean;
   date: string | null;
-  event: Event;
+  event: MailEvent;
   cancelLink: string;
 }
 
@@ -37,7 +44,7 @@ export interface NewUserMailParams {
 }
 
 export interface PromotedFromQueueMailParams {
-  event: Event;
+  event: MailEvent;
   date: string | null;
 }
 

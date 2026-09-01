@@ -6,7 +6,7 @@ import { AuditEvent, SignupStatus } from "@tietokilta/ilmomasiina-models";
 import { internalAuditLogger } from "../../auditlog";
 import config from "../../config";
 import i18n from "../../i18n";
-import EmailService from "../../mail";
+import EmailService, { MailEvent } from "../../mail";
 import { getSequelize } from "../../models";
 import { Event } from "../../models/event";
 import { Quota } from "../../models/quota";
@@ -23,9 +23,18 @@ async function sendPromotedFromQueueMail(signup: Signup, eventId: Event["id"]) {
   if (event === null) throw new Error("event missing when sending queue email");
 
   const lng = signup.language ?? undefined;
+  const locale = (lng && event.languages?.[lng]) || null;
   const dateFormat = i18n.t("dateFormat.general", { lng });
+
+  const localizedEvent = {
+    ...event.get({ plain: true }),
+    title: locale?.title || event.title,
+    location: locale?.location ?? event.location,
+    verificationEmail: locale?.verificationEmail ?? event.verificationEmail,
+  };
+
   const params = {
-    event,
+    event: localizedEvent as MailEvent,
     date: event.date && moment(event.date).tz(config.timezone).format(dateFormat),
   };
   await EmailService.sendPromotedFromQueueMail(signup.email, signup.language, params);

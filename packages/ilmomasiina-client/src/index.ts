@@ -8,3 +8,4 @@ export * from "./locales";
 
 export * from "./utils/errorMessage";
 export * from "./utils/localizedEvent";
+export * from "./utils/signupUtils";

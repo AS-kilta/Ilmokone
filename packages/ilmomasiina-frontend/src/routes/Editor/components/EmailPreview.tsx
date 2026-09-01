@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-import { ButtonGroup, Form, ToggleButton } from "react-bootstrap";
+import { ButtonGroup, ToggleButton } from "react-bootstrap";
 import { useFormState } from "react-final-form";
 import { useTranslation } from "react-i18next";
 
@@ -11,8 +11,6 @@ interface PreviewResponse {
   html: string;
 }
 
-type MailType = "signup" | "edit";
-type LangType = "fi" | "en";
 type QueuePos = 5 | null;
 
 const EmailPreview = () => {
@@ -22,19 +20,9 @@ const EmailPreview = () => {
   const { t, i18n } = useTranslation();
   const adminApiFetch = useStore((s) => s.auth.adminApiFetch);
   const accessToken = useStore((s) => s.auth.accessToken);
+  const selectedLanguage = useStore((s) => s.editor.selectedLanguage);
 
-  const [admin, setAdmin] = useState(false);
-  const [type, setType] = useState<MailType>("signup");
-  const selectedLanguage = useStore((s) => s.editor.selectedLanguage) as LangType;
-  const [lang, setLang] = useState<LangType>(selectedLanguage);
   const [queuePos, setQueuePos] = useState<QueuePos>(null);
-
-  // Sync lang with selectedLanguage when it changes, but only if user hasn't manually toggled it?
-  // Actually, usually it should just follow the editor's selection if the user is on that tab.
-  useEffect(() => {
-    setLang(selectedLanguage);
-  }, [selectedLanguage]);
-
   const [html, setHtml] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,15 +34,37 @@ const EmailPreview = () => {
   const prevWrapperTopRef = useRef<number | null>(null);
 
   const derived = useMemo(() => {
-    const event = eventId;
-    const quotaTitle = values?.quotas?.[0]?.title || "Kiintiö / Quota";
-    const answers = (values?.questions || []).map((q) => ({
-      label: q.question,
+    const isDefault = selectedLanguage === values?.defaultLanguage;
+    const locale = isDefault ? null : values?.languages?.[selectedLanguage];
+
+    const quotaTitle = locale?.quotas?.[0]?.title || values?.quotas?.[0]?.title || "Kiintiö / Quota";
+    const answers = (values?.questions || []).map((q, idx) => ({
+      label: locale?.questions?.[idx]?.question || q.question,
       answer: "Todella hauska ja samaistuttava vastaus / A really funny and relatable answer",
     }));
-    const dateStr = values?.date ? values.date.toLocaleString(i18n.language || "fi-FI") : null;
-    return { event, quotaTitle, answers, dateStr };
-  }, [eventId, values?.quotas, values?.questions, values?.date, i18n.language]);
+    const dateStr = values?.date ? values.date.toLocaleString(selectedLanguage || i18n.language || "fi-FI") : null;
+
+    const eventData = {
+      title: (isDefault ? values?.title : locale?.title) || values?.title || "",
+      location: (isDefault ? values?.location : locale?.location) ?? values?.location ?? null,
+      verificationEmail:
+        (isDefault ? values?.verificationEmail : locale?.verificationEmail) ?? values?.verificationEmail ?? null,
+    };
+
+    return { eventId, eventData, quotaTitle, answers, dateStr };
+  }, [
+    eventId,
+    selectedLanguage,
+    values?.defaultLanguage,
+    values?.languages,
+    values?.title,
+    values?.location,
+    values?.verificationEmail,
+    values?.quotas,
+    values?.questions,
+    values?.date,
+    i18n.language,
+  ]);
 
   const onPreviewLoad = () => {
     const body = previewRef.current?.contentWindow?.document?.body;
@@ -76,8 +86,8 @@ const EmailPreview = () => {
 
   // Debounced key for fetching preview (prevents rapid toggles causing multiple requests)
   const fetchKey = useMemo(
-    () => JSON.stringify({ admin, type, queuePos, lang, d: derived }),
-    [admin, type, queuePos, lang, derived],
+    () => JSON.stringify({ queuePos, lang: selectedLanguage, d: derived }),
+    [queuePos, selectedLanguage, derived],
   );
 
   useEffect(() => {
@@ -91,17 +101,18 @@ const EmailPreview = () => {
         setError(null);
         try {
           const body = {
-            language: lang || null,
+            language: selectedLanguage || null,
             params: {
               name: "aASi Asiakas",
               email: "aasi@as.fi",
               quota: derived.quotaTitle,
               answers: derived.answers,
               ...(queuePos !== null ? { queuePosition: queuePos } : {}),
-              type,
-              admin,
+              type: "signup" as const,
+              admin: false,
               date: derived.dateStr,
-              event: derived.event,
+              event: derived.eventId || "preview-event",
+              eventData: derived.eventData,
               cancelLink: "https://as.fi",
             },
           };
@@ -109,10 +120,11 @@ const EmailPreview = () => {
           if (wrapperRef.current) {
             prevWrapperTopRef.current = wrapperRef.current.getBoundingClientRect().top + window.scrollY;
           }
-          const resp = await adminApiFetch<PreviewResponse>(
-            "admin/emails/preview",
-            { method: "POST", body, signal: controller.signal },
-          );
+          const resp = await adminApiFetch<PreviewResponse>("admin/emails/preview", {
+            method: "POST",
+            body,
+            signal: controller.signal,
+          });
           if (!cancelled) setHtml(resp.html);
         } catch (e: any) {
           if (e?.name === "AbortError") return; // ignore aborts
@@ -132,14 +144,13 @@ const EmailPreview = () => {
     fetchKey,
     accessToken,
     adminApiFetch,
-    admin,
-    type,
     queuePos,
-    lang,
+    selectedLanguage,
     derived.quotaTitle,
     derived.answers,
     derived.dateStr,
-    derived.event,
+    derived.eventId,
+    derived.eventData,
   ]);
 
   return (
@@ -147,61 +158,6 @@ const EmailPreview = () => {
       <h2>{t("editor.emails.verificationEmail.preview")}</h2>
       <p>{t("editor.emails.verificationEmail.preview.desc")}</p>
       <div className="email-preview-options">
-        <Form.Check
-          type="switch"
-          id="email-preview-admin"
-          label={t("editor.emails.verificationEmail.preview.adminEvent")}
-          checked={admin}
-          onChange={(e) => setAdmin(e.currentTarget.checked)}
-        />
-        <ButtonGroup>
-          <ToggleButton
-            id="email-type-signup"
-            type="radio"
-            variant={type === "signup" ? "primary" : "outline-primary"}
-            name="email-type"
-            value="signup"
-            checked={type === "signup"}
-            onChange={() => setType("signup")}
-          >
-            {t("editor.emails.verificationEmail.preview.mailType.signup")}
-          </ToggleButton>
-          <ToggleButton
-            id="email-type-edit"
-            type="radio"
-            variant={type === "edit" ? "primary" : "outline-primary"}
-            name="email-type"
-            value="edit"
-            checked={type === "edit"}
-            onChange={() => setType("edit")}
-          >
-            {t("editor.emails.verificationEmail.preview.mailType.edit")}
-          </ToggleButton>
-        </ButtonGroup>
-        <ButtonGroup>
-          <ToggleButton
-            id="email-lang-fi"
-            type="radio"
-            variant={lang === "fi" ? "primary" : "outline-primary"}
-            name="email-lang"
-            value="email-lang"
-            checked={lang === "fi"}
-            onChange={() => setLang("fi")}
-          >
-            {t("editor.emails.verificationEmail.preview.language.fi")}
-          </ToggleButton>
-          <ToggleButton
-            id="email-lang-en"
-            type="radio"
-            variant={lang === "en" ? "primary" : "outline-primary"}
-            name="email-lang"
-            value="email-lang"
-            checked={lang === "en"}
-            onChange={() => setLang("en")}
-          >
-            {t("editor.emails.verificationEmail.preview.language.en")}
-          </ToggleButton>
-        </ButtonGroup>
         <ButtonGroup>
           <ToggleButton
             id="email-queue-pos-null"

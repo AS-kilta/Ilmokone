@@ -3,11 +3,13 @@ import React, { useMemo, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { useFormState } from "react-final-form";
 import { I18nextProvider, useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 import {
   EditSignupContextProvider,
   EditSignupState,
   getLocalizedEvent,
+  getSignupsByQuota,
   SingleEventContextProvider,
   SingleEventState,
 } from "@tietokilta/ilmomasiina-client";
@@ -15,9 +17,14 @@ import type { EditorEvent } from "../../../modules/editor/types";
 import useStore from "../../../modules/store";
 import EditSignupForm from "../../EditSignup/components/EditForm";
 import EventDescription from "../../SingleEvent/components/EventDescription";
+import QuotaStatus from "../../SingleEvent/components/QuotaStatus";
 import SignupCountdown from "../../SingleEvent/components/SignupCountdown";
+import SignupList from "../../SingleEvent/components/SignupList";
 import LanguageSelect from "./LanguageSelect";
 import { editorEventToUserEvent, previewDummySignup } from "./userComponentInterop";
+
+import "../../EditSignup/EditSignup.scss";
+import "../../SingleEvent/SingleEvent.scss";
 
 const PreviewTab = () => {
   const { values } = useFormState<EditorEvent>();
@@ -32,11 +39,13 @@ const PreviewTab = () => {
     const convertedEvent = editorEventToUserEvent(values);
     const localizedEvent = getLocalizedEvent(convertedEvent, selectedLanguage);
     const signup = previewDummySignup(convertedEvent);
+    const signupsByQuota = getSignupsByQuota(localizedEvent);
     return [
       {
         pending: false,
         event: convertedEvent,
         localizedEvent,
+        signupsByQuota,
         preview: { setPreviewingForm },
       },
       {
@@ -71,8 +80,21 @@ const PreviewTab = () => {
               </Col>
               <Col sm={12} md={4}>
                 <SignupCountdown />
+                <QuotaStatus />
               </Col>
             </Row>
+            {singleEventCtx.localizedEvent?.signupsPublic && (
+              <>
+                <h2>{previewI18n.t("singleEvent.signups.title")}</h2>
+                {singleEventCtx.signupsByQuota?.map((quota) => (
+                  <SignupList
+                    key={quota.id}
+                    quota={quota}
+                    isSingleQuota={singleEventCtx.localizedEvent!.quotas.length === 1}
+                  />
+                ))}
+              </>
+            )}
           </SingleEventContextProvider>
         )}
       </I18nextProvider>
