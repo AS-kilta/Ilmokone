@@ -40,7 +40,7 @@ const LanguageVersion = ({ language }: VersionProps) => {
       const eventKeys = [
         "description",
         "title",
-        "price",
+        "message",
         "location",
         "webpageUrl",
         "facebookUrl",
@@ -85,7 +85,7 @@ const LanguageVersion = ({ language }: VersionProps) => {
       [language]: {
         title: "",
         description: null,
-        price: null,
+        message: null,
         location: null,
         webpageUrl: null,
         facebookUrl: null,

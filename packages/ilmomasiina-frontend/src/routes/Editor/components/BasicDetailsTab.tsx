@@ -227,9 +227,8 @@ const BasicDetailsTab = () => {
         maxLength={255}
         formatError={formatError}
       />
-      <LocalizedFieldRow
+      <FieldRow
         name="price"
-        defaultAsPlaceholder
         label={t("editor.basic.price")}
         maxLength={255}
         formatError={formatError}
@@ -255,8 +254,9 @@ const BasicDetailsTab = () => {
         maxLength={255}
         formatError={formatError}
       />
-      <FieldRow
+      <LocalizedFieldRow
         name="message"
+        defaultAsPlaceholder
         label={t("editor.basic.payment.message")}
         maxLength={255}
         formatError={formatError}

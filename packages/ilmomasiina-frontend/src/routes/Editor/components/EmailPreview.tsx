@@ -25,8 +25,16 @@ const EmailPreview = () => {
 
   const [admin, setAdmin] = useState(false);
   const [type, setType] = useState<MailType>("signup");
-  const [lang, setLang] = useState<LangType>("fi");
+  const selectedLanguage = useStore((s) => s.editor.selectedLanguage) as LangType;
+  const [lang, setLang] = useState<LangType>(selectedLanguage);
   const [queuePos, setQueuePos] = useState<QueuePos>(null);
+
+  // Sync lang with selectedLanguage when it changes, but only if user hasn't manually toggled it?
+  // Actually, usually it should just follow the editor's selection if the user is on that tab.
+  useEffect(() => {
+    setLang(selectedLanguage);
+  }, [selectedLanguage]);
+
   const [html, setHtml] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
