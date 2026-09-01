@@ -62,6 +62,7 @@ export function testEventAttributes({
     price: faker.finance.amount(),
     bankId: faker.finance.iban({ formatted: false, countryCode: "FI" }),
     dueDate: faker.date.soon(),
+    paymentBarcode: null,
     showBarcode: true,
     recipient: faker.person.fullName(),
     message: faker.person.fullName(),

@@ -87,6 +87,12 @@ describe("GET /api/admin/events/:id", () => {
       openQuotaSize: event.openQuotaSize,
       description: event.description,
       price: event.price,
+      bankId: event.bankId,
+      dueDate: event.dueDate?.toISOString() ?? null,
+      paymentBarcode: event.paymentBarcode ?? null,
+      showBarcode: event.showBarcode,
+      recipient: event.recipient,
+      message: event.message,
       location: event.location,
       facebookUrl: event.facebookUrl,
       webpageUrl: event.webpageUrl,
@@ -235,6 +241,12 @@ describe("GET /api/admin/events", () => {
       openQuotaSize: event.openQuotaSize,
       description: event.description,
       price: event.price,
+      bankId: event.bankId,
+      dueDate: event.dueDate?.toISOString() ?? null,
+      paymentBarcode: event.paymentBarcode ?? null,
+      showBarcode: event.showBarcode,
+      recipient: event.recipient,
+      message: event.message,
       location: event.location,
       facebookUrl: event.facebookUrl,
       webpageUrl: event.webpageUrl,
@@ -300,6 +312,8 @@ function eventBody(): EventCreateBody {
     endDate: attribs.endDate?.toISOString() ?? null,
     registrationStartDate: attribs.registrationStartDate?.toISOString() ?? null,
     registrationEndDate: attribs.registrationEndDate?.toISOString() ?? null,
+    dueDate: attribs.dueDate?.toISOString() ?? null,
+    paymentBarcode: attribs.paymentBarcode ?? null,
     questions: [],
     quotas: [],
   };
@@ -371,6 +385,12 @@ describe("POST /api/admin/events", () => {
     expect(event!.openQuotaSize).toBe(postBody.openQuotaSize);
     expect(event!.description).toBe(postBody.description);
     expect(event!.price).toBe(postBody.price);
+    expect(event!.bankId).toBe(postBody.bankId);
+    expect(event!.dueDate).toStrictEqual(toDate(postBody.dueDate));
+    expect(event!.showBarcode).toBe(postBody.showBarcode);
+    expect(event!.paymentBarcode).toBe(postBody.paymentBarcode);
+    expect(event!.recipient).toBe(postBody.recipient);
+    expect(event!.message).toBe(postBody.message);
     expect(event!.location).toBe(postBody.location);
     expect(event!.facebookUrl).toBe(postBody.facebookUrl);
     expect(event!.webpageUrl).toBe(postBody.webpageUrl);
@@ -541,7 +561,7 @@ describe("POST /api/admin/events", () => {
         fi: {
           title: "",
           description: "",
-          price: "",
+          message: "",
           location: "",
           webpageUrl: "",
           facebookUrl: "",

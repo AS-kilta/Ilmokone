@@ -38,22 +38,27 @@ beforeEach(async () => {
   faker.seed(133742069);
 
   if (global.sequelize) {
-    // Disable foreign key checks to allow truncating tables.
-    await global.sequelize.query("SET FOREIGN_KEY_CHECKS = 0");
+    if (global.sequelize.getDialect() === "postgres") {
+      await global.sequelize.getQueryInterface().bulkDelete("user", {}, { truncate: true, cascade: true } as any);
+      await global.sequelize.getQueryInterface().bulkDelete("event", {}, { truncate: true, cascade: true } as any);
+      await global.sequelize.getQueryInterface().bulkDelete("auditlog", {}, { truncate: true, cascade: true } as any);
+    } else {
+      // Disable foreign key checks to allow truncating tables.
+      await global.sequelize.query("SET FOREIGN_KEY_CHECKS = 0");
 
-    // Delete test data that can conflict between tests.
-    await global.sequelize.getQueryInterface().bulkDelete("user", {}, { truncate: true, cascade: true } as any);
-    // Event truncation cascades to all other event data: (pretty sure cascade doesn't work on MariaDB)
-    await global.sequelize.query("TRUNCATE TABLE question");
-    await global.sequelize.query("TRUNCATE TABLE quota");
-    await global.sequelize.query("TRUNCATE TABLE answer");
-    await global.sequelize.query("TRUNCATE TABLE signup");
-    await global.sequelize.query("TRUNCATE TABLE event");
-    await global.sequelize.query("TRUNCATE TABLE auditlog");
-    // await global.sequelize.getQueryInterface().bulkDelete("auditlog", {}, { truncate: true, cascade: true } as any);
+      // Delete test data that can conflict between tests.
+      await global.sequelize.getQueryInterface().bulkDelete("user", {}, { truncate: true, cascade: true } as any);
+      // Event truncation cascades to all other event data: (pretty sure cascade doesn't work on MariaDB)
+      await global.sequelize.query("TRUNCATE TABLE question");
+      await global.sequelize.query("TRUNCATE TABLE quota");
+      await global.sequelize.query("TRUNCATE TABLE answer");
+      await global.sequelize.query("TRUNCATE TABLE signup");
+      await global.sequelize.query("TRUNCATE TABLE event");
+      await global.sequelize.query("TRUNCATE TABLE auditlog");
 
-    // Enable foreign key checks for normal operation.
-    await global.sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
+      // Enable foreign key checks for normal operation.
+      await global.sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
+    }
     // Create a test user to ensure full functionality.
     global.adminUser = await testUser();
 
