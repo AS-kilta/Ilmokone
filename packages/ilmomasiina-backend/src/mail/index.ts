@@ -7,7 +7,6 @@ import path from "path";
 
 import config, { adminUrl } from "../config";
 import i18n from "../i18n";
-import { Event } from "../models/event";
 import mailTransporter from "./config";
 
 // Configure marked to allow simple text formatting for custom event verification emails

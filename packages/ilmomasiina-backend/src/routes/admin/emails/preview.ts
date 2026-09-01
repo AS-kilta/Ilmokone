@@ -81,18 +81,9 @@ export default async function preview(request: FastifyRequest<{ Body: PreviewCon
   const locale = (language && dbEvent?.languages?.[language]) || null;
 
   const title = params.eventData?.title || locale?.title || dbEvent?.title || "Tapahtuma";
-  const location =
-    params.eventData?.location !== undefined
-      ? params.eventData.location
-      : locale?.location !== undefined
-        ? locale.location
-        : dbEvent?.location ?? null;
+  const location = params.eventData?.location ?? locale?.location ?? dbEvent?.location ?? null;
   const verificationEmail =
-    params.eventData?.verificationEmail !== undefined
-      ? params.eventData.verificationEmail
-      : locale?.verificationEmail !== undefined
-        ? locale.verificationEmail
-        : dbEvent?.verificationEmail ?? null;
+    params.eventData?.verificationEmail ?? locale?.verificationEmail ?? dbEvent?.verificationEmail ?? null;
 
   const event = {
     ...(dbEvent ? dbEvent.get({ plain: true }) : {}),
