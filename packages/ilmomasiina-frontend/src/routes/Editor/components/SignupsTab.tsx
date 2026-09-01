@@ -1,13 +1,14 @@
 import React, { ChangeEvent, Fragment, useCallback, useMemo, useState } from "react";
 
-import { Button, Form } from "react-bootstrap";
+import { Badge, Button, Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import { stringifyAnswer } from "@tietokilta/ilmomasiina-client/dist/utils/signupUtils";
-import { AdminEventResponse, SignupStatus } from "@tietokilta/ilmomasiina-models";
+import { AdminEventResponse, PaymentMode, SignupPaymentStatus, SignupStatus } from "@tietokilta/ilmomasiina-models";
 import type { AdminSignupWithQuota } from "../../../modules/editor/types";
 import useStore from "../../../modules/store";
 import { useActionDateTimeFormatter } from "../../../utils/dateFormat";
+import { usePriceFormatter } from "../../../utils/priceFormat";
 import useEvent from "../../../utils/useEvent";
 import CSVLink, { CSVOptions } from "./CSVLink";
 import {
@@ -18,6 +19,12 @@ import {
 } from "./formatSignups";
 
 import "../Editor.scss";
+
+const paymentStatusVariant: Record<SignupPaymentStatus, string> = {
+  [SignupPaymentStatus.PENDING]: "warning",
+  [SignupPaymentStatus.PAID]: "success",
+  [SignupPaymentStatus.REFUNDED]: "secondary",
+};
 
 type SignupProps = {
   position: number;
@@ -50,8 +57,11 @@ const SignupRow = ({ position, signup, showQuota }: SignupProps) => {
       ? t(`editor.signups.column.status.${signup.status}`)
       : null;
 
+  const formatPrice = usePriceFormatter(signup.currency ?? CURRENCY);
+  const isDeleted = Boolean(signup.deletedAt);
+
   return (
-    <tr className={!signup.confirmed ? "ilmo--unconfirmed" : ""}>
+    <tr className={`${!signup.confirmed ? "ilmo--unconfirmed" : ""} ${isDeleted ? "ilmo--deleted" : ""}`}>
       <td key="position">{`${position}.`}</td>
       {signup.confirmed && event.nameQuestion && <td key="firstName">{signup.firstName}</td>}
       {signup.confirmed && event.nameQuestion && <td key="lastName">{signup.lastName}</td>}
@@ -68,13 +78,31 @@ const SignupRow = ({ position, signup, showQuota }: SignupProps) => {
         <td key={question.id}>{stringifyAnswer(answersMap[question.id])}</td>
       ))}
       <td key="timestamp">{actionDateFormat.format(new Date(signup.createdAt))}</td>
+      {event.payments !== PaymentMode.DISABLED && (
+        <td key="price">{signup.price != null && formatPrice(signup.price)}</td>
+      )}
+      {event.payments !== PaymentMode.DISABLED && (
+        <td key="paymentStatus">
+          {signup.paymentStatus && (
+            <Badge bg={paymentStatusVariant[signup.paymentStatus]}>
+              {t(`editor.signups.column.paymentStatus.${signup.paymentStatus}`)}
+            </Badge>
+          )}
+        </td>
+      )}
       <td key="actions">
-        <Button type="button" variant="primary" size="sm" onClick={onEdit}>
-          {t("editor.signups.action.edit")}
-        </Button>
-        <Button type="button" variant="danger" size="sm" onClick={onDelete} className="ms-1">
-          {t("editor.signups.action.delete")}
-        </Button>
+        {!isDeleted ? (
+          <>
+            <Button type="button" variant="primary" size="sm" onClick={onEdit}>
+              {t("editor.signups.action.edit")}
+            </Button>
+            <Button type="button" variant="danger" size="sm" onClick={onDelete} className="ms-1">
+              {t("editor.signups.action.delete")}
+            </Button>
+          </>
+        ) : (
+          <span>{t("editor.signups.deleted")}</span>
+        )}
       </td>
     </tr>
   );
@@ -104,6 +132,10 @@ const SignupTable = ({ event, signups, showQuota }: TableProps) => {
             <th key={q.id}>{q.question}</th>
           ))}
           <th key="timestamp">{t("editor.signups.column.time")}</th>
+          {event.payments !== PaymentMode.DISABLED && <th key="price">{t("editor.signups.column.price")}</th>}
+          {event.payments !== PaymentMode.DISABLED && (
+            <th key="paymentStatus">{t("editor.signups.column.paymentStatus")}</th>
+          )}
           <th key="actions" aria-label={t("editor.signups.column.actions")} />
         </tr>
       </thead>

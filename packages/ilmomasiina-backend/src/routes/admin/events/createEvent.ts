@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { omit } from "lodash";
 
 import type { AdminEventResponse, EventCreateBody } from "@tietokilta/ilmomasiina-models";
-import { AuditEvent, QuestionType } from "@tietokilta/ilmomasiina-models";
+import { AuditEvent } from "@tietokilta/ilmomasiina-models";
 import { getSequelize } from "../../../models";
 import { convertSequelizeValidationErrors } from "../../../models/errors";
 import { Event } from "../../../models/event";
@@ -31,8 +31,7 @@ export default async function createEvent(
       // Remove options from question types that don't support them. This must be done before validateLanguages().
       const questionsToCreate = request.body.questions.map((question) => ({
         ...question,
-        options:
-          question.type === QuestionType.CHECKBOX || question.type === QuestionType.SELECT ? question.options : null,
+        ...Question.normalizeOptions(question),
       }));
       // Validate and fixup data within languages. This also requires the
       toCreate.validateLanguages(questionsToCreate, request.body.quotas);
@@ -45,7 +44,8 @@ export default async function createEvent(
           eventId: created.id,
           order,
         })),
-        { transaction },
+        // Ensure validation is run for each question
+        { transaction, validate: true },
       );
       await Quota.bulkCreate(
         // add order and eventId to quotas
@@ -54,7 +54,8 @@ export default async function createEvent(
           eventId: created.id,
           order,
         })),
-        { transaction },
+        // Ensure validation is run for each quota
+        { transaction, validate: true },
       );
 
       await request.logEvent(AuditEvent.CREATE_EVENT, {

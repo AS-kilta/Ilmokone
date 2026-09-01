@@ -1,22 +1,28 @@
 import { faker } from "@faker-js/faker";
-import { afterAll, afterEach, beforeAll, beforeEach, expect,vi } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, expect, RunnerTaskBase, vi } from "vitest";
 
 import initApp from "../src/app";
 import EmailService from "../src/mail";
 import setupDatabase, { closeDatabase } from "../src/models";
+import { AuditLog } from "../src/models/auditlog";
+import { Event } from "../src/models/event";
+import { Payment } from "../src/models/payment";
+import { User } from "../src/models/user";
 import { testUser } from "./testData";
 
-const needsDb = () => expect.getState().testPath?.includes("test/routes");
-const needsApi = () => expect.getState().testPath?.includes("test/routes");
+const needsDb = (suite: RunnerTaskBase) => suite.name.includes("test/routes");
+const needsApi = (suite: RunnerTaskBase) => suite.name.includes("test/routes");
 
 // Common setup for all backend test files: initialize Sequelize & Fastify, tear down at test end.
-beforeAll(async () => {
-  if (needsDb()) {
+beforeAll(async (suite) => {
+  if (needsDb(suite)) {
     global.sequelize = await setupDatabase();
+    // Drop the trigger that prevents deleting payments to allow test data to be reset.
+    await global.sequelize.query("DROP TRIGGER IF EXISTS payment_prevent_delete ON payment;");
   } else {
     global.sequelize = undefined as any;
   }
-  if (needsApi()) {
+  if (needsApi(suite)) {
     global.server = await initApp();
   } else {
     global.server = undefined as any;
@@ -37,33 +43,19 @@ beforeEach(async () => {
   // Ensure deterministic test data.
   faker.seed(133742069);
 
-  if (global.sequelize) {
-    if (global.sequelize.getDialect() === "postgres") {
-      await global.sequelize.getQueryInterface().bulkDelete("user", {}, { truncate: true, cascade: true } as any);
-      await global.sequelize.getQueryInterface().bulkDelete("event", {}, { truncate: true, cascade: true } as any);
-      await global.sequelize.getQueryInterface().bulkDelete("auditlog", {}, { truncate: true, cascade: true } as any);
-    } else {
-      // Disable foreign key checks to allow truncating tables.
-      await global.sequelize.query("SET FOREIGN_KEY_CHECKS = 0");
+  if (sequelize) {
+    // Delete test data that can conflict between tests.
+    await User.truncate({ cascade: true, force: true });
+    await Payment.truncate({ cascade: true, force: true });
+    // Event truncation cascades to all other event data:
+    await Event.truncate({ cascade: true, force: true });
+    await AuditLog.truncate({ cascade: true, force: true });
 
-      // Delete test data that can conflict between tests.
-      await global.sequelize.getQueryInterface().bulkDelete("user", {}, { truncate: true, cascade: true } as any);
-      // Event truncation cascades to all other event data: (pretty sure cascade doesn't work on MariaDB)
-      await global.sequelize.query("TRUNCATE TABLE question");
-      await global.sequelize.query("TRUNCATE TABLE quota");
-      await global.sequelize.query("TRUNCATE TABLE answer");
-      await global.sequelize.query("TRUNCATE TABLE signup");
-      await global.sequelize.query("TRUNCATE TABLE event");
-      await global.sequelize.query("TRUNCATE TABLE auditlog");
-
-      // Enable foreign key checks for normal operation.
-      await global.sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
-    }
     // Create a test user to ensure full functionality.
     global.adminUser = await testUser();
 
     // Create a token for the admin.
-    global.adminToken = global.server.adminSession.createSession(global.adminUser);
+    global.adminToken = server.adminSession.createSession(global.adminUser);
   }
 });
 
@@ -72,5 +64,46 @@ beforeAll(() => {
   global.emailSend = vi.spyOn(EmailService, "send").mockImplementation(async () => {});
 });
 afterEach(() => {
-  global.emailSend.mockClear();
+  emailSend.mockClear();
+});
+
+// Allow silencing console logs
+beforeAll(() => {
+  global.consoleLog = vi.spyOn(console, "log");
+  global.consoleWarn = vi.spyOn(console, "warn");
+  global.consoleError = vi.spyOn(console, "error");
+});
+afterEach(() => {
+  consoleLog.mockClear();
+  consoleWarn.mockClear();
+  consoleError.mockClear();
+});
+
+expect.extend({
+  toBeApiError(received: unknown, expectedStatus: number, expectedCode?: string) {
+    if (!Array.isArray(received) || received.length !== 2) {
+      throw new Error("toBeApiError matcher expects an array of [data, response]");
+    }
+    const [data, response] = received;
+    if (response.statusCode !== expectedStatus) {
+      return {
+        pass: false,
+        message: () => `Expected status code ${expectedStatus}, but received ${response.statusCode}`,
+        expected: expectedStatus,
+        actual: response.statusCode,
+      };
+    }
+    if (expectedCode && (data as any)?.code !== expectedCode) {
+      return {
+        pass: false,
+        message: () => `Expected error code '${expectedCode}', but received '${(data as any)?.code}'`,
+        expected: expectedCode,
+        actual: (data as any)?.code,
+      };
+    }
+    return {
+      pass: true,
+      message: () => "Received expected API error",
+    };
+  },
 });

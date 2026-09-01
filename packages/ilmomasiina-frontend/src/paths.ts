@@ -8,6 +8,7 @@ const paths = {
   eventsList: `${urlPrefix}/`,
   eventDetails: (slug: EventSlug) => `${urlPrefix}/events/${slug}`,
   editSignup: (id: SignupID, editToken: SignupEditToken) => `${urlPrefix}/signup/${id}/${editToken}`,
+  completePayment: (id: SignupID, editToken: SignupEditToken) => `${urlPrefix}/payment/${id}/${editToken}`,
 
   adminLogin: `${urlPrefix}/login`,
   adminInitialSetup: `${urlPrefix}/setup`,
@@ -20,4 +21,4 @@ const paths = {
 
 export default paths;
 
-export const apiUrl = `${urlPrefix}/api`;
+export const apiUrl = API_URL || `${urlPrefix}/api`;

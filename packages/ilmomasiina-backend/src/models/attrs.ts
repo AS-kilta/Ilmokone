@@ -1,10 +1,8 @@
-import type {
-  AnswerAttributes,
-  EventAttributes,
-  QuestionAttributes,
-  QuotaAttributes,
-  SignupAttributes,
-} from "../models";
+import type { AnswerAttributes } from "./answer";
+import type { EventAttributes } from "./event";
+import type { QuestionAttributes } from "./question";
+import type { QuotaAttributes } from "./quota";
+import type { SignupAttributes } from "./signup";
 
 /** Attributes included in GET /api/events/slug for Event instances. */
 export const eventGetEventAttrs: (keyof EventAttributes)[] = [
@@ -31,6 +29,7 @@ export const eventGetEventAttrs: (keyof EventAttributes)[] = [
   "signupsPublic",
   "nameQuestion",
   "emailQuestion",
+  "payments",
   "languages",
   "defaultLanguage",
 ];
@@ -40,6 +39,7 @@ export const adminEventGetEventAttrs: (keyof EventAttributes)[] = [
   ...eventGetEventAttrs,
   "draft",
   "listed",
+  "preferredFrontend",
   "verificationEmail",
   "updatedAt",
 ];
@@ -52,10 +52,11 @@ export const eventGetQuestionAttrs: (keyof QuestionAttributes)[] = [
   "options",
   "required",
   "public",
+  "prices",
 ];
 
 /** Attributes included in results for Quota instances. */
-export const eventGetQuotaAttrs: (keyof QuotaAttributes)[] = ["id", "title", "size"];
+export const eventGetQuotaAttrs: (keyof QuotaAttributes)[] = ["id", "title", "size", "price"];
 
 /** Attributes included in GET /api/events/slug for Signup instances. */
 export const eventGetSignupAttrs: (keyof SignupAttributes)[] = [
@@ -69,7 +70,15 @@ export const eventGetSignupAttrs: (keyof SignupAttributes)[] = [
 ];
 
 /** Attributes included in GET /api/admin/events/ID for Signup instances. */
-export const adminEventGetSignupAttrs: (keyof SignupAttributes)[] = [...eventGetSignupAttrs, "id", "email"];
+export const adminEventGetSignupAttrs: (keyof SignupAttributes)[] = [
+  ...eventGetSignupAttrs,
+  "id",
+  "email",
+  "price",
+  "currency",
+  "manualPaymentStatus",
+  "deletedAt",
+];
 
 /** Attributes included in results for Answer instances. */
 export const eventGetAnswerAttrs: (keyof AnswerAttributes)[] = ["questionId", "answer"];
@@ -99,12 +108,13 @@ export const eventListEventAttrs: (keyof EventAttributes)[] = [
   "signupsPublic",
   "nameQuestion",
   "emailQuestion",
+  "payments",
   "languages",
   "defaultLanguage",
 ];
 
 /** Attributes included in GET /api/events for Quota instances. */
-export const eventListQuotaAttrs: (keyof QuotaAttributes)[] = ["id", "title", "size"];
+export const eventListQuotaAttrs: (keyof QuotaAttributes)[] = ["id", "title", "size", "price"];
 
 /** Attributes included in GET /api/admin/events for Event instances. */
 export const adminEventListEventAttrs: (keyof EventAttributes)[] = [...eventListEventAttrs, "draft", "listed"];

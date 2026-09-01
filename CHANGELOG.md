@@ -1,25 +1,57 @@
 # Changelog
 
-## 2.1.1
+## 3.0.0-dev
 
-**Bug fixes and improvements:**
+**TODO:**
 
-- Added official support for the `mariadb` database dialect to fix errors when using MariaDB >= 10.5.2
-  - **Important:** If you are using MariaDB, please update your `.env` file to set `DB_DIALECT=mariadb`
-- Fixed the slug availability check request failing
+- The backend no longer allows saving questions with duplicate or ambiguous options (TODO)
+- Event end date is now required (TODO)
+- Migration support for MySQL to PostgreSQL
 
-## 2.1.0
+**Breaking changes:**
+
+- Removed support for MySQL databases; only PostgreSQL is supported from now on
+- Added payment support via Stripe
+  - Paid signups cannot be edited or deleted by users after payment, unless the price does not change
+  - Custom frontends should be updated to support payments if enabled
+  - New error codes and locale strings related to payments
+- Removed support for the `EMAIL_BASE_URL` environment variable. Use `BASE_URL` and/or `FRONTENDS` instead.
+- Removed support for the `MAIL_DEFAULT_LANG` environment variable. Use `DEFAULT_LANGUAGE` instead.
+- Removed support for the `EVENT_DETAILS_URL`, `EDIT_SIGNUP_URL` and `ADMIN_URL`
+  environment variables. Use the new `FRONTENDS` system instead.
+- **ilmomasiina-models**: Removed database models (moved to `ilmomasiina-backend`).
 
 **Features:**
 
-- **ilmomasiina-client:** Now officially supports React 19
+- Proper support for multiple frontends
+  - Events can now specify a preferred frontend, and emails will use the correct URLs
+- **ilmomasiina-client:** Added payment support to EditSignup, including new state flags in context
+
+**Bug fixes and improvements:**
+
+- Added lots of backend tests
+- Improved validation of signup answers
+- Enabled hot reloading of locale files in development mode
+- Emails are now rendered with React instead of Pug, and styles are no longer inlined
+
+## 2.1.0-beta.3
 
 **Bug fixes and improvements:**
 
 - Enabled code splitting for the frontend, halving the initial page load from its previous size
+
+## 2.1.0-beta.2
+
+**Bug fixes and improvements:**
+
 - Upgraded backend dependencies to latest versions, including Node 24 and Fastify 5
+
+## 2.1.0-beta.1
+
+**Bug fixes and improvements:**
+
 - Upgraded most frontend dependencies to modern versions, including React 19 and Bootstrap 5
-- Accessing signups on deleted events no longer causes internal server errors
+- **ilmomasiina-client:** Now officially supports React 19
 
 ## 2.0.0
 
