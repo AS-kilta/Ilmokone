@@ -227,12 +227,7 @@ const BasicDetailsTab = () => {
         maxLength={255}
         formatError={formatError}
       />
-      <FieldRow
-        name="price"
-        label={t("editor.basic.price")}
-        maxLength={255}
-        formatError={formatError}
-      />
+      <FieldRow name="price" label={t("editor.basic.price")} maxLength={255} formatError={formatError} />
       <FieldRow
         name="bankId"
         label={t("editor.basic.payment.bankId")}

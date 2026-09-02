@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { afterAll, afterEach, beforeAll, beforeEach, expect,vi } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, expect, vi } from "vitest";
 
 import initApp from "../src/app";
 import EmailService from "../src/mail";
