@@ -65,9 +65,16 @@ describe("email error handling", () => {
   test("handles queue promotion email error and stores it on signup", async () => {
     const event = await testEvent({ quotaCount: 1, quotaOverrides: { size: 1 } }, { openQuotaSize: 0 });
     // Create 2 signups: first in quota, second in queue
-    const [first, second] = await testSignups(event, { count: 2, confirmed: true });
-    await first.update({ createdAt: new Date(1000) });
-    await second.update({ createdAt: new Date(2000) });
+    const [first] = await testSignups(
+      event,
+      { count: 1, confirmed: true },
+      { createdAt: new Date(Date.now() - 60000) },
+    );
+    const [second] = await testSignups(
+      event,
+      { count: 1, confirmed: true },
+      { createdAt: new Date(Date.now() - 30000) },
+    );
     await refreshSignupPositions(event);
 
     const reloadedSecond = await Signup.findByPk(second.id);
