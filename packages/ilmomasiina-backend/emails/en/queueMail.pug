@@ -2,7 +2,7 @@ extends ../layout.pug
 
 block alertContent
   td.alert.alert-good
-    p.alertText Queueing is a virtue.
+    div.alertText!= vectorText("Queueing is a virtue.", { font: "jacquard", fontSize: 34, color: "#ffffff" })
 
 block mainContent
   div.content-block

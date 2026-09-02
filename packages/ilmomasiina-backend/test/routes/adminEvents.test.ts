@@ -206,6 +206,7 @@ describe("GET /api/admin/events/:id", () => {
         answers: expect.any(Array),
         status: null,
         position: null,
+        emailError: null,
       });
 
       const foundSignup = found!.signups.find((signup) => signup.id === firstSignup.id);

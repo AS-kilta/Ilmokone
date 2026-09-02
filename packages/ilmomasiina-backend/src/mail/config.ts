@@ -42,6 +42,17 @@ const mailTransporter: Transporter = (() => {
       console.warn("MAIL_FROM is not set. Outgoing emails may fail or be rejected by recipient mail servers.");
     }
 
+    if (config.smtpPort === 587 && config.smtpTls) {
+      console.warn(
+        "SMTP_PORT is set to 587 with SMTP_TLS=true. Port 587 expects STARTTLS (SMTP_TLS=false). " +
+          "Setting SMTP_TLS=true on port 587 causes 'wrong version number' SSL errors.",
+      );
+    } else if (config.smtpPort === 465 && !config.smtpTls) {
+      console.warn(
+        "SMTP_PORT is set to 465 with SMTP_TLS=false. Port 465 usually requires implicit TLS (SMTP_TLS=true).",
+      );
+    }
+
     const hasOAuth = Boolean(config.googleClientId || config.googleRefreshToken || config.googleClientSecret);
 
     if (hasOAuth) {

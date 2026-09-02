@@ -18,3 +18,11 @@
   margin-bottom: 10px;
   color: #ffffff;
 }
+
+.headerTitle img,
+.headerTitle svg {
+  display: inline-block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}

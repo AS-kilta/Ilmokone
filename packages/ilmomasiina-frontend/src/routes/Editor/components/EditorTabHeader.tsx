@@ -5,6 +5,7 @@ import { useFormState } from "react-final-form";
 import { useTranslation } from "react-i18next";
 
 import { EditorEvent, EditorEventType } from "../../../modules/editor/types";
+import useStore from "../../../modules/store";
 import { useFieldValue } from "./hooks";
 
 export enum EditorTab {
@@ -70,9 +71,16 @@ type TabProps = Props & {
 const Tab = ({ id, activeTab, setActiveTab }: TabProps) => {
   const { t } = useTranslation();
   const { errors } = useFormState({ subscription: { errors: true } });
+  const event = useStore((state) => state.editor.event);
+
+  const hasEmailErrors =
+    id === EditorTab.SIGNUPS &&
+    Boolean(event?.quotas?.some((quota) => quota.signups?.some((signup) => Boolean(signup.emailError))));
+
   const hasErrors =
-    errors != null &&
-    Object.entries(errors).some(([field, error]) => error && tabForField[field as keyof EditorEvent] === id);
+    (errors != null &&
+      Object.entries(errors).some(([field, error]) => error && tabForField[field as keyof EditorEvent] === id)) ||
+    hasEmailErrors;
 
   const onClick = useCallback(() => setActiveTab(id), [id, setActiveTab]);
 
