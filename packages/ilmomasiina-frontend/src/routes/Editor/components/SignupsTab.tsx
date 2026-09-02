@@ -90,8 +90,10 @@ const SignupRow = ({ position, signup, showQuota }: SignupProps) => {
       {event.questions.map((question) => (
         <td key={question.id}>{stringifyAnswer(answersMap[question.id])}</td>
       ))}
-      <td key="timestamp">{actionDateFormat.format(new Date(signup.createdAt))}</td>
-      <td key="actions">
+      <td key="timestamp" className="text-nowrap">
+        {actionDateFormat.format(new Date(signup.createdAt))}
+      </td>
+      <td key="actions" className="text-nowrap">
         <Button type="button" variant="primary" size="sm" onClick={onEdit}>
           {t("editor.signups.action.edit")}
         </Button>
@@ -115,27 +117,31 @@ const SignupTable = ({ event, signups, showQuota }: TableProps) => {
   if (!signups.length) return <p>{t("editor.signups.emptyQuota")}</p>;
 
   return (
-    <table className="event-editor--signup-table table table-condensed table-responsive">
-      <thead>
-        <tr className="active">
-          <th key="position">#</th>
-          {event.nameQuestion && <th key="firstName">{t("editor.signups.column.firstName")}</th>}
-          {event.nameQuestion && <th key="lastName">{t("editor.signups.column.lastName")}</th>}
-          {event.emailQuestion && <th key="email">{t("editor.signups.column.email")}</th>}
-          {showQuota && <th key="quota">{t("editor.signups.column.quota")}</th>}
-          {event.questions.map((q) => (
-            <th key={q.id}>{q.question}</th>
+    <div className="event-editor--signup-table-wrapper table-responsive">
+      <table className="event-editor--signup-table table table-condensed">
+        <thead>
+          <tr className="active">
+            <th key="position">#</th>
+            {event.nameQuestion && <th key="firstName">{t("editor.signups.column.firstName")}</th>}
+            {event.nameQuestion && <th key="lastName">{t("editor.signups.column.lastName")}</th>}
+            {event.emailQuestion && <th key="email">{t("editor.signups.column.email")}</th>}
+            {showQuota && <th key="quota">{t("editor.signups.column.quota")}</th>}
+            {event.questions.map((q) => (
+              <th key={q.id}>{q.question}</th>
+            ))}
+            <th key="timestamp" className="text-nowrap">
+              {t("editor.signups.column.time")}
+            </th>
+            <th key="actions" className="text-nowrap" aria-label={t("editor.signups.column.actions")} />
+          </tr>
+        </thead>
+        <tbody>
+          {signups.map((signup, index) => (
+            <SignupRow key={signup.id} position={index + 1} signup={signup} showQuota={showQuota} />
           ))}
-          <th key="timestamp">{t("editor.signups.column.time")}</th>
-          <th key="actions" aria-label={t("editor.signups.column.actions")} />
-        </tr>
-      </thead>
-      <tbody>
-        {signups.map((signup, index) => (
-          <SignupRow key={signup.id} position={index + 1} signup={signup} showQuota={showQuota} />
-        ))}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   );
 };
 
