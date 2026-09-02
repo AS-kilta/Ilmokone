@@ -68,6 +68,10 @@ const TEMPLATE_OPTIONS = {
 
 export default class EmailService {
   static send(to: string, subject: string, html: string) {
+    if (!config.mailFrom) {
+      console.warn(`Attempted to send an email to ${to} ("${subject}") but MAIL_FROM is not configured.`);
+    }
+
     const msg = {
       to,
       from: config.mailFrom,
@@ -96,7 +100,7 @@ export default class EmailService {
       const html = await email.render(template, brandedParams);
       return html;
     } catch (error) {
-      console.error(error);
+      console.error("Failed to generate confirmation email preview:", error);
       return undefined;
     }
   }
@@ -120,7 +124,7 @@ export default class EmailService {
       });
       await EmailService.send(to, subject, html);
     } catch (error) {
-      console.error(error);
+      console.error(`Failed to send confirmation email to ${to}:`, error);
     }
   }
 
@@ -140,7 +144,7 @@ export default class EmailService {
       const subject = i18n.t("emails.newUser.subject", { lng });
       await EmailService.send(to, subject, html);
     } catch (error) {
-      console.error(error);
+      console.error(`Failed to send new user invitation email to ${to}:`, error);
     }
   }
 
@@ -160,7 +164,7 @@ export default class EmailService {
       const subject = i18n.t("emails.resetPassword.subject", { lng });
       await EmailService.send(to, subject, html);
     } catch (error) {
-      console.error(error);
+      console.error(`Failed to send password reset email to ${to}:`, error);
     }
   }
 
@@ -182,7 +186,7 @@ export default class EmailService {
       });
       await EmailService.send(to, subject, html);
     } catch (error) {
-      console.error(error);
+      console.error(`Failed to send queue promotion email to ${to}:`, error);
     }
   }
 }
