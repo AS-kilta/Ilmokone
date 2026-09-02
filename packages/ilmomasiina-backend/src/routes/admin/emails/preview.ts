@@ -5,7 +5,14 @@ import { Event } from "../../../models/event";
 
 export interface PreviewConfirmationBody {
   language?: string | null;
-  params: Omit<ConfirmationMailParams, "event"> & { event: string };
+  params: Omit<ConfirmationMailParams, "event"> & {
+    event?: string;
+    eventData?: {
+      title?: string;
+      location?: string | null;
+      verificationEmail?: string | null;
+    };
+  };
 }
 
 export const previewConfirmationBody = {
@@ -37,9 +44,18 @@ export const previewConfirmationBody = {
         admin: { type: "boolean" },
         date: { type: ["string", "null"] },
         event: { type: "string" },
+        eventData: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            title: { type: "string" },
+            location: { type: ["string", "null"] },
+            verificationEmail: { type: ["string", "null"] },
+          },
+        },
         cancelLink: { type: "string" },
       },
-      required: ["name", "email", "quota", "answers", "type", "admin", "date", "event", "cancelLink"],
+      required: ["name", "email", "quota", "answers", "type", "admin", "date", "cancelLink"],
     },
   },
   required: ["params"],
@@ -57,17 +73,29 @@ export const previewConfirmationResponse = {
 export default async function preview(request: FastifyRequest<{ Body: PreviewConfirmationBody }>, reply: FastifyReply) {
   const { language = null, params } = request.body;
 
-  // Resolve event id or slug to an Event instance for the template
-  const eventIdOrSlug = params.event;
-  const event = (await Event.findByPk(eventIdOrSlug)) || (await Event.findOne({ where: { slug: eventIdOrSlug } }));
-
-  if (!event) {
-    reply.status(400);
-    return reply.send({ error: "Invalid event id or slug" });
+  let dbEvent: Event | null = null;
+  if (params.event) {
+    dbEvent = (await Event.findByPk(params.event)) || (await Event.findOne({ where: { slug: params.event } }));
   }
 
+  const locale = (language && dbEvent?.languages?.[language]) || null;
+
+  const title = params.eventData?.title || locale?.title || dbEvent?.title || "Tapahtuma";
+  const location = params.eventData?.location ?? locale?.location ?? dbEvent?.location ?? null;
+  const verificationEmail =
+    params.eventData?.verificationEmail ?? locale?.verificationEmail ?? dbEvent?.verificationEmail ?? null;
+
+  const event = {
+    ...(dbEvent ? dbEvent.get({ plain: true }) : {}),
+    title,
+    location,
+    verificationEmail,
+  };
+
   const html =
-    (await EmailService.createConfirmationEmailPreview(language, { ...params, event } as ConfirmationMailParams)) ??
-    "<p>Email service failed to render a preview.</p>";
+    (await EmailService.createConfirmationEmailPreview(
+      language,
+      { ...params, event } as unknown as ConfirmationMailParams,
+    )) ?? "<p>Email service failed to render a preview.</p>";
   return reply.send({ html });
 }

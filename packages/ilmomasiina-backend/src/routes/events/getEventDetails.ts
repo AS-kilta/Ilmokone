@@ -14,6 +14,7 @@ import type {
 } from "@tietokilta/ilmomasiina-models";
 import {
   adminEventGetEventAttrs,
+  adminEventGetSignupAttrs,
   eventGetAnswerAttrs,
   eventGetEventAttrs,
   eventGetQuestionAttrs,

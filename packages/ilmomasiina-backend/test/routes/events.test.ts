@@ -18,7 +18,7 @@ async function fetchUserEventDetails(event: Event) {
   return [response.json<UserEventResponse>(), response] as const;
 }
 
-describe("getEventDetails", () => {
+describe("GET /api/events/:id", () => {
   test("returns event information", async () => {
     const event = await testEvent();
     const [data, response] = await fetchUserEventDetails(event);
@@ -52,6 +52,8 @@ describe("getEventDetails", () => {
       registrationClosed: false,
       questions: expect.any(Array),
       quotas: expect.any(Array),
+      defaultLanguage: event.defaultLanguage,
+      languages: event.languages,
       millisTillOpening: expect.any(Number),
     });
 
@@ -80,7 +82,15 @@ describe("getEventDetails", () => {
     const [data, response] = await fetchUserEventDetails(event);
 
     expect(response.statusCode).toBe(404);
-    expect(data.title).toBe(undefined);
+    expect(data.slug).toBe(undefined);
+  });
+
+  test("returns unlisted events", async () => {
+    const event = await testEvent({}, { listed: false });
+    const [data, response] = await fetchUserEventDetails(event);
+
+    expect(response.statusCode).toBe(200);
+    expect(data.slug).toBe(event.slug);
   });
 
   test("does not return draft events", async () => {
@@ -88,7 +98,7 @@ describe("getEventDetails", () => {
     const [data, response] = await fetchUserEventDetails(event);
 
     expect(response.statusCode).toBe(404);
-    expect(data.title).toBe(undefined);
+    expect(data.slug).toBe(undefined);
   });
 
   test("returns correct information about signup opening", async () => {
@@ -237,7 +247,7 @@ describe("getEventDetails", () => {
   });
 });
 
-describe("getEventList", () => {
+describe("GET /api/events", () => {
   test("returns event information", async () => {
     const event = await testEvent();
     const [data, response] = await fetchUserEventList();
@@ -268,6 +278,10 @@ describe("getEventList", () => {
       webpageUrl: event.webpageUrl,
       category: event.category,
       signupsPublic: event.signupsPublic,
+      nameQuestion: event.nameQuestion,
+      emailQuestion: event.emailQuestion,
+      defaultLanguage: event.defaultLanguage,
+      languages: expect.any(Object),
       quotas: expect.any(Array),
     });
 
@@ -296,6 +310,13 @@ describe("getEventList", () => {
 
   test("does not return past events", async () => {
     await testEvent({ inPast: 8 * 30 }); // past the default 6-month cutoff
+    const [data] = await fetchUserEventList();
+
+    expect(data).toEqual([]);
+  });
+
+  test("does not return unlisted events", async () => {
+    await testEvent({}, { listed: false });
     const [data] = await fetchUserEventList();
 
     expect(data).toEqual([]);

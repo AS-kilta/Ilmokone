@@ -1,4 +1,4 @@
-import { Static, Type } from "@sinclair/typebox";
+import { Static, Type } from "typebox";
 
 import { quotaID } from "../quota/attributes";
 import { Nullable } from "../utils";
@@ -35,24 +35,21 @@ const adminSignupUpdateOptions = Type.Object({
 });
 
 /** Request body for editing an existing signup. */
-export const signupUpdateBody = Type.Partial(Type.Composite([editableSignupAttributes, signupLanguage]));
+export const signupUpdateBody = Type.Partial(Type.Interface([editableSignupAttributes, signupLanguage], {}));
 
 /** Request body for editing an existing signup as an admin. */
 export const adminSignupUpdateBody = Type.Partial(
-  Type.Composite([editableSignupAttributes, signupLanguage, adminSignupUpdateOptions]),
+  Type.Interface([editableSignupAttributes, signupLanguage, adminSignupUpdateOptions], {}),
 );
 
 /** Request body for creating a signup as an admin. */
-export const adminSignupCreateBody = Type.Composite([
-  signupCreateBody,
-  Type.Partial(Type.Composite([editableSignupAttributes, signupLanguage, adminSignupUpdateOptions])),
-]);
+export const adminSignupCreateBody = Type.Interface([signupCreateBody, adminSignupUpdateBody], {});
 
 /** Response schema for successfully editing a signup. */
 export const signupUpdateResponse = signupIdentity;
 
 /** Schema for signups in event details from the public API. */
-export const publicSignupSchema = Type.Composite([publicEditableSignupAttributes, dynamicSignupAttributes]);
+export const publicSignupSchema = Type.Interface([publicEditableSignupAttributes, dynamicSignupAttributes], {});
 
 const adminSignupEmailError = Type.Object({
   emailError: Nullable(Type.String(), {

@@ -4,18 +4,14 @@
 services:
   # Create/restart container named 'database'
   database:
-    image: mariadb:10.11
+    image: postgres:18
     restart: always
     environment:
-      - MARIADB_PASSWORD=$DB_PASSWORD
-      - MARIADB_USER=$DB_USER
-      - MARIADB_DATABASE=$DB_DATABASE
-      - MARIADB_ROOT_PASSWORD=$ROOT_PASSWORD
-    command:
-      - "--character-set-server=utf8mb4"
-      - "--collation-server=utf8mb4_unicode_ci"
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_DB=$DB_DATABASE
     volumes:
-      - ilmokone_data:/var/lib/mysql
+      - ilmokone_data:/var/lib/postgresql
     networks:
       - back-tier
 

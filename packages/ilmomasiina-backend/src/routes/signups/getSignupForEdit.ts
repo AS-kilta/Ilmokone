@@ -22,27 +22,20 @@ export default async function getSignupForEdit(
       },
       {
         model: Quota,
-        include: [
-          {
-            model: Event,
-            include: [
-              {
-                model: Question,
-                required: false,
-              },
-            ],
-          },
-        ],
+        include: [{ model: Event }],
       },
     ],
-    order: [[Quota, Event, Question, "order", "ASC"]],
   });
-  if (signup === null) {
+  if (!signup || !signup.quota || !signup.quota.event) {
     // Event not found with id, probably deleted
-    throw new NoSuchSignup("No signup found with given id");
+    throw new NoSuchSignup("Signup expired or already deleted");
   }
 
-  const event = signup.quota!.event!;
+  const { event } = signup.quota;
+
+  // Fetch these separately to avoid O(n^3) returned rows.
+  event.questions = await Question.findAll({ where: { eventId: event.id }, order: [["order", "ASC"]] });
+  event.quotas = await Quota.findAll({ where: { eventId: event.id }, order: [["order", "ASC"]] });
 
   // Determine how long the signup can be edited for.
   let editableForMillis = 0;
@@ -69,6 +62,7 @@ export default async function getSignupForEdit(
     event: {
       ...event.get({ plain: true }),
       questions: event.questions!.map((question) => question.get({ plain: true })),
+      quotas: event.quotas!.map((question) => question.get({ plain: true })),
     },
   };
 

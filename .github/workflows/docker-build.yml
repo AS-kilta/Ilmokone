@@ -23,9 +23,31 @@ jobs:
     name: Lint & type-check
     uses: ./.github/workflows/lint-test.yml
 
+  packagejson:
+    name: Check package.json versions
+    runs-on: ubuntu-latest
+    if: github.ref_type == 'tag'
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Check package.json versions against tag
+        run: |
+          errors=0
+          for file in package.json packages/*/package.json
+          do
+            if cat $file | jq '"v" + .version' | grep -Fqvx '"${{ github.ref_name }}"'
+            then
+              echo "::error file=$file::The version here does not match the Git tag you pushed (${{ github.ref_name }}). This would cause no NPM packages to be published."
+              errors=1
+            fi
+          done
+          exit $errors
+
   docker:
     name: Push Docker image to GitHub Packages
-    needs: lint
+    # If you want to build on a branch instead of tags, remove packagejson from below (since there isn't a tag to check against).
+    needs: [lint]
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -35,14 +57,6 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-
-      - name: Use Latest Corepack
-        run: |
-              echo "Before: corepack version => $(corepack --version || echo 'not installed')"
-              npm install -g corepack@latest
-              echo "After : corepack version => $(corepack --version)"
-              corepack enable
-              pnpm --version
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

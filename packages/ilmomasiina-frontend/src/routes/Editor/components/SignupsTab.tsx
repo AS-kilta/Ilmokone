@@ -3,13 +3,12 @@ import React, { ChangeEvent, Fragment, useCallback, useMemo, useState } from "re
 import { Button, Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
-import { useActionDateTimeFormatter } from "@tietokilta/ilmomasiina-components/dist/utils/dateFormat";
-import { stringifyAnswer } from "@tietokilta/ilmomasiina-components/dist/utils/signupUtils";
-import useEvent from "@tietokilta/ilmomasiina-components/dist/utils/useEvent";
+import { stringifyAnswer } from "@tietokilta/ilmomasiina-client/dist/utils/signupUtils";
 import { AdminEventResponse, SignupStatus } from "@tietokilta/ilmomasiina-models";
-import { deleteSignup, editNewSignup, editSignup, getEvent } from "../../../modules/editor/actions";
 import type { AdminSignupWithQuota } from "../../../modules/editor/types";
-import { useTypedDispatch, useTypedSelector } from "../../../store/reducers";
+import useStore from "../../../modules/store";
+import { useActionDateTimeFormatter } from "../../../utils/dateFormat";
+import useEvent from "../../../utils/useEvent";
 import CSVLink, { CSVOptions } from "./CSVLink";
 import {
   getAnswersFromSignup,
@@ -27,20 +26,20 @@ type SignupProps = {
 };
 
 const SignupRow = ({ position, signup, showQuota }: SignupProps) => {
-  const event = useTypedSelector((state) => state.editor.event)!;
-  const dispatch = useTypedDispatch();
+  const { editSignup, deleteSignup, getEvent } = useStore((state) => state.editor);
+  const event = useStore((state) => state.editor.event!);
   const { t } = useTranslation();
   const actionDateFormat = useActionDateTimeFormatter();
 
   const answersMap = useMemo(() => getAnswersFromSignup(event, signup), [event, signup]);
 
-  const onEdit = useEvent(() => dispatch(editSignup(signup)));
+  const onEdit = useEvent(() => editSignup(signup));
   const onDelete = useEvent(async () => {
     // eslint-disable-next-line no-alert
     const confirmation = window.confirm(t("editor.signups.action.delete.confirm"));
     if (confirmation) {
-      await dispatch(deleteSignup(signup.id!));
-      dispatch(getEvent(event.id));
+      await deleteSignup(signup.id!);
+      getEvent(event.id);
     }
   });
 
@@ -59,7 +58,7 @@ const SignupRow = ({ position, signup, showQuota }: SignupProps) => {
   }
 
   return (
-    <tr className={rowClassName}>
+    <tr className={!signup.confirmed ? "ilmo--unconfirmed" : ""}>
       <td key="position">{`${position}.`}</td>
       {signup.confirmed && event.nameQuestion && <td key="firstName">{signup.firstName}</td>}
       {signup.confirmed && event.nameQuestion && <td key="lastName">{signup.lastName}</td>}
@@ -81,7 +80,7 @@ const SignupRow = ({ position, signup, showQuota }: SignupProps) => {
         </td>
       )}
       {!signup.confirmed && nameEmailCols && (
-        <td colSpan={nameEmailCols} className="font-italic">
+        <td colSpan={nameEmailCols} className="fst-italic">
           {t("editor.signups.unconfirmed")}
         </td>
       )}
@@ -96,7 +95,7 @@ const SignupRow = ({ position, signup, showQuota }: SignupProps) => {
         <Button type="button" variant="primary" size="sm" onClick={onEdit}>
           {t("editor.signups.action.edit")}
         </Button>
-        <Button type="button" variant="danger" size="sm" onClick={onDelete}>
+        <Button type="button" variant="danger" size="sm" onClick={onDelete} className="ms-1">
           {t("editor.signups.action.delete")}
         </Button>
       </td>
@@ -143,8 +142,7 @@ const SignupTable = ({ event, signups, showQuota }: TableProps) => {
 const csvOptions: CSVOptions = { delimiter: "\t" };
 
 const SignupsTab = () => {
-  const event = useTypedSelector((state) => state.editor.event);
-  const dispatch = useTypedDispatch();
+  const { event, editNewSignup } = useStore((state) => state.editor);
 
   const signups = useMemo(() => event && getSignupsForAdminList(event), [event]);
   const signupsByQuota = useMemo(() => event && getSignupsByQuotaForAdminList(event), [event]);
@@ -163,10 +161,10 @@ const SignupsTab = () => {
     i18n: { language },
   } = useTranslation();
 
-  const createSignup = useEvent(() => dispatch(editNewSignup({ language })));
+  const createSignup = useEvent(() => editNewSignup(language));
 
-  if (!event) {
-    return <p>{t("editor.signups.noSignups")}</p>;
+  if (!event || !event.quotas.length) {
+    return <p>{t("editor.signups.noQuotas")}</p>;
   }
 
   const isSingleQuota = event.quotas.length <= 1;
@@ -186,17 +184,18 @@ const SignupsTab = () => {
           checked={grouped}
           onChange={onGroupedChange}
         />
-        <div className="flex-grow-1" />
-        <Button variant="primary" onClick={createSignup}>
-          {t("editor.signups.action.create")}
-        </Button>
-        <CSVLink
-          data={csvSignups!}
-          csvOptions={csvOptions}
-          download={t("editor.signups.download.filename", { event: event.title })}
-        >
-          {t("editor.signups.download")}
-        </CSVLink>
+        <div className="ilmo--title-nav-buttons">
+          <Button variant="primary" onClick={createSignup}>
+            {t("editor.signups.action.create")}
+          </Button>
+          <CSVLink
+            data={csvSignups!}
+            csvOptions={csvOptions}
+            download={t("editor.signups.download.filename", { event: event.title })}
+          >
+            {t("editor.signups.download")}
+          </CSVLink>
+        </div>
       </nav>
       {/* eslint-disable-next-line no-nested-ternary */}
       {!signups?.length ? (
