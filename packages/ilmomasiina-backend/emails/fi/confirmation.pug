@@ -2,7 +2,7 @@ extends ../layout.pug
 
 block alertContent
   td.alert.alert-good
-    p.alertText Ei vissii mikää neliö...
+    div.alertText!= vectorText("Ei vissii mikää neliö...", { font: "jacquard", fontSize: 34, color: "#ffffff" })
 
 block mainContent
   if admin && type == "signup"

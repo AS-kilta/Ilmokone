@@ -14,7 +14,6 @@ import type {
 } from "@tietokilta/ilmomasiina-models";
 import {
   adminEventGetEventAttrs,
-  adminEventGetSignupAttrs,
   eventGetAnswerAttrs,
   eventGetEventAttrs,
   eventGetQuestionAttrs,
@@ -166,6 +165,7 @@ export function formatSignupForAdmin(signup: Signup): AdminSignupSchema {
     status: signup.status,
     answers: signup.answers!.map((answer) => answer.get({ plain: true })),
     confirmed: Boolean(signup.confirmedAt),
+    emailError: signup.emailError ?? null,
   };
   return result as unknown as StringifyApi<typeof result>;
 }
@@ -200,7 +200,7 @@ export async function eventDetailsForAdmin(eventID: EventID): Promise<AdminEvent
     include: [
       {
         model: Signup.scope("active"),
-        attributes: adminEventGetSignupAttrs,
+        attributes: [...eventGetSignupAttrs, "id", "email", "emailError"],
         required: false,
         // ... and answers of signups
         include: [
