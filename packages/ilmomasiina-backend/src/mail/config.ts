@@ -33,7 +33,8 @@ const mailTransporter: Transporter = (() => {
     if (hasOAuth) {
       if (!config.googleClientId || !config.googleRefreshToken) {
         console.warn(
-          "Partial Google OAuth credentials configured for SMTP. Both GOOGLE_CLIENT_ID and GOOGLE_REFRESH_TOKEN are required for OAuth2.",
+          "Partial Google OAuth credentials configured for SMTP. " +
+            "Both GOOGLE_CLIENT_ID and GOOGLE_REFRESH_TOKEN are required for OAuth2.",
         );
       }
       if (config.googleClientId && config.googleRefreshToken) {
@@ -71,7 +72,10 @@ const mailTransporter: Transporter = (() => {
     } as SMTPTransport.Options);
   }
 
-  console.warn("Neither Mailgun nor SMTP is configured. Falling back to debug mail service (emails will be logged to console and not sent).");
+  console.warn(
+    "Neither Mailgun nor SMTP is configured. " +
+      "Falling back to debug mail service (emails will be logged to console and not sent).",
+  );
   return nodemailer.createTransport({
     name: "debug mail service",
     version: "0",
