@@ -125,6 +125,7 @@ export default class EmailService {
       await EmailService.send(to, subject, html);
     } catch (error) {
       console.error(`Failed to send confirmation email to ${to}:`, error);
+      throw error;
     }
   }
 
@@ -145,6 +146,7 @@ export default class EmailService {
       await EmailService.send(to, subject, html);
     } catch (error) {
       console.error(`Failed to send new user invitation email to ${to}:`, error);
+      throw error;
     }
   }
 
@@ -165,6 +167,7 @@ export default class EmailService {
       await EmailService.send(to, subject, html);
     } catch (error) {
       console.error(`Failed to send password reset email to ${to}:`, error);
+      throw error;
     }
   }
 
@@ -187,6 +190,7 @@ export default class EmailService {
       await EmailService.send(to, subject, html);
     } catch (error) {
       console.error(`Failed to send queue promotion email to ${to}:`, error);
+      throw error;
     }
   }
 }

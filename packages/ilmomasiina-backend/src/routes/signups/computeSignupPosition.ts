@@ -28,7 +28,17 @@ async function sendPromotedFromQueueMail(signup: Signup, eventId: Event["id"]) {
     event,
     date: event.date && moment(event.date).tz(config.timezone).format(dateFormat),
   };
-  await EmailService.sendPromotedFromQueueMail(signup.email, signup.language, params);
+  try {
+    await EmailService.sendPromotedFromQueueMail(signup.email, signup.language, params);
+    if (signup.emailError) {
+      await signup.update({ emailError: null });
+    }
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    await signup.update({ emailError: errorMsg }).catch((err) => {
+      console.error("Failed to save emailError on signup:", err);
+    });
+  }
 }
 
 /** Internal, non-batched version. See below for explanation of what this does. */

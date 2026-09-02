@@ -55,5 +55,15 @@ export default async function sendSignupConfirmationMail(
     cancelLink,
   };
 
-  await EmailService.sendConfirmationMail(signup.email, signup.language, params);
+  try {
+    await EmailService.sendConfirmationMail(signup.email, signup.language, params);
+    if (signup.emailError) {
+      await signup.update({ emailError: null });
+    }
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    await signup.update({ emailError: errorMsg }).catch((err) => {
+      console.error("Failed to save emailError on signup:", err);
+    });
+  }
 }

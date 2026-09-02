@@ -54,8 +54,19 @@ export const signupUpdateResponse = signupIdentity;
 /** Schema for signups in event details from the public API. */
 export const publicSignupSchema = Type.Composite([publicEditableSignupAttributes, dynamicSignupAttributes]);
 
+const adminSignupEmailError = Type.Object({
+  emailError: Nullable(Type.String(), {
+    description: "Reason if sending confirmation/notification email failed, null otherwise.",
+  }),
+});
+
 /** Schema for signups in event details from the admin API. */
-export const adminSignupSchema = Type.Composite([signupIdentity, editableSignupAttributes, dynamicSignupAttributes]);
+export const adminSignupSchema = Type.Composite([
+  signupIdentity,
+  editableSignupAttributes,
+  dynamicSignupAttributes,
+  adminSignupEmailError,
+]);
 
 /** Path parameters necessary to fetch and manipulate signups. */
 export const signupPathParams = Type.Object({

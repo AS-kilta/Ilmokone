@@ -51,12 +51,35 @@ const SignupRow = ({ position, signup, showQuota }: SignupProps) => {
       ? t(`editor.signups.column.status.${signup.status}`)
       : null;
 
+  let rowClassName = "";
+  if (signup.emailError) {
+    rowClassName = "table-danger";
+  } else if (!signup.confirmed) {
+    rowClassName = "text-muted";
+  }
+
   return (
-    <tr className={!signup.confirmed ? "text-muted" : ""}>
+    <tr className={rowClassName}>
       <td key="position">{`${position}.`}</td>
       {signup.confirmed && event.nameQuestion && <td key="firstName">{signup.firstName}</td>}
       {signup.confirmed && event.nameQuestion && <td key="lastName">{signup.lastName}</td>}
-      {signup.confirmed && event.emailQuestion && <td key="email">{signup.email}</td>}
+      {signup.confirmed && event.emailQuestion && (
+        <td key="email">
+          <div>{signup.email}</div>
+          {signup.emailError && (
+            <div
+              className="text-danger small mt-1 font-weight-bold"
+              title={t("editor.signups.emailError.tooltip", { error: signup.emailError })}
+            >
+              <span
+                className="event-editor--tab-error me-1"
+                style={{ display: "inline-block", verticalAlign: "-2px" }}
+              />
+              {t("editor.signups.emailError.label")}: {signup.emailError}
+            </div>
+          )}
+        </td>
+      )}
       {!signup.confirmed && nameEmailCols && (
         <td colSpan={nameEmailCols} className="font-italic">
           {t("editor.signups.unconfirmed")}
@@ -127,6 +150,8 @@ const SignupsTab = () => {
   const signupsByQuota = useMemo(() => event && getSignupsByQuotaForAdminList(event), [event]);
   const csvSignups = useConvertSignupsToCSV(event, signups);
 
+  const emailErrorCount = useMemo(() => signups?.filter((s) => Boolean(s.emailError)).length ?? 0, [signups]);
+
   const [grouped, setGrouped] = useState(false);
   const onGroupedChange = useCallback(
     (evt: ChangeEvent<HTMLInputElement>) => setGrouped(evt.currentTarget.checked),
@@ -148,6 +173,12 @@ const SignupsTab = () => {
 
   return (
     <div>
+      {emailErrorCount > 0 && (
+        <div className="alert alert-danger mb-3" role="alert">
+          <span className="event-editor--tab-error me-2" style={{ display: "inline-block", verticalAlign: "-2px" }} />
+          {t("editor.signups.emailErrorsAlert", { count: emailErrorCount })}
+        </div>
+      )}
       <nav className="mb-3 ilmo--title-nav">
         <Form.Check
           id="groupByQuota"

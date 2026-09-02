@@ -40,6 +40,7 @@ export interface SignupCreationAttributes
     | "status"
     | "position"
     | "createdAt"
+    | "emailError"
   > {}
 
 export class Signup extends Model<SignupAttributes, SignupCreationAttributes> implements SignupAttributes {
@@ -52,6 +53,7 @@ export class Signup extends Model<SignupAttributes, SignupCreationAttributes> im
   public confirmedAt!: Date | null;
   public status!: SignupStatus | null;
   public position!: number | null;
+  public emailError!: string | null;
 
   public quotaId!: Quota["id"];
   public quota?: Quota;
@@ -138,6 +140,10 @@ export default function setupSignupModel(sequelize: Sequelize) {
       },
       position: {
         type: DataTypes.INTEGER,
+      },
+      emailError: {
+        type: DataTypes.TEXT,
+        allowNull: true,
       },
       // Add createdAt manually to support milliseconds
       createdAt: {

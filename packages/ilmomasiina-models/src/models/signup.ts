@@ -13,4 +13,5 @@ export default interface SignupAttributes {
   position: number | null;
   createdAt: Date;
   quotaId: QuotaAttributes["id"];
+  emailError: string | null;
 }
