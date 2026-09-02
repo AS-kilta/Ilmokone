@@ -1,9 +1,25 @@
 import { SignupForEdit, SignupStatus, UserEventResponse } from "@tietokilta/ilmomasiina-models";
-import { editorEventToServer } from "../../../modules/editor/actions";
+import { editorEventToServer } from "../../../modules/editor/selectors";
 import type { EditorEvent } from "../../../modules/editor/types";
 
 export const editorEventToUserEvent = (form: EditorEvent): UserEventResponse => {
   const serverEvent = editorEventToServer(form);
+
+  let registrationClosed = true;
+  let millisTillOpening: number | null = null;
+
+  if (serverEvent.registrationStartDate !== null && serverEvent.registrationEndDate !== null) {
+    const startDate = new Date(serverEvent.registrationStartDate);
+    const now = new Date();
+    millisTillOpening = Math.max(0, startDate.getTime() - now.getTime());
+
+    const endDate = new Date(serverEvent.registrationEndDate);
+    registrationClosed = now > endDate;
+  } else if (serverEvent.registrationStartDate === null && serverEvent.registrationEndDate === null) {
+    registrationClosed = true;
+    millisTillOpening = null;
+  }
+
   return {
     ...serverEvent,
     id: "preview",
@@ -17,8 +33,8 @@ export const editorEventToUserEvent = (form: EditorEvent): UserEventResponse => 
       ...question,
       id: question.id ?? `preview${Math.random()}`,
     })),
-    registrationClosed: false,
-    millisTillOpening: Infinity,
+    registrationClosed,
+    millisTillOpening,
   };
 };
 

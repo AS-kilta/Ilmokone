@@ -10,32 +10,28 @@
 
 services:
   database-dev:
-    image: mariadb:10.11
+    image: postgres:18
     restart: unless-stopped
-    command:
-      - "--character-set-server=utf8mb4"
-      - "--collation-server=utf8mb4_unicode_ci"
     environment:
-      - MARIADB_PASSWORD=$DB_PASSWORD
-      - MARIADB_USER=$DB_USER
-      - MARIADB_DATABASE=$DB_DATABASE
-      - MARIADB_ROOT_PASSWORD=$ROOT_PASSWORD
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_DB=$DB_DATABASE
     volumes:
-      - ./data:/var/lib/mysql
+      - ./data:/var/lib/postgresql
     ports:
-      # Port open to the host. ilmomasiina-dev container uses default MariaDB port 3306.
-      - 3306:3306
+      # Port open to the host. ilmomasiina-dev container uses default PostgreSQL port 5432.
+      - "5432:5432"
 
   ilmomasiina-dev:
     build:
       context: .
       dockerfile: "Dockerfile.dev"
-    command: "npm start"
+    command: "pnpm start"
     restart: unless-stopped
     depends_on:
       - database-dev
     environment:
-      - DB_DIALECT=mysql
+      - DB_DIALECT=postgres
       - DB_HOST=database-dev
       - NODE_ENV=development
       - HOST=0.0.0.0
@@ -50,14 +46,14 @@ services:
         source: ./packages/ilmomasiina-frontend/src
         target: /opt/ilmomasiina/packages/ilmomasiina-frontend/src
       - type: bind
-        source: ./packages/ilmomasiina-frontend/vite.config.ts
-        target: /opt/ilmomasiina/packages/ilmomasiina-frontend/vite.config.ts
+        source: ./packages/ilmomasiina-frontend/vite.config.mts
+        target: /opt/ilmomasiina/packages/ilmomasiina-frontend/vite.config.mts
       - type: bind
         source: ./packages/ilmomasiina-frontend/index.html
         target: /opt/ilmomasiina/packages/ilmomasiina-frontend/index.html
       - type: bind
-        source: ./packages/ilmomasiina-components/src
-        target: /opt/ilmomasiina/packages/ilmomasiina-components/src
+        source: ./packages/ilmomasiina-client/src
+        target: /opt/ilmomasiina/packages/ilmomasiina-client/src
       - type: bind
         source: ./packages/ilmomasiina-backend/src
         target: /opt/ilmomasiina/packages/ilmomasiina-backend/src

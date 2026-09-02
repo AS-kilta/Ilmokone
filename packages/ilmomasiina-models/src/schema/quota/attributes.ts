@@ -1,4 +1,4 @@
-import { Type } from "@sinclair/typebox";
+import { Type } from "typebox";
 
 import { Nullable } from "../utils";
 
@@ -11,6 +11,15 @@ export const quotaID = Type.String({
 /** Non-editable identity attributes of a quota. */
 export const quotaIdentity = Type.Object({
   id: quotaID,
+});
+
+/** Editable attributes of a quota language version. */
+export const quotaLanguageAttributes = Type.Object({
+  // No minLength to allow for fallback.
+  title: Type.String({
+    description: "Quota name.",
+    maxLength: 255,
+  }),
 });
 
 /** Editable attributes of a quota. */
