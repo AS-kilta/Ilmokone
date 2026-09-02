@@ -2,6 +2,7 @@ import { describe, expect, test, vi } from "vitest";
 
 import EmailService from "../../src/mail";
 import mailTransporter from "../../src/mail/config";
+import { renderVectorSvg, vectorText } from "../../src/mail/vectorText";
 
 describe("EmailService", () => {
   const sampleParams = {
@@ -21,13 +22,29 @@ describe("EmailService", () => {
     cancelLink: "https://ilmo.example.com/edit/123",
   };
 
-  test("renders confirmation email preview with inlined styles", async () => {
+  test("renders confirmation email preview with inlined styles and vector text", async () => {
     const previewHtml = await EmailService.createConfirmationEmailPreview("fi", sampleParams);
     expect(previewHtml).toBeDefined();
     expect(previewHtml).toContain("Testitapahtuma");
     expect(previewHtml).toContain("Teemu Teekkari");
     expect(previewHtml).toContain("Otaniemi");
     expect(previewHtml).toContain("Tervetuloa tapahtumaan!");
+    // Check that vector images for header and alert are rendered
+    expect(previewHtml).toContain("data:image/svg+xml;base64,");
+    expect(previewHtml).toContain("AS Ilmokone");
+    expect(previewHtml).toContain("Ei vissii mikää neliö...");
+  });
+
+  test("vectorText and renderVectorSvg generate valid vector SVG data", () => {
+    const svg = renderVectorSvg("AS Ilmokone", { font: "anta", fontSize: 48, color: "#ffffff" });
+    expect(svg).toContain("<svg xmlns=");
+    expect(svg).toContain("<path d=");
+    expect(svg).toContain("#ffffff");
+
+    const img = vectorText("AS Ilmokone", { font: "anta", fontSize: 48, color: "#ffffff" });
+    expect(img).toContain("<img src=");
+    expect(img).toContain("data:image/svg+xml;base64,");
+    expect(img).toContain("AS Ilmokone");
   });
 
   test("sendConfirmationMail sends rendered email and rethrows on error", async () => {

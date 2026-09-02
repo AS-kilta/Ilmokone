@@ -8,6 +8,7 @@ import path from "path";
 import config, { adminUrl } from "../config";
 import i18n from "../i18n";
 import mailTransporter from "./config";
+import { renderVectorSvg, vectorText } from "./vectorText";
 
 // Configure marked to allow simple text formatting for custom event verification emails
 function md(text: string) {
@@ -86,6 +87,19 @@ const TEMPLATE_OPTIONS: Email.EmailConfig = {
 
 const emailRenderer = new Email(TEMPLATE_OPTIONS);
 
+function getBrandedParams<T extends object>(params: T) {
+  return {
+    ...params,
+    branding: {
+      footerText: config.brandingMailFooterText,
+      footerLink: config.brandingMailFooterLink,
+    },
+    md,
+    vectorText,
+    renderVectorSvg,
+  };
+}
+
 export default class EmailService {
   static send(to: string, subject: string, html: string) {
     if (!config.mailFrom) {
@@ -107,14 +121,7 @@ export default class EmailService {
     params: ConfirmationMailParams,
   ): Promise<string | undefined> {
     try {
-      const brandedParams = {
-        ...params,
-        branding: {
-          footerText: config.brandingMailFooterText,
-          footerLink: config.brandingMailFooterLink,
-        },
-        md,
-      };
+      const brandedParams = getBrandedParams(params);
       const { template } = getTemplate(language, "confirmation");
       const html = await emailRenderer.render(template, brandedParams);
       return html;
@@ -126,14 +133,7 @@ export default class EmailService {
 
   static async sendConfirmationMail(to: string, language: string | null, params: ConfirmationMailParams) {
     try {
-      const brandedParams = {
-        ...params,
-        branding: {
-          footerText: config.brandingMailFooterText,
-          footerLink: config.brandingMailFooterLink,
-        },
-        md,
-      };
+      const brandedParams = getBrandedParams(params);
       const { template, lng } = getTemplate(language, "confirmation");
       const html = await emailRenderer.render(template, brandedParams);
       const subject = i18next.t(`emails.confirmation.${params.type}.subject`, {
@@ -149,14 +149,10 @@ export default class EmailService {
 
   static async sendNewUserMail(to: string, language: string | null, params: NewUserMailParams) {
     try {
-      const brandedParams = {
+      const brandedParams = getBrandedParams({
         ...params,
         siteUrl: adminUrl({ lang: language || config.defaultLanguage }),
-        branding: {
-          footerText: config.brandingMailFooterText,
-          footerLink: config.brandingMailFooterLink,
-        },
-      };
+      });
       const { template, lng } = getTemplate(language, "newUser");
       const html = await emailRenderer.render(template, brandedParams);
       const subject = i18n.t("emails.newUser.subject", { lng });
@@ -169,14 +165,10 @@ export default class EmailService {
 
   static async sendResetPasswordMail(to: string, language: string | null, params: NewUserMailParams) {
     try {
-      const brandedParams = {
+      const brandedParams = getBrandedParams({
         ...params,
         siteUrl: adminUrl({ lang: language || config.defaultLanguage }),
-        branding: {
-          footerText: config.brandingMailFooterText,
-          footerLink: config.brandingMailFooterLink,
-        },
-      };
+      });
       const { template, lng } = getTemplate(language, "resetPassword");
       const html = await emailRenderer.render(template, brandedParams);
       const subject = i18n.t("emails.resetPassword.subject", { lng });
@@ -189,13 +181,7 @@ export default class EmailService {
 
   static async sendPromotedFromQueueMail(to: string, language: string | null, params: PromotedFromQueueMailParams) {
     try {
-      const brandedParams = {
-        ...params,
-        branding: {
-          footerText: config.brandingMailFooterText,
-          footerLink: config.brandingMailFooterLink,
-        },
-      };
+      const brandedParams = getBrandedParams(params);
       const { template, lng } = getTemplate(language, "queueMail");
       const html = await emailRenderer.render(template, brandedParams);
       const subject = i18n.t("emails.promotedFromQueue.subject", {

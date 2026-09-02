@@ -15,6 +15,15 @@
   font-family: "Jacquard 12", "Brush Script MT", sans-serif;
   font-weight: 400;
   font-style: normal;
+  text-align: center;
+}
+
+.alertText img,
+.alertText svg {
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 100%;
+  height: auto;
 }
 
 .alert.alert-warning {
