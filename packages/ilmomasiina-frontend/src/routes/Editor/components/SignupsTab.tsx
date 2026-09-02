@@ -54,11 +54,11 @@ const SignupRow = ({ position, signup, showQuota }: SignupProps) => {
   if (signup.emailError) {
     rowClassName = "table-danger";
   } else if (!signup.confirmed) {
-    rowClassName = "text-muted";
+    rowClassName = "ilmo--unconfirmed";
   }
 
   return (
-    <tr className={!signup.confirmed ? "ilmo--unconfirmed" : ""}>
+    <tr className={rowClassName}>
       <td key="position">{`${position}.`}</td>
       {signup.confirmed && event.nameQuestion && <td key="firstName">{signup.firstName}</td>}
       {signup.confirmed && event.nameQuestion && <td key="lastName">{signup.lastName}</td>}

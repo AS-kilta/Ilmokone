@@ -27,21 +27,20 @@ import type { Answer } from "./answer";
 import type { Quota } from "./quota";
 import { generateRandomId, RANDOM_ID_LENGTH } from "./randomId";
 
-export interface SignupCreationAttributes
-  extends Optional<
-    SignupAttributes,
-    | "id"
-    | "firstName"
-    | "lastName"
-    | "namePublic"
-    | "email"
-    | "confirmedAt"
-    | "language"
-    | "status"
-    | "position"
-    | "createdAt"
-    | "emailError"
-  > {}
+export interface SignupCreationAttributes extends Optional<
+  SignupAttributes,
+  | "id"
+  | "firstName"
+  | "lastName"
+  | "namePublic"
+  | "email"
+  | "confirmedAt"
+  | "language"
+  | "status"
+  | "position"
+  | "createdAt"
+  | "emailError"
+> {}
 
 export class Signup extends Model<SignupAttributes, SignupCreationAttributes> implements SignupAttributes {
   public id!: string;

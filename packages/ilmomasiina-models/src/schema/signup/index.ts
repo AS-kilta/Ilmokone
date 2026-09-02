@@ -58,12 +58,10 @@ const adminSignupEmailError = Type.Object({
 });
 
 /** Schema for signups in event details from the admin API. */
-export const adminSignupSchema = Type.Composite([
-  signupIdentity,
-  editableSignupAttributes,
-  dynamicSignupAttributes,
-  adminSignupEmailError,
-]);
+export const adminSignupSchema = Type.Interface(
+  [signupIdentity, editableSignupAttributes, dynamicSignupAttributes, adminSignupEmailError],
+  {},
+);
 
 /** Path parameters necessary to fetch and manipulate signups. */
 export const signupPathParams = Type.Object({

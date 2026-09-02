@@ -5,7 +5,7 @@ import { useFormState } from "react-final-form";
 import { useTranslation } from "react-i18next";
 
 import { EditorEvent, EditorEventType } from "../../../modules/editor/types";
-import { useTypedSelector } from "../../../store/reducers";
+import useStore from "../../../modules/store";
 import { useFieldValue } from "./hooks";
 
 export enum EditorTab {
@@ -71,7 +71,7 @@ type TabProps = Props & {
 const Tab = ({ id, activeTab, setActiveTab }: TabProps) => {
   const { t } = useTranslation();
   const { errors } = useFormState({ subscription: { errors: true } });
-  const event = useTypedSelector((state) => state.editor.event);
+  const event = useStore((state) => state.editor.event);
 
   const hasEmailErrors =
     id === EditorTab.SIGNUPS &&
