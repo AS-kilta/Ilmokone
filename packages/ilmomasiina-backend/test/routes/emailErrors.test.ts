@@ -66,6 +66,8 @@ describe("email error handling", () => {
     const event = await testEvent({ quotaCount: 1, quotaOverrides: { size: 1 } }, { openQuotaSize: 0 });
     // Create 2 signups: first in quota, second in queue
     const [first, second] = await testSignups(event, { count: 2, confirmed: true });
+    await first.update({ createdAt: new Date(1000) });
+    await second.update({ createdAt: new Date(2000) });
     await refreshSignupPositions(event);
 
     const reloadedSecond = await Signup.findByPk(second.id);
