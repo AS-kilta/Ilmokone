@@ -66,20 +66,71 @@ const EmailPreview = () => {
     i18n.language,
   ]);
 
+  const updateHeight = () => {
+    const iframe = previewRef.current;
+    const doc = iframe?.contentWindow?.document;
+    if (!doc) return;
+
+    if (doc.documentElement) {
+      doc.documentElement.style.overflow = "hidden";
+      doc.documentElement.style.margin = "0";
+      doc.documentElement.style.padding = "0";
+    }
+    if (doc.body) {
+      doc.body.style.overflow = "hidden";
+      doc.body.style.margin = "0";
+      doc.body.style.padding = "0";
+      doc.body.style.height = "auto";
+    }
+
+    // Measure the actual bottom extent of all visible content elements
+    const elements = Array.from(doc.querySelectorAll<HTMLElement>(".header, .main, .footer, .content, .container"));
+    let maxBottom = 0;
+    for (const el of elements) {
+      const rect = el.getBoundingClientRect();
+      if (rect.bottom > maxBottom) {
+        maxBottom = rect.bottom;
+      }
+    }
+
+    const table = doc.querySelector(".body-wrap") as HTMLElement | null;
+    const finalHeight = maxBottom > 0 ? Math.ceil(maxBottom) : table?.offsetHeight || doc.body?.scrollHeight || 0;
+
+    if (finalHeight > 0) {
+      setPreviewHeight(`${finalHeight}px`);
+    }
+  };
+
   const onPreviewLoad = () => {
-    const body = previewRef.current?.contentWindow?.document?.body;
-    if (!body) return;
+    const iframe = previewRef.current;
+    const doc = iframe?.contentWindow?.document;
+    if (!doc) return;
+
+    updateHeight();
+
+    const images = doc.querySelectorAll("img");
+    images.forEach((img) => {
+      if (!img.complete) {
+        img.addEventListener("load", updateHeight, { once: true });
+      }
+    });
+
+    if (typeof ResizeObserver !== "undefined" && doc.body) {
+      const observer = new ResizeObserver(() => {
+        updateHeight();
+      });
+      observer.observe(doc.body);
+    }
+
     requestAnimationFrame(() => {
-      const newHeight = body.scrollHeight;
-      if (newHeight) setPreviewHeight(`${newHeight}px`);
-      // Compensate scroll so page doesn't jump when iframe height changes
+      updateHeight();
       if (prevWrapperTopRef.current != null && wrapperRef.current) {
         const newAbsTop = wrapperRef.current.getBoundingClientRect().top + window.scrollY;
         const diff = newAbsTop - prevWrapperTopRef.current;
         if (Math.abs(diff) > 1) {
           window.scrollBy({ top: diff, behavior: "auto" });
         }
-        prevWrapperTopRef.current = null; // reset
+        prevWrapperTopRef.current = null;
       }
     });
   };

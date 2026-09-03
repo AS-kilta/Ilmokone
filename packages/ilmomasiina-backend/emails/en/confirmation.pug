@@ -2,7 +2,7 @@ extends ../layout.pug
 
 block alertContent
   td.alert.alert-good
-    div.alertText!= vectorText("Not a square, I see!", { font: "jacquard", fontSize: 34, color: "#ffffff" })
+    div.alertText!= pngText("Not a square, I see!", { font: "jacquard", fontSize: 34, color: "#ffffff" })
 
 block mainContent
   if admin && type == "signup"
