@@ -93,9 +93,9 @@ export default async function preview(request: FastifyRequest<{ Body: PreviewCon
   };
 
   const html =
-    (await EmailService.createConfirmationEmailPreview(
-      language,
-      { ...params, event } as unknown as ConfirmationMailParams,
-    )) ?? "<p>Email service failed to render a preview.</p>";
+    (await EmailService.createConfirmationEmailPreview(language, {
+      ...params,
+      event,
+    } as unknown as ConfirmationMailParams)) ?? "<p>Email service failed to render a preview.</p>";
   return reply.send({ html });
 }

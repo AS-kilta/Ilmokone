@@ -1,10 +1,12 @@
 .headerTitle {
-  font-family: "Anta", sans-serif;
-  font-size: 50px;
-  font-weight: 400;
-  font-style: normal;
-  text-transform: none;
   text-align: center;
   margin-top: 20px;
-  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.headerTitle img {
+  display: inline-block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
 }

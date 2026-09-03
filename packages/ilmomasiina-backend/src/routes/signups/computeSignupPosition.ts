@@ -12,18 +12,57 @@ import { WouldMoveSignupsToQueue } from "../admin/events/errors";
 
 const perfLog = debug("app:perf:signups");
 
+async function sendPromotedFromQueueMail(signup: Signup, eventId: Event["id"]) {
+  if (signup.email === null) return;
+
+  // Re-fetch event for all attributes
+  const event = await Event.findByPk(eventId);
+  if (event === null) throw new Error("event missing when sending queue email");
+
+  const lng = signup.language ?? undefined;
+  const locale = (lng && event.languages?.[lng]) || null;
+  const dateFormat = i18n.t("dateFormat.general", { lng });
+
+  const localizedEvent = {
+    ...event.get({ plain: true }),
+    title: locale?.title || event.title,
+    location: locale?.location ?? event.location,
+    verificationEmail: locale?.verificationEmail ?? event.verificationEmail,
+  };
+
+  const params = {
+    event: localizedEvent as MailEvent,
+    date: event.date && moment(event.date).tz(config.timezone).format(dateFormat),
+  };
+  try {
+    await EmailService.sendPromotedFromQueueMail(signup.email, signup.language, params);
+    if (signup.emailError) {
+      await signup.update({ emailError: null });
+    }
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    await signup.update({ emailError: errorMsg }).catch((err) => {
+      console.error("Failed to save emailError on signup:", err);
+    });
+  }
+}
+
 /** Internal, non-batched version. See below for explanation of what this does. */
 async function refreshSignupPositionsInternal(
   eventRef: Pick<Event, "id">,
   transaction: Transaction | undefined,
   moveSignupsToQueue: boolean,
   queuedCount: number,
+  promotedQueue?: Signup[],
 ): Promise<Signup[]> {
   // Wrap in transaction if not given
   if (!transaction) {
-    return getSequelize().transaction(async (trans) =>
-      refreshSignupPositionsInternal(eventRef, trans, moveSignupsToQueue, queuedCount),
+    const toPromote: Signup[] = [];
+    const signups = await getSequelize().transaction(async (trans) =>
+      refreshSignupPositionsInternal(eventRef, trans, moveSignupsToQueue, queuedCount, toPromote),
     );
+    await Promise.all(toPromote.map((signup) => sendPromotedFromQueueMail(signup, eventRef.id)));
+    return signups;
   }
 
   const startTime = performance.now();
@@ -89,33 +128,38 @@ async function refreshSignupPositionsInternal(
       }
     }
 
-    return { signup, status, position };
+    const oldStatus = signup.status;
+    return { signup, oldStatus, status, position };
   });
 
   if (movedToQueue > 0 && !moveSignupsToQueue) {
     throw new WouldMoveSignupsToQueue(movedToQueue);
   }
 
-  // If a signup was just promoted from the queue, send an email about it asynchronously.
+  // Store changes in database, if any.
   await Promise.all(
-    result.map(async ({ signup, status }) => {
-      if (signup.status === SignupStatus.IN_QUEUE && status !== SignupStatus.IN_QUEUE) {
-        await sendPromotedFromQueueMail(signup);
+    result.map(async ({ signup, status, position }) => {
+      if (signup.status !== status || signup.position !== position) {
+        await signup.update({ status, position }, { transaction });
+      }
+    }),
+  );
+
+  // If a signup was just promoted from the queue, queue email and log audit event.
+  await Promise.all(
+    result.map(async ({ signup, oldStatus, status }) => {
+      if (oldStatus === SignupStatus.IN_QUEUE && status !== SignupStatus.IN_QUEUE) {
+        if (promotedQueue) {
+          promotedQueue.push(signup);
+        } else {
+          sendPromotedFromQueueMail(signup, event.id);
+        }
 
         await internalAuditLogger(AuditEvent.PROMOTE_SIGNUP, {
           signup,
           event,
           transaction,
         });
-      }
-    }),
-  );
-
-  // Store changes in database, if any.
-  await Promise.all(
-    result.map(async ({ signup, status, position }) => {
-      if (signup.status !== status || signup.position !== position) {
-        await signup.update({ status, position }, { transaction });
       }
     }),
   );

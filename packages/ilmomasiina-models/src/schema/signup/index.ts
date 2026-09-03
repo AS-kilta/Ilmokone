@@ -59,9 +59,15 @@ export const signupUpdateResponse = Type.Interface(
 /** Schema for signups in event details from the public API. */
 export const publicSignupSchema = Type.Interface([publicEditableSignupAttributes, publicDynamicSignupAttributes], {});
 
+const adminSignupEmailError = Type.Object({
+  emailError: Nullable(Type.String(), {
+    description: "Reason if sending confirmation/notification email failed, null otherwise.",
+  }),
+});
+
 /** Schema for signups in event details from the admin API. */
 export const adminSignupSchema = Type.Interface(
-  [signupIdentity, adminEditableSignupAttributes, adminDynamicSignupAttributes],
+  [signupIdentity, adminEditableSignupAttributes, adminDynamicSignupAttributes, adminSignupEmailError],
   {},
 );
 

@@ -16,7 +16,6 @@ import {
 import { Answer } from "../../models/answer";
 import {
   adminEventGetEventAttrs,
-  adminEventGetSignupAttrs,
   eventGetAnswerAttrs,
   eventGetEventAttrs,
   eventGetQuestionAttrs,
@@ -166,8 +165,9 @@ export function formatSignupForAdmin(signup: Signup): AdminSignupSchema {
   const result = {
     ...plain,
     answers: signup.answers!.map((answer) => answer.get({ plain: true })),
-    confirmed: signup.confirmed,
+    confirmed: Boolean(signup.confirmedAt),
     paymentStatus: signup.effectivePaymentStatus,
+    emailError: signup.emailError ?? null,
   };
   return result as unknown as StringifyApi<typeof result>;
 }
@@ -201,8 +201,8 @@ export async function eventDetailsForAdmin(eventID: EventID): Promise<AdminEvent
     // Include all signups for the quotas
     include: [
       {
-        model: Signup.scope("admin"),
-        attributes: adminEventGetSignupAttrs,
+        model: Signup.scope("active"),
+        attributes: [...eventGetSignupAttrs, "id", "email", "emailError"],
         required: false,
         // ... and answers of signups
         include: [

@@ -16,6 +16,7 @@ import _0007_add_languages from "./0007-add-languages";
 import _0008_add_price_fields from "./0008-add-price-fields";
 import _0009_add_payments from "./0009-add-payments";
 import _0010_add_preferredFrontend from "./0010-add-preferredFrontend";
+import _0010_add_signup_email_error from "./0010-add-signup-email-error";
 
 const migrations: RunnableMigration<Sequelize>[] = [
   _0000_initial,
@@ -33,6 +34,7 @@ const migrations: RunnableMigration<Sequelize>[] = [
   _0008_add_price_fields,
   _0009_add_payments,
   _0010_add_preferredFrontend,
+  _0010_add_signup_email_error,
 ];
 
 export default migrations;

@@ -1,0 +1,14 @@
+extends ../layout.pug
+
+block alertContent
+  td.alert.alert-neutral
+    div.alertText!= pngText("Kaikki tämä voima, sinun käsissäsi?!", { font: "jacquard", fontSize: 30, color: "#ffffff" })
+
+block mainContent
+  div.content-block
+    p.bodyText Sinulle on luotu admin-tunnukset AS Ilmokoneeseen.
+    ul
+      li #[strong Sähköposti:] #{email}
+      li #[strong Salasana:] #{password}
+  div.content-block-last
+    p.bodyText Voit kirjautua sisään osoitteessa #[a(href=siteUrl) #{siteUrl}]. Vaihdathan salasanan hallinta-paneelissa pikimiten!

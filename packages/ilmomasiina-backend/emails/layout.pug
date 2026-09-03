@@ -1,0 +1,41 @@
+doctype transitional
+html(lang='fi', xmlns='http://www.w3.org/1999/xhtml')
+  head
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    meta(http-equiv='Content-Type', content='text/html')
+    meta(charset="UTF-8")
+    title AS Ilmokone
+    link(rel='stylesheet', href='base.css', data-inline='data-inline')
+    link(rel='stylesheet', href='header.css', data-inline='data-inline')
+    link(rel='stylesheet', href='footer.css', data-inline='data-inline')
+    link(rel='stylesheet', href='content.css', data-inline='data-inline')
+    block headContent
+  body(itemscope, itemtype='http://schema.org/EmailMessage')
+    table(class='body-wrap', width='100%', cellpadding='0', cellspacing='0', border='0')
+      tr
+        td(class='container', width='600', align='center')
+          div.content
+            table(class='header', width='100%', cellpadding='0', cellspacing='0', border='0')
+              tr
+                td(class='align-center')
+                  block headerContent
+                    div.headerTitle!= pngText("AS Ilmokone", { font: "anta", fontSize: 48, color: "#ffffff" })
+          div.content
+            table(class='main', width='100%', cellpadding='0', cellspacing='0', border='0')
+              tr
+                block alertContent
+              tr
+                td.content-wrap
+                  table(width='100%', cellpadding='0', cellspacing='0', border='0')
+                    block mainContent
+            if branding.footerText || branding.footerLink
+              div.footer
+                table(width='100%', cellpadding='0', cellspacing='0', border='0')
+                  tr
+                    td(class='align-center content-block')
+                      block footerContent
+                        if branding.footerText
+                          p.footerText #{branding.footerText}
+                        if branding.footerLink
+                          p.footerText
+                            a.footerLink(href=branding.footerLink) #{branding.footerLink.replace(/^https?:\/\//, '')}

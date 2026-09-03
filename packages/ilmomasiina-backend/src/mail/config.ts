@@ -37,20 +37,65 @@ const mailTransporter: AbstractTransporter = (() => {
     if (!config.mailgunDomain) {
       throw new Error("Invalid email config: MAILGUN_DOMAIN must be set with MAILGUN_API_KEY.");
     }
-    const mailgun = new Mailgun(FormData);
-    const client = mailgun.client({
-      username: "api",
-      key: config.mailgunApiKey,
-      url: config.mailgunHost ? `https://${config.mailgunHost}` : undefined,
-    });
-    // Wrap mailgun.js client to somewhat match nodemailer interface
-    return {
-      sendMail: (msg) => client.messages.create(config.mailgunDomain!, msg),
-      transporter: { name: "Mailgun" },
-    };
+    if (!config.mailFrom) {
+      console.warn("MAIL_FROM is not set. Outgoing emails may fail or be rejected by recipient mail servers.");
+    }
+    return nodemailer.createTransport(
+      mailgun({
+        auth: {
+          api_key: config.mailgunApiKey,
+          domain: config.mailgunDomain,
+        },
+        host: config.mailgunHost,
+      }),
+    );
   }
 
   if (config.smtpHost) {
+    if (!config.mailFrom) {
+      console.warn("MAIL_FROM is not set. Outgoing emails may fail or be rejected by recipient mail servers.");
+    }
+
+    if (config.smtpPort === 587 && config.smtpTls) {
+      console.warn(
+        "SMTP_PORT is set to 587 with SMTP_TLS=true. Port 587 expects STARTTLS (SMTP_TLS=false). " +
+          "Setting SMTP_TLS=true on port 587 causes 'wrong version number' SSL errors.",
+      );
+    } else if (config.smtpPort === 465 && !config.smtpTls) {
+      console.warn(
+        "SMTP_PORT is set to 465 with SMTP_TLS=false. Port 465 usually requires implicit TLS (SMTP_TLS=true).",
+      );
+    }
+
+    const hasOAuth = Boolean(config.googleClientId || config.googleRefreshToken || config.googleClientSecret);
+
+    if (hasOAuth) {
+      if (!config.googleClientId || !config.googleRefreshToken) {
+        console.warn(
+          "Partial Google OAuth credentials configured for SMTP. " +
+            "Both GOOGLE_CLIENT_ID and GOOGLE_REFRESH_TOKEN are required for OAuth2.",
+        );
+      }
+      if (config.googleClientId && config.googleRefreshToken) {
+        if (!config.smtpUser) {
+          throw new Error("Invalid email config: SMTP_USER must be set when using Google OAuth with SMTP_HOST.");
+        }
+        return nodemailer.createTransport({
+          host: config.smtpHost,
+          port: config.smtpPort ?? undefined,
+          secure: config.smtpTls,
+          pool: true,
+          auth: {
+            type: "OAuth2",
+            user: config.smtpUser,
+            clientId: config.googleClientId,
+            clientSecret: config.googleClientSecret ?? undefined,
+            refreshToken: config.googleRefreshToken,
+          },
+        } as SMTPTransport.Options);
+      }
+    }
+
     if (!config.smtpUser || !config.smtpPassword) {
       throw new Error("Invalid email config: SMTP_USER and SMTP_PASSWORD must be set with SMTP_HOST.");
     }
@@ -60,17 +105,16 @@ const mailTransporter: AbstractTransporter = (() => {
       secure: config.smtpTls,
       pool: true,
       auth: {
-        type: "OAuth2",
         user: config.smtpUser,
         pass: config.smtpPassword,
-        clientId: config.googleClientId,
-        clientSecret: config.googleClientSecret,
-        refreshToken: config.googleRefreshToken,
       },
     } satisfies SMTPTransport.Options);
   }
 
-  console.warn("Neither Mailgun nor SMTP is configured. Falling back to debug mail service.");
+  console.warn(
+    "Neither Mailgun nor SMTP is configured. " +
+      "Falling back to debug mail service (emails will be logged to console and not sent).",
+  );
   return nodemailer.createTransport({
     name: "console fallback",
     version: "0",
@@ -90,5 +134,13 @@ const mailTransporter: AbstractTransporter = (() => {
     },
   });
 })();
+
+if (config.nodeEnv !== "test" && config.smtpHost && typeof mailTransporter.verify === "function") {
+  mailTransporter.verify((error) => {
+    if (error) {
+      console.warn("SMTP connection verification failed. Outgoing emails might fail to send:", error);
+    }
+  });
+}
 
 export default mailTransporter;

@@ -74,6 +74,7 @@ export interface SignupCreationAttributes extends Optional<
   | "manualPaymentStatus"
   | "createdAt"
   | "deletedAt"
+  | "emailError"
 > {}
 
 export class Signup extends Model<SignupAttributes, SignupCreationAttributes> implements SignupAttributes {
@@ -91,6 +92,7 @@ export class Signup extends Model<SignupAttributes, SignupCreationAttributes> im
   public products!: ProductSchema[] | null;
   public manualPaymentStatus!: ManualPaymentStatus | null;
   public deletedAt!: Date | null;
+  public emailError!: string | null;
 
   public quotaId!: Quota["id"];
   public quota?: Quota;
@@ -236,6 +238,8 @@ export default function setupSignupModel(sequelize: Sequelize) {
       },
       manualPaymentStatus: {
         type: DataTypes.ENUM(...Object.values(ManualPaymentStatus)),
+      emailError: {
+        type: DataTypes.TEXT,
         allowNull: true,
       },
       // Add createdAt manually to support milliseconds

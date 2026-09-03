@@ -60,12 +60,36 @@ const SignupRow = ({ position, signup, showQuota }: SignupProps) => {
   const formatPrice = usePriceFormatter(signup.currency ?? CURRENCY);
   const isDeleted = Boolean(signup.deletedAt);
 
+  let rowClassName = "";
+  if (signup.emailError) {
+    rowClassName = "table-danger";
+  } else if (!signup.confirmed) {
+    rowClassName = "ilmo--unconfirmed";
+  } else if (isDeleted) {
+    rowClassName = "ilmo--deleted";
+  }
   return (
-    <tr className={`${!signup.confirmed ? "ilmo--unconfirmed" : ""} ${isDeleted ? "ilmo--deleted" : ""}`}>
+    <tr className={rowClassName}>
       <td key="position">{`${position}.`}</td>
       {signup.confirmed && event.nameQuestion && <td key="firstName">{signup.firstName}</td>}
       {signup.confirmed && event.nameQuestion && <td key="lastName">{signup.lastName}</td>}
-      {signup.confirmed && event.emailQuestion && <td key="email">{signup.email}</td>}
+      {signup.confirmed && event.emailQuestion && (
+        <td key="email">
+          <div>{signup.email}</div>
+          {signup.emailError && (
+            <div
+              className="text-danger small mt-1 font-weight-bold"
+              title={t("editor.signups.emailError.tooltip", { error: signup.emailError })}
+            >
+              <span
+                className="event-editor--tab-error me-1"
+                style={{ display: "inline-block", verticalAlign: "-2px" }}
+              />
+              {t("editor.signups.emailError.label")}: {signup.emailError}
+            </div>
+          )}
+        </td>
+      )}
       {!signup.confirmed && nameEmailCols && (
         <td colSpan={nameEmailCols} className="fst-italic">
           {t("editor.signups.unconfirmed")}
@@ -120,16 +144,27 @@ const SignupTable = ({ event, signups, showQuota }: TableProps) => {
   if (!signups.length) return <p>{t("editor.signups.emptyQuota")}</p>;
 
   return (
-    <table className="event-editor--signup-table table table-condensed table-responsive">
-      <thead>
-        <tr className="active">
-          <th key="position">#</th>
-          {event.nameQuestion && <th key="firstName">{t("editor.signups.column.firstName")}</th>}
-          {event.nameQuestion && <th key="lastName">{t("editor.signups.column.lastName")}</th>}
-          {event.emailQuestion && <th key="email">{t("editor.signups.column.email")}</th>}
-          {showQuota && <th key="quota">{t("editor.signups.column.quota")}</th>}
-          {event.questions.map((q) => (
-            <th key={q.id}>{q.question}</th>
+    <div className="event-editor--signup-table-wrapper table-responsive">
+      <table className="event-editor--signup-table table table-condensed">
+        <thead>
+          <tr className="active">
+            <th key="position">#</th>
+            {event.nameQuestion && <th key="firstName">{t("editor.signups.column.firstName")}</th>}
+            {event.nameQuestion && <th key="lastName">{t("editor.signups.column.lastName")}</th>}
+            {event.emailQuestion && <th key="email">{t("editor.signups.column.email")}</th>}
+            {showQuota && <th key="quota">{t("editor.signups.column.quota")}</th>}
+            {event.questions.map((q) => (
+              <th key={q.id}>{q.question}</th>
+            ))}
+            <th key="timestamp" className="text-nowrap">
+              {t("editor.signups.column.time")}
+            </th>
+            <th key="actions" className="text-nowrap" aria-label={t("editor.signups.column.actions")} />
+          </tr>
+        </thead>
+        <tbody>
+          {signups.map((signup, index) => (
+            <SignupRow key={signup.id} position={index + 1} signup={signup} showQuota={showQuota} />
           ))}
           <th key="timestamp">{t("editor.signups.column.time")}</th>
           {event.payments !== PaymentMode.DISABLED && <th key="price">{t("editor.signups.column.price")}</th>}
@@ -157,6 +192,8 @@ const SignupsTab = () => {
   const signupsByQuota = useMemo(() => event && getSignupsByQuotaForAdminList(event), [event]);
   const csvSignups = useConvertSignupsToCSV(event, signups);
 
+  const emailErrorCount = useMemo(() => signups?.filter((s) => Boolean(s.emailError)).length ?? 0, [signups]);
+
   const [grouped, setGrouped] = useState(false);
   const onGroupedChange = useCallback(
     (evt: ChangeEvent<HTMLInputElement>) => setGrouped(evt.currentTarget.checked),
@@ -178,6 +215,12 @@ const SignupsTab = () => {
 
   return (
     <div>
+      {emailErrorCount > 0 && (
+        <div className="alert alert-danger mb-3" role="alert">
+          <span className="event-editor--tab-error me-2" style={{ display: "inline-block", verticalAlign: "-2px" }} />
+          {t("editor.signups.emailErrorsAlert", { count: emailErrorCount })}
+        </div>
+      )}
       <nav className="mb-3 ilmo--title-nav">
         <Form.Check
           id="groupByQuota"
