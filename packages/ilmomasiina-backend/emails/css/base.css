@@ -17,42 +17,49 @@ body {
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: none;
   width: 100% !important;
-  height: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: #610396;
   line-height: 1.6em;
-  /* 1.6em * 14px = 22.4px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
-  /*line-height: 22px;*/
 }
 
 /* Let's make sure all tables have defaults */
+table {
+  border-collapse: collapse;
+  mso-table-lspace: 0pt;
+  mso-table-rspace: 0pt;
+}
+
 table td {
   vertical-align: top;
+  padding: 0;
 }
 
 /* -------------------------------------
     BODY & CONTAINER
 ------------------------------------- */
-body {
-  background-color: #610396;
-}
-
 .body-wrap {
   background-color: #610396;
   width: 100%;
+  margin: 0 auto;
+  padding: 0;
 }
 
 .container {
   display: block !important;
   max-width: 600px !important;
+  width: 600px;
   margin: 0 auto !important;
-  /* makes it centered */
+  padding: 0 !important;
   clear: both !important;
 }
 
 .content {
   max-width: 600px;
+  width: 100%;
   margin: 0 auto;
   display: block;
-  padding: 0 20px 0 20px;
+  padding: 0 20px;
 }
 
 /* -------------------------------------
@@ -231,11 +238,11 @@ a {
   }
 
   .content {
-    padding: 5px !important;
+    padding: 0 10px !important;
   }
 
   .content-wrap {
-    padding: 10px !important;
+    padding: 15px !important;
   }
 
   .invoice {

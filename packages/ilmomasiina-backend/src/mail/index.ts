@@ -8,7 +8,7 @@ import path from "path";
 import config, { adminUrl } from "../config";
 import i18n from "../i18n";
 import mailTransporter from "./config";
-import { renderVectorSvg, vectorText } from "./vectorText";
+import { getOrRenderPng, PngTextOptions, renderPngCidImg, renderPngDataUriImg } from "./pngText";
 
 // Configure marked to allow simple text formatting for custom event verification emails
 function md(text: string) {
@@ -46,6 +46,13 @@ export interface NewUserMailParams {
 export interface PromotedFromQueueMailParams {
   event: MailEvent;
   date: string | null;
+}
+
+export interface EmailAttachment {
+  filename: string;
+  content: Buffer;
+  cid: string;
+  contentType: string;
 }
 
 const TEMPLATE_DIR = path.join(__dirname, "../../emails");
@@ -87,21 +94,48 @@ const TEMPLATE_OPTIONS: Email.EmailConfig = {
 
 const emailRenderer = new Email(TEMPLATE_OPTIONS);
 
-function getBrandedParams<T extends object>(params: T) {
-  return {
+async function renderEmailTemplate<T extends object>(
+  language: string | null,
+  templateName: string,
+  params: T,
+  isSending: boolean,
+) {
+  const attachments: EmailAttachment[] = [];
+  let imageCounter = 0;
+
+  const pngText = (text: string, options: PngTextOptions = {}) => {
+    if (isSending) {
+      imageCounter += 1;
+      const cid = `img_${imageCounter}`;
+      const { buffer } = getOrRenderPng(text, options);
+      attachments.push({
+        filename: `${cid}.png`,
+        content: buffer,
+        cid,
+        contentType: "image/png",
+      });
+      return renderPngCidImg(text, cid, options);
+    }
+    return renderPngDataUriImg(text, options);
+  };
+
+  const brandedParams = {
     ...params,
     branding: {
       footerText: config.brandingMailFooterText,
       footerLink: config.brandingMailFooterLink,
     },
     md,
-    vectorText,
-    renderVectorSvg,
+    pngText,
   };
+
+  const { template, lng } = getTemplate(language, templateName);
+  const html = await emailRenderer.render(template, brandedParams);
+  return { html, lng, attachments };
 }
 
 export default class EmailService {
-  static send(to: string, subject: string, html: string) {
+  static send(to: string, subject: string, html: string, attachments?: EmailAttachment[]) {
     if (!config.mailFrom) {
       console.warn(`Attempted to send an email to ${to} ("${subject}") but MAIL_FROM is not configured.`);
     }
@@ -111,6 +145,7 @@ export default class EmailService {
       from: config.mailFrom,
       subject,
       html,
+      attachments,
     };
 
     return mailTransporter.sendMail(msg);
@@ -121,9 +156,7 @@ export default class EmailService {
     params: ConfirmationMailParams,
   ): Promise<string | undefined> {
     try {
-      const brandedParams = getBrandedParams(params);
-      const { template } = getTemplate(language, "confirmation");
-      const html = await emailRenderer.render(template, brandedParams);
+      const { html } = await renderEmailTemplate(language, "confirmation", params, false);
       return html;
     } catch (error) {
       console.error("Failed to generate confirmation email preview:", error);
@@ -133,14 +166,12 @@ export default class EmailService {
 
   static async sendConfirmationMail(to: string, language: string | null, params: ConfirmationMailParams) {
     try {
-      const brandedParams = getBrandedParams(params);
-      const { template, lng } = getTemplate(language, "confirmation");
-      const html = await emailRenderer.render(template, brandedParams);
+      const { html, lng, attachments } = await renderEmailTemplate(language, "confirmation", params, true);
       const subject = i18next.t(`emails.confirmation.${params.type}.subject`, {
         lng,
         event: params.event.title,
       });
-      await EmailService.send(to, subject, html);
+      await EmailService.send(to, subject, html, attachments);
     } catch (error) {
       console.error(`Failed to send confirmation email to ${to}:`, error);
       throw error;
@@ -149,14 +180,17 @@ export default class EmailService {
 
   static async sendNewUserMail(to: string, language: string | null, params: NewUserMailParams) {
     try {
-      const brandedParams = getBrandedParams({
-        ...params,
-        siteUrl: adminUrl({ lang: language || config.defaultLanguage }),
-      });
-      const { template, lng } = getTemplate(language, "newUser");
-      const html = await emailRenderer.render(template, brandedParams);
+      const { html, lng, attachments } = await renderEmailTemplate(
+        language,
+        "newUser",
+        {
+          ...params,
+          siteUrl: adminUrl({ lang: language || config.defaultLanguage }),
+        },
+        true,
+      );
       const subject = i18n.t("emails.newUser.subject", { lng });
-      await EmailService.send(to, subject, html);
+      await EmailService.send(to, subject, html, attachments);
     } catch (error) {
       console.error(`Failed to send new user invitation email to ${to}:`, error);
       throw error;
@@ -165,14 +199,17 @@ export default class EmailService {
 
   static async sendResetPasswordMail(to: string, language: string | null, params: NewUserMailParams) {
     try {
-      const brandedParams = getBrandedParams({
-        ...params,
-        siteUrl: adminUrl({ lang: language || config.defaultLanguage }),
-      });
-      const { template, lng } = getTemplate(language, "resetPassword");
-      const html = await emailRenderer.render(template, brandedParams);
+      const { html, lng, attachments } = await renderEmailTemplate(
+        language,
+        "resetPassword",
+        {
+          ...params,
+          siteUrl: adminUrl({ lang: language || config.defaultLanguage }),
+        },
+        true,
+      );
       const subject = i18n.t("emails.resetPassword.subject", { lng });
-      await EmailService.send(to, subject, html);
+      await EmailService.send(to, subject, html, attachments);
     } catch (error) {
       console.error(`Failed to send password reset email to ${to}:`, error);
       throw error;
@@ -181,14 +218,12 @@ export default class EmailService {
 
   static async sendPromotedFromQueueMail(to: string, language: string | null, params: PromotedFromQueueMailParams) {
     try {
-      const brandedParams = getBrandedParams(params);
-      const { template, lng } = getTemplate(language, "queueMail");
-      const html = await emailRenderer.render(template, brandedParams);
+      const { html, lng, attachments } = await renderEmailTemplate(language, "queueMail", params, true);
       const subject = i18n.t("emails.promotedFromQueue.subject", {
         lng,
         event: params.event.title,
       });
-      await EmailService.send(to, subject, html);
+      await EmailService.send(to, subject, html, attachments);
     } catch (error) {
       console.error(`Failed to send queue promotion email to ${to}:`, error);
       throw error;

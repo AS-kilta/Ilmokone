@@ -5,36 +5,32 @@ html(lang='fi', xmlns='http://www.w3.org/1999/xhtml')
     meta(http-equiv='Content-Type', content='text/html')
     meta(charset="UTF-8")
     title AS Ilmokone
-    link(rel="preconnect", href="https://fonts.googleapis.com")
-    link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
-    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Anta&family=Jacquard+12&display=swap")
     link(rel='stylesheet', href='base.css', data-inline='data-inline')
     link(rel='stylesheet', href='header.css', data-inline='data-inline')
     link(rel='stylesheet', href='footer.css', data-inline='data-inline')
     link(rel='stylesheet', href='content.css', data-inline='data-inline')
     block headContent
   body(itemscope, itemtype='http://schema.org/EmailMessage')
-    table.body-wrap
+    table(class='body-wrap', width='100%', cellpadding='0', cellspacing='0', border='0')
       tr
-        td
-        td(class='container', width='600')
+        td(class='container', width='600', align='center')
           div.content
-            table(class='header', width='100%', cellpadding='0', cellspacing='0')
+            table(class='header', width='100%', cellpadding='0', cellspacing='0', border='0')
               tr
-                td(class='align-center content-block')
+                td(class='align-center')
                   block headerContent
-                    div.headerTitle!= vectorText("AS Ilmokone", { font: "anta", fontSize: 48, color: "#ffffff" })
+                    div.headerTitle!= pngText("AS Ilmokone", { font: "anta", fontSize: 48, color: "#ffffff" })
           div.content
-            table(class='main', width='100%', cellpadding='0', cellspacing='0')
+            table(class='main', width='100%', cellpadding='0', cellspacing='0', border='0')
               tr
                 block alertContent
               tr
                 td.content-wrap
-                  table(width='100%', cellpadding='0', cellspacing='0')
+                  table(width='100%', cellpadding='0', cellspacing='0', border='0')
                     block mainContent
             if branding.footerText || branding.footerLink
               div.footer
-                table(width='100%')
+                table(width='100%', cellpadding='0', cellspacing='0', border='0')
                   tr
                     td(class='align-center content-block')
                       block footerContent

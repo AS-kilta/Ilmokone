@@ -224,12 +224,22 @@
   .email-preview-frame-wrapper {
     align-self: center;
     position: relative;
-    width: 80%;
-    transition: height 120ms ease;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 0;
+    outline: none;
+    background-color: transparent;
 
     .email-preview {
+      display: block;
       width: 100%;
       border: 0;
+      outline: none;
+      overflow: hidden;
+      background-color: transparent;
     }
   }
 }
