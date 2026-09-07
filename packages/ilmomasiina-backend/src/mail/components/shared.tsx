@@ -1,10 +1,11 @@
+import { marked } from "marked";
 import { Trans, useTranslation } from "react-i18next";
 
 import { adminUrl } from "../../config";
 import type { Event } from "../../models/event";
 
 interface EventDetailsProps {
-  event: Event;
+  event: Event | { title: string; location?: string | null; [key: string]: any };
   date: string | null;
 }
 
@@ -17,9 +18,11 @@ export function EventDetails({ event, date }: EventDetailsProps) {
         <li>
           <strong>{t("emails.event")}:</strong> {event.title}
         </li>
-        <li>
-          <strong>{t("emails.location")}:</strong> {event.location}
-        </li>
+        {event.location && (
+          <li>
+            <strong>{t("emails.location")}:</strong> {event.location}
+          </li>
+        )}
         {date && (
           <li>
             <strong>{t("emails.time")}:</strong> {date}
@@ -72,29 +75,31 @@ interface EditLinkProps {
 export function EditLink({ href }: EditLinkProps) {
   const { t } = useTranslation();
   return (
-    <div className="content-block">
+    <div className="content-block-last">
       <p className="bodyText">
-        <Trans t={t} i18nKey="emails.editLink">
-          {"If you want to edit or cancel your signup, you can do it by clicking "}
-          <a href={href}>this link</a>.
-        </Trans>
+        <strong>
+          <Trans t={t} i18nKey="emails.editLink">
+            {"If you want to edit or cancel your signup, you can do it by clicking "}
+            <a href={href}>this link</a>.
+          </Trans>
+        </strong>
       </p>
     </div>
   );
 }
 
-export function LoginLink() {
+export function LoginLink({ siteUrl }: { siteUrl?: string }) {
   const {
     t,
     i18n: { language },
   } = useTranslation();
-  const url = adminUrl({ lang: language });
+  const url = siteUrl || adminUrl({ lang: language });
   return (
-    <div className="content-block">
+    <div className="content-block-last">
       <p className="bodyText">
-        <Trans t={t} i18nKey="emails.login">
+        <Trans t={t} i18nKey="emails.login" values={{ url }}>
           {"You can log in at "}
-          <a href={url}>{{ url }}</a>.
+          <a href={url}>{url}</a>.
         </Trans>
       </p>
     </div>
@@ -102,7 +107,7 @@ export function LoginLink() {
 }
 
 interface PendingPaymentWarningProps {
-  event: Event;
+  event: Event | { payments?: string | null; [key: string]: any };
   signupLink: string;
 }
 
@@ -132,9 +137,12 @@ interface VerificationEmailProps {
 
 export function VerificationEmail({ verificationEmail }: VerificationEmailProps) {
   if (!verificationEmail) return null;
+  const html = marked.parse(verificationEmail, { async: false }) as string;
   return (
-    <div className="content-block">
-      <p className="bodyText">{verificationEmail}</p>
-    </div>
+    <div
+      className="content-block"
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
   );
 }

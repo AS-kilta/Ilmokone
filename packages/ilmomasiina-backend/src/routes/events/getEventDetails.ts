@@ -16,6 +16,7 @@ import {
 import { Answer } from "../../models/answer";
 import {
   adminEventGetEventAttrs,
+  adminEventGetSignupAttrs,
   eventGetAnswerAttrs,
   eventGetEventAttrs,
   eventGetQuestionAttrs,
@@ -201,8 +202,8 @@ export async function eventDetailsForAdmin(eventID: EventID): Promise<AdminEvent
     // Include all signups for the quotas
     include: [
       {
-        model: Signup.scope("active"),
-        attributes: [...eventGetSignupAttrs, "id", "email", "emailError"],
+        model: Signup.scope("admin"),
+        attributes: adminEventGetSignupAttrs,
         required: false,
         // ... and answers of signups
         include: [

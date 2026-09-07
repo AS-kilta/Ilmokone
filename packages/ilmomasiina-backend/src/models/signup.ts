@@ -55,6 +55,7 @@ export interface SignupAttributes {
   createdAt: Date;
   deletedAt: Date | null;
   quotaId: Quota["id"];
+  emailError: string | null;
 }
 
 export interface SignupCreationAttributes extends Optional<
@@ -238,6 +239,8 @@ export default function setupSignupModel(sequelize: Sequelize) {
       },
       manualPaymentStatus: {
         type: DataTypes.ENUM(...Object.values(ManualPaymentStatus)),
+        allowNull: true,
+      },
       emailError: {
         type: DataTypes.TEXT,
         allowNull: true,

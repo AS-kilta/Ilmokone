@@ -25,8 +25,12 @@ export type AdminQuotaSignups = QuotaSignups<AdminEventResponse>;
 export type AdminSignupWithQuota = SignupWithQuota<AdminEventResponse>;
 
 // For new signups, the local state has all creation fields initialized (some to null), plus id: null as a tag.
-export type EditorNewSignup = Required<AdminSignupCreateBody> & { id: null; keepEditing: boolean };
-// For existing signups, the local state has all update fields initialized from the existing signup, plus id and quotaId.
+export type EditorNewSignup = Required<AdminSignupCreateBody> & {
+  id: null;
+  keepEditing: boolean;
+};
+// For existing signups, the local state has all update fields initialized from the existing signup,
+// plus id and quotaId.
 export type EditorExistingSignup = Required<AdminSignupUpdateBody> &
   Pick<AdminSignupSchema, "id"> &
   SignupCreateBody & { keepEditing: boolean };
@@ -67,12 +71,20 @@ export type EditorQuota = QuotaUpdate & {
 export interface EditorEvent extends Omit<
   Required<EventUpdateBody>,
   // Omit fields we'll overwrite for editing states that aren't valid in the API
-  "quotas" | "questions" | "date" | "endDate" | "registrationStartDate" | "registrationEndDate" | "openQuotaSize"
+  | "quotas"
+  | "questions"
+  | "date"
+  | "endDate"
+  | "dueDate"
+  | "registrationStartDate"
+  | "registrationEndDate"
+  | "openQuotaSize"
 > {
   eventType: EditorEventType;
 
   date: Date | null;
   endDate: Date | null;
+  dueDate: Date | null;
 
   questions: EditorQuestion[];
 

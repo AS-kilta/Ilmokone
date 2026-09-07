@@ -5,28 +5,34 @@
 
     "emails.confirmation.signup.subject": "Signup confirmation: {{event}}",
     "emails.confirmation.edit.subject": "Edit confirmation: {{event}}",
+    "emails.confirmation.alert": "Not a square, I see!",
     "emails.adminSignup": "An administrator has signed you up to this event.",
     "emails.adminEdit": "An administrator has edited your signup.",
     "emails.pendingPayment": "Your signup is still pending payment!",
     "emails.completePayment": "You can complete the payment on the <1>signup page</1>.",
-    "emails.queuePosition": "You are in the queue in position {{position}}.",
+    "emails.queuePosition": "Although are in the queue in position {{position}}.",
     "emails.queueNotify": "If you get accepted from the queue, you will be notified by email.",
 
     "emails.payment.subject": "Payment confirmation: {{event}}",
+    "emails.payment.alert": "Payment received",
     "emails.payment.received": "Your payment for <1>{{event}}</1> has been received.",
     "emails.payment.purchaseDetails": "Purchase details:",
     "emails.payment.total": "Total",
     "emails.payment.viewSignup": "To view your signup, click <1>this link</1>.",
 
     "emails.newUser.subject": "User created for AS Ilmokone",
-    "emails.newUser.created": "Ilmokone admin credentials have been created for you.",
+    "emails.newUser.alert": "All this power, in your hands?!",
+    "emails.newUser.created": "AS Ilmokone admin credentials have been created for you.",
     "emails.newUser.password": "Password",
 
-    "emails.resetPassword.subject": "Your Ilmokone password has been reset",
+    "emails.resetPassword.subject": "Your AS Ilmokone password has been reset",
+    "emails.resetPassword.alert": "Password reset is, or is?",
     "emails.resetPassword.reset": "Your password for AS Ilmokone has been reset.",
     "emails.resetPassword.newPassword": "New password",
 
     "emails.queueMail.subject": "You got into {{event}} from the queue",
+    "emails.promotedFromQueue.subject": "You got into {{event}} from the queue",
+    "emails.queueMail.alert": "Queueing is a virtue.",
     "emails.queueMail.accepted": "Your signup to <1>{{event}}</1> was accepted from the queue.",
 
     "emails.eventDetails": "Event details:",
@@ -38,9 +44,6 @@
     "emails.email": "Email",
     "emails.quota": "Quota",
     "emails.editLink": "If you want to edit or cancel your signup, you can do it by clicking <1>this link</1>.",
-    "emails.login": "You can log in at <1>{{url}}</1>."
-    "emails.newUser.subject": "User created for AS Ilmokone",
-    "emails.promotedFromQueue.subject": "You got into {{event}} from the queue",
-    "emails.resetPassword.subject": "Your AS Ilmokone password has been reset"
+    "emails.login": "You can log in at <1>{{url}}</1>. Please change the password as soon as possible in the admin panel."
   }
 }

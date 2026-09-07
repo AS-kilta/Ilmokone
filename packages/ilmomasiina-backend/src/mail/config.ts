@@ -1,21 +1,30 @@
 import Mailgun from "mailgun.js";
 import nodemailer, { Transport } from "nodemailer";
-import SMTPTransport from "nodemailer/lib/smtp-transport";
+import SMTPPool from "nodemailer/lib/smtp-pool";
 
 import config from "../config";
 
+export interface EmailAttachment {
+  filename: string;
+  content: Buffer;
+  cid?: string;
+  contentType?: string;
+}
+
 /** Common input values valid for both nodemailer and mailgun.js. */
-type AbstractMailOptions = {
+export type AbstractMailOptions = {
   to: string;
   from: string;
   subject: string;
   html: string;
+  attachments?: EmailAttachment[];
 };
 
 /** Base type for the minimal interface we use in nodemailer. */
-type AbstractTransporter = {
+export type AbstractTransporter = {
   sendMail: (options: AbstractMailOptions) => Promise<unknown>;
   transporter: Pick<Transport, "name">;
+  verify?: (callback: (err: Error | null, success: true) => void) => void;
 };
 
 const mailTransporter: AbstractTransporter = (() => {
@@ -40,15 +49,40 @@ const mailTransporter: AbstractTransporter = (() => {
     if (!config.mailFrom) {
       console.warn("MAIL_FROM is not set. Outgoing emails may fail or be rejected by recipient mail servers.");
     }
-    return nodemailer.createTransport(
-      mailgun({
-        auth: {
-          api_key: config.mailgunApiKey,
-          domain: config.mailgunDomain,
-        },
-        host: config.mailgunHost,
-      }),
-    );
+    const mailgun = new Mailgun(FormData);
+    const client = mailgun.client({
+      username: "api",
+      key: config.mailgunApiKey,
+      url: config.mailgunHost ? `https://${config.mailgunHost}` : undefined,
+    });
+    return {
+      sendMail: (msg) => {
+        const mailgunMsg: any = {
+          to: msg.to,
+          from: msg.from,
+          subject: msg.subject,
+          html: msg.html,
+        };
+        if (msg.attachments && msg.attachments.length > 0) {
+          mailgunMsg.inline = msg.attachments
+            .filter((att) => att.cid)
+            .map((att) => ({
+              data: att.content,
+              filename: att.filename,
+              contentType: att.contentType,
+            }));
+          mailgunMsg.attachment = msg.attachments
+            .filter((att) => !att.cid)
+            .map((att) => ({
+              data: att.content,
+              filename: att.filename,
+              contentType: att.contentType,
+            }));
+        }
+        return client.messages.create(config.mailgunDomain!, mailgunMsg);
+      },
+      transporter: { name: "Mailgun" },
+    };
   }
 
   if (config.smtpHost) {
@@ -92,7 +126,7 @@ const mailTransporter: AbstractTransporter = (() => {
             clientSecret: config.googleClientSecret ?? undefined,
             refreshToken: config.googleRefreshToken,
           },
-        } as SMTPTransport.Options);
+        } as SMTPPool.Options);
       }
     }
 
@@ -108,7 +142,7 @@ const mailTransporter: AbstractTransporter = (() => {
         user: config.smtpUser,
         pass: config.smtpPassword,
       },
-    } satisfies SMTPTransport.Options);
+    } as SMTPPool.Options);
   }
 
   console.warn(

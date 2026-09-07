@@ -43,14 +43,33 @@ export const sendPromotedFromQueueMail = sendSynchronouslyInTest(async (signup: 
   const editToken = generateToken(signup.id);
   const signupLink = editSignupUrl({ id: signup.id, editToken, lang, frontend: event.preferredFrontend });
 
+  const locale = (lang && event.languages?.[lang]) || null;
+  const localizedEvent = {
+    ...event.get({ plain: true }),
+    title: locale?.title || event.title,
+    location: locale?.location ?? event.location,
+    verificationEmail: locale?.verificationEmail ?? event.verificationEmail,
+  };
+
   const params: QueueMailParams = {
-    event,
+    event: localizedEvent,
     date,
     paymentStatus: signup.effectivePaymentStatus,
     signupLink,
+    cancelLink: signupLink,
   };
 
-  await EmailService.sendPromotedFromQueueMail(signup.email, signup.language, params);
+  try {
+    await EmailService.sendPromotedFromQueueMail(signup.email, signup.language, params);
+    if (signup.emailError) {
+      await signup.update({ emailError: null });
+    }
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    await signup.update({ emailError: errorMsg }).catch((err) => {
+      console.error("Failed to save emailError on signup:", err);
+    });
+  }
 });
 
 /** Fetches information necessary for a signup confirmation email and sends it. */
@@ -67,8 +86,12 @@ export const sendSignupConfirmationMail = sendSynchronouslyInTest(
     if (!quota || !quota.event) return; // Quota or event soft deleted
     const { event } = quota;
     const questions = await event.getQuestions({ order: [["order", "ASC"]] });
+    const quotas = await event.getQuotas({ order: [["order", "ASC"]] });
+    const quotaIndex = quotas.findIndex((q) => q.id === quota.id);
 
-    const localeQuestions = event.languages[lang]?.questions ?? questions;
+    const locale = (lang && event.languages?.[lang]) || null;
+    const localeQuestions = locale?.questions ?? questions;
+    const localeQuotas = locale?.quotas ?? quotas;
 
     // Show name only if filled
     const fullName = `${signup.firstName ?? ""} ${signup.lastName ?? ""}`.trim();
@@ -87,21 +110,39 @@ export const sendSignupConfirmationMail = sendSynchronouslyInTest(
     const editToken = generateToken(signup.id);
     const signupLink = editSignupUrl({ id: signup.id, editToken, lang, frontend: event.preferredFrontend });
 
+    const localizedEvent = {
+      ...event.get({ plain: true }),
+      title: locale?.title || event.title,
+      location: locale?.location ?? event.location,
+      verificationEmail: locale?.verificationEmail ?? event.verificationEmail,
+    };
+
     const params: ConfirmationMailParams = {
       name: fullName,
       email: signup.email,
-      quota: quota.title,
+      quota: (localeQuotas[quotaIndex]?.title) || quota.title,
       answers: questionFields,
       queuePosition: signup.status === SignupStatus.IN_QUEUE ? signup.position : null,
       paymentStatus: signup.effectivePaymentStatus,
       type,
       admin,
       date,
-      event,
+      event: localizedEvent,
       signupLink,
+      cancelLink: signupLink,
     };
 
-    await EmailService.sendConfirmationMail(signup.email, signup.language, params);
+    try {
+      await EmailService.sendConfirmationMail(signup.email, signup.language, params);
+      if (signup.emailError) {
+        await signup.update({ emailError: null });
+      }
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      await signup.update({ emailError: errorMsg }).catch((err) => {
+        console.error("Failed to save emailError on signup:", err);
+      });
+    }
   },
 );
 
@@ -126,8 +167,16 @@ export const sendPaymentConfirmationMail = sendSynchronouslyInTest(async (paymen
     maximumFractionDigits: 2,
   });
 
+  const locale = (lang && event.languages?.[lang]) || null;
+  const localizedEvent = {
+    ...event.get({ plain: true }),
+    title: locale?.title || event.title,
+    location: locale?.location ?? event.location,
+    verificationEmail: locale?.verificationEmail ?? event.verificationEmail,
+  };
+
   const params: PaymentMailParams = {
-    event,
+    event: localizedEvent,
     totalFormatted: priceFormatter.format(payment.amount / 100),
     products: payment.products.map((product) => ({
       name: product.name,
@@ -137,5 +186,15 @@ export const sendPaymentConfirmationMail = sendSynchronouslyInTest(async (paymen
     signupLink,
   };
 
-  await EmailService.sendPaymentConfirmationMail(signup.email, signup.language, params);
+  try {
+    await EmailService.sendPaymentConfirmationMail(signup.email, signup.language, params);
+    if (signup.emailError) {
+      await signup.update({ emailError: null });
+    }
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    await signup.update({ emailError: errorMsg }).catch((err) => {
+      console.error("Failed to save emailError on signup:", err);
+    });
+  }
 });

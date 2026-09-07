@@ -14,7 +14,8 @@ const needsDb = (suite: RunnerTaskBase) => suite.name.includes("test/routes");
 const needsApi = (suite: RunnerTaskBase) => suite.name.includes("test/routes");
 
 // Common setup for all backend test files: initialize Sequelize & Fastify, tear down at test end.
-beforeAll(async (suite) => {
+// eslint-disable-next-line no-empty-pattern
+beforeAll(async ({}, suite) => {
   if (needsDb(suite)) {
     global.sequelize = await setupDatabase();
     // Drop the trigger that prevents deleting payments to allow test data to be reset.

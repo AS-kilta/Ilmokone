@@ -11,14 +11,18 @@ export interface PaymentMailParams {
     amount: number;
     unitPriceFormatted: string;
   }[];
-  event: Event;
+  event: Event | { title: string; location?: string | null; verificationEmail?: string | null; [key: string]: any };
   signupLink: string;
 }
 
 export default function Payment({ totalFormatted, products, event, signupLink }: PaymentMailParams) {
   const { t } = useTranslation();
   return (
-    <Layout>
+    <Layout
+      alertVariant="alert-good"
+      alertText={t("emails.payment.alert")}
+      alertOptions={{ font: "jacquard", fontSize: 34 }}
+    >
       <div className="content-block">
         <p className="bodyText">
           <Trans t={t} i18nKey="emails.payment.received">
@@ -28,10 +32,10 @@ export default function Payment({ totalFormatted, products, event, signupLink }:
           </Trans>
         </p>
       </div>
-      <VerificationEmail verificationEmail={event.verificationEmail} />
+      <VerificationEmail verificationEmail={event.verificationEmail ?? null} />
       <div className="content-block">
         <p className="bodyText">{t("emails.payment.purchaseDetails")}</p>
-        <table>
+        <table width="100%">
           <tbody>
             {products.map((product, index) => (
               // eslint-disable-next-line react/no-array-index-key
@@ -48,7 +52,7 @@ export default function Payment({ totalFormatted, products, event, signupLink }:
           </tbody>
         </table>
       </div>
-      <div className="content-block">
+      <div className="content-block-last">
         <p className="bodyText">
           <Trans t={t} i18nKey="emails.payment.viewSignup">
             {"To view your signup, click "}

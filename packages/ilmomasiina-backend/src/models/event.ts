@@ -29,7 +29,7 @@ import { jsonColumnGetter } from "./util/json";
 interface EventPerLanguageAttributes {
   title: string;
   description: string | null;
-  price: string | null;
+  message: string | null;
   location: string | null;
   webpageUrl: string | null;
   facebookUrl: string | null;
@@ -60,6 +60,12 @@ export interface EventAttributes extends EventPerLanguageAttributes {
   languages: Record<string, EventLanguage>;
   defaultLanguage: string;
   updatedAt: Date;
+  price: string | null;
+  paymentBarcode: string | null;
+  recipient: string | null;
+  dueDate: Date | null;
+  bankId: string | null;
+  showBarcode: boolean;
 }
 
 // Drop updatedAt so we don't need to define it manually in Event.init().

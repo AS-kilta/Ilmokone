@@ -6,12 +6,17 @@ import { LoginLink } from "../components/shared";
 export interface CredentialsMailParams {
   email: string;
   password: string;
+  siteUrl?: string;
 }
 
-export default function NewUser({ email, password }: CredentialsMailParams) {
+export default function NewUser({ email, password, siteUrl }: CredentialsMailParams) {
   const { t } = useTranslation();
   return (
-    <Layout>
+    <Layout
+      alertVariant="alert-neutral"
+      alertText={t("emails.newUser.alert")}
+      alertOptions={{ font: "jacquard", fontSize: 30 }}
+    >
       <div className="content-block">
         <p className="bodyText">{t("emails.newUser.created")}</p>
         <ul>
@@ -23,7 +28,7 @@ export default function NewUser({ email, password }: CredentialsMailParams) {
           </li>
         </ul>
       </div>
-      <LoginLink />
+      <LoginLink siteUrl={siteUrl} />
     </Layout>
   );
 }

@@ -159,6 +159,16 @@ const SignupTable = ({ event, signups, showQuota }: TableProps) => {
             <th key="timestamp" className="text-nowrap">
               {t("editor.signups.column.time")}
             </th>
+            {event.payments !== PaymentMode.DISABLED && (
+              <th key="price" className="text-nowrap">
+                {t("editor.signups.column.price")}
+              </th>
+            )}
+            {event.payments !== PaymentMode.DISABLED && (
+              <th key="paymentStatus" className="text-nowrap">
+                {t("editor.signups.column.paymentStatus")}
+              </th>
+            )}
             <th key="actions" className="text-nowrap" aria-label={t("editor.signups.column.actions")} />
           </tr>
         </thead>
@@ -166,20 +176,9 @@ const SignupTable = ({ event, signups, showQuota }: TableProps) => {
           {signups.map((signup, index) => (
             <SignupRow key={signup.id} position={index + 1} signup={signup} showQuota={showQuota} />
           ))}
-          <th key="timestamp">{t("editor.signups.column.time")}</th>
-          {event.payments !== PaymentMode.DISABLED && <th key="price">{t("editor.signups.column.price")}</th>}
-          {event.payments !== PaymentMode.DISABLED && (
-            <th key="paymentStatus">{t("editor.signups.column.paymentStatus")}</th>
-          )}
-          <th key="actions" aria-label={t("editor.signups.column.actions")} />
-        </tr>
-      </thead>
-      <tbody>
-        {signups.map((signup, index) => (
-          <SignupRow key={signup.id} position={index + 1} signup={signup} showQuota={showQuota} />
-        ))}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   );
 };
 

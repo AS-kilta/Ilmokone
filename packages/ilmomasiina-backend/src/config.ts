@@ -17,17 +17,20 @@ dotenvFlow.config({ path: path.resolve(__dirname, "../../..") });
 // Check for no longer supported configuration options
 if (process.env.CLEARDB_DATABASE_URL || (process.env.DB_DIALECT && process.env.DB_DIALECT !== "postgres")) {
   throw new Error(
-    "Only PostgreSQL is supported by Ilmomasiina 3.0. MySQL migration tools will be provided in a future Ilmomasiina 2.x version.",
+    "Only PostgreSQL is supported by Ilmomasiina 3.0. " +
+      "MySQL migration tools will be provided in a future Ilmomasiina 2.x version.",
   );
 }
 if (process.env.EVENT_DETAILS_URL || process.env.EDIT_SIGNUP_URL || process.env.ADMIN_URL) {
   if (!process.env.FRONTENDS) {
     throw new Error(
-      "EVENT_DETAILS_URL, EDIT_SIGNUP_URL and ADMIN_URL are no longer supported by Ilmomasiina 3.0. Use FRONTENDS instead.",
+      "EVENT_DETAILS_URL, EDIT_SIGNUP_URL and ADMIN_URL are no longer supported by Ilmomasiina 3.0. " +
+        "Use FRONTENDS instead.",
     );
   } else {
     console.warn(
-      "EVENT_DETAILS_URL, EDIT_SIGNUP_URL and ADMIN_URL are no longer supported by Ilmomasiina 3.0 and should be removed from your configuration. Use FRONTENDS instead.",
+      "EVENT_DETAILS_URL, EDIT_SIGNUP_URL and ADMIN_URL are no longer supported by Ilmomasiina 3.0 " +
+        "and should be removed from your configuration. Use FRONTENDS instead.",
     );
   }
 }
@@ -36,7 +39,8 @@ if (process.env.EMAIL_BASE_URL) {
     throw new Error("EMAIL_BASE_URL is not supported by Ilmomasiina 3.0. Use BASE_URL and/or FRONTENDS instead.");
   } else {
     console.warn(
-      "EMAIL_BASE_URL is not supported by Ilmomasiina 3.0 and should be removed from your configuration. Use BASE_URL and/or FRONTENDS instead.",
+      "EMAIL_BASE_URL is not supported by Ilmomasiina 3.0 " +
+        "and should be removed from your configuration. Use BASE_URL and/or FRONTENDS instead.",
     );
   }
 }
@@ -45,7 +49,8 @@ if (process.env.MAIL_DEFAULT_LANG) {
     throw new Error("MAIL_DEFAULT_LANG is not supported by Ilmomasiina 3.0. Use DEFAULT_LANGUAGE instead.");
   } else {
     console.warn(
-      "MAIL_DEFAULT_LANG is not supported by Ilmomasiina 3.0 and should be removed from your configuration. Use DEFAULT_LANGUAGE instead.",
+      "MAIL_DEFAULT_LANG is not supported by Ilmomasiina 3.0 " +
+        "and should be removed from your configuration. Use DEFAULT_LANGUAGE instead.",
     );
   }
 }
@@ -168,7 +173,8 @@ const config = {
 
   /** How long each user has to edit their signup after creation. */
   signupConfirmMins: envInteger("SIGNUP_CONFIRM_MINS", 30),
-  /** Whether signups can be edited for SIGNUP_CONFIRM_MINS after creation, even if signups for the event have closed. */
+  /** Whether signups can be edited for SIGNUP_CONFIRM_MINS after creation,
+   * even if signups for the event have closed. */
   signupConfirmAfterClose: envBoolean("SIGNUP_CONFIRM_AFTER_CLOSE", false),
 
   /** How long after an event's date to remove signup details. */

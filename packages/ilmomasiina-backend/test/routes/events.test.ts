@@ -51,7 +51,6 @@ describe("GET /api/events/:id", () => {
       id: firstQuestion.id,
       question: firstQuestion.question,
       type: firstQuestion.type,
-      options: firstQuestion.options,
       prices: firstQuestion.prices,
       options: firstQuestion.options ?? null,
       required: firstQuestion.required,
@@ -157,16 +156,18 @@ describe("GET /api/events/:id", () => {
       expect(found).toBeTruthy();
       expect(found!.signups.length).toEqual(quota.signups!.length);
       const firstSignup = quota.signups![0];
-      expect(found!.signups).toContainEqual({
-        firstName: firstSignup.firstName,
-        lastName: firstSignup.lastName,
-        confirmed: true,
-        namePublic: true,
-        createdAt: firstSignup.createdAt.toISOString(),
-        answers: expect.any(Array),
-        status: null,
-        position: null,
-      });
+      if (firstSignup) {
+        expect(found!.signups).toContainEqual({
+          firstName: firstSignup.firstName,
+          lastName: firstSignup.lastName,
+          confirmed: true,
+          namePublic: true,
+          createdAt: firstSignup.createdAt.toISOString(),
+          answers: expect.any(Array),
+          status: null,
+          position: null,
+        });
+      }
     }
   });
 

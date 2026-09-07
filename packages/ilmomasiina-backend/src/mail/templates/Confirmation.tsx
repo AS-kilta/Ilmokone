@@ -14,9 +14,10 @@ export interface ConfirmationMailParams {
   type: "signup" | "edit";
   admin: boolean;
   date: string | null;
-  event: Event;
-  paymentStatus: SignupPaymentStatus | null;
-  signupLink: string;
+  event: Event | { title: string; location?: string | null; verificationEmail?: string | null; [key: string]: any };
+  paymentStatus?: SignupPaymentStatus | null;
+  signupLink?: string;
+  cancelLink?: string;
 }
 
 export default function Confirmation({
@@ -31,10 +32,17 @@ export default function Confirmation({
   event,
   paymentStatus,
   signupLink,
+  cancelLink,
 }: ConfirmationMailParams) {
   const { t } = useTranslation();
+  const link = signupLink || cancelLink || "";
+
   return (
-    <Layout>
+    <Layout
+      alertVariant="alert-good"
+      alertText={t("emails.confirmation.alert")}
+      alertOptions={{ font: "jacquard", fontSize: 34 }}
+    >
       {admin && type === "signup" && (
         <div className="content-block">
           <p className="bodyText">
@@ -49,10 +57,10 @@ export default function Confirmation({
           </p>
         </div>
       )}
-      {paymentStatus === SignupPaymentStatus.PENDING && !queuePosition && (
-        <PendingPaymentWarning event={event} signupLink={signupLink} />
+      {paymentStatus === SignupPaymentStatus.PENDING && !queuePosition && link && (
+        <PendingPaymentWarning event={event} signupLink={link} />
       )}
-      <VerificationEmail verificationEmail={event.verificationEmail} />
+      <VerificationEmail verificationEmail={event.verificationEmail ?? null} />
       {queuePosition != null && (
         <div className="content-block">
           <p className="bodyText">
@@ -62,7 +70,7 @@ export default function Confirmation({
       )}
       <EventDetails event={event} date={date} />
       <SignupDetails name={name} email={email} quota={quota} answers={answers} />
-      <EditLink href={signupLink} />
+      {link && <EditLink href={link} />}
     </Layout>
   );
 }

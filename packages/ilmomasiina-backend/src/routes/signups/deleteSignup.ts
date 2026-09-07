@@ -20,7 +20,7 @@ async function deleteSignup(id: SignupID, auditLogger: AuditLogger, admin: boole
       transaction,
       lock: transaction.LOCK.UPDATE,
     });
-    if (!signup || !signup.quota || !signup.quota.event) {
+    if (!signup) {
       throw new NoSuchSignup("Signup expired or already deleted");
     }
 

@@ -6,16 +6,23 @@ import Layout from "../components/Layout";
 import { EditLink, EventDetails, PendingPaymentWarning } from "../components/shared";
 
 export interface QueueMailParams {
-  event: Event;
+  event: Event | { title: string; location?: string | null; [key: string]: any };
   date: string | null;
-  paymentStatus: SignupPaymentStatus | null;
-  signupLink: string;
+  paymentStatus?: SignupPaymentStatus | null;
+  signupLink?: string;
+  cancelLink?: string;
 }
 
-export default function QueueMail({ event, date, paymentStatus, signupLink }: QueueMailParams) {
+export default function QueueMail({ event, date, paymentStatus, signupLink, cancelLink }: QueueMailParams) {
   const { t } = useTranslation();
+  const link = signupLink || cancelLink || "";
+
   return (
-    <Layout>
+    <Layout
+      alertVariant="alert-good"
+      alertText={t("emails.queueMail.alert")}
+      alertOptions={{ font: "jacquard", fontSize: 34 }}
+    >
       <div className="content-block">
         <p className="bodyText">
           <Trans t={t} i18nKey="emails.queueMail.accepted">
@@ -25,9 +32,11 @@ export default function QueueMail({ event, date, paymentStatus, signupLink }: Qu
           </Trans>
         </p>
       </div>
-      {paymentStatus === SignupPaymentStatus.PENDING && <PendingPaymentWarning event={event} signupLink={signupLink} />}
+      {paymentStatus === SignupPaymentStatus.PENDING && link && (
+        <PendingPaymentWarning event={event} signupLink={link} />
+      )}
       <EventDetails event={event} date={date} />
-      <EditLink href={signupLink} />
+      {link && <EditLink href={link} />}
     </Layout>
   );
 }

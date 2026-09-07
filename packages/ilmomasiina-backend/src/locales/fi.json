@@ -5,28 +5,34 @@
 
     "emails.confirmation.signup.subject": "Ilmoittautumisvahvistus: {{event}}",
     "emails.confirmation.edit.subject": "Muokkausvahvistus: {{event}}",
+    "emails.confirmation.alert": "Ei vissii mikää neliö...",
     "emails.adminSignup": "Ylläpitäjä on ilmoittanut sinut tapahtumaan.",
     "emails.adminEdit": "Ylläpitäjä on muokannut ilmoittautumistasi.",
     "emails.pendingPayment": "Ilmoittautumisesi odottaa vielä maksua!",
     "emails.completePayment": "Voit suorittaa maksun <1>ilmoittautumissivulla</1>.",
-    "emails.queuePosition": "Olet jonossa sijalla {{position}}.",
+    "emails.queuePosition": "...mutta olet jonossa sijalla {{position}}.",
     "emails.queueNotify": "Jos saat paikan jonosta, sinulle lähetetään ilmoitus sähköpostitse.",
 
     "emails.payment.subject": "Maksuvahvistus: {{event}}",
+    "emails.payment.alert": "Maksu vastaanotettu",
     "emails.payment.received": "Maksusi tapahtumaan <1>{{event}}</1> on vastaanotettu.",
     "emails.payment.purchaseDetails": "Maksun tiedot:",
     "emails.payment.total": "Yhteensä",
     "emails.payment.viewSignup": "Näet ilmoittautumisesi klikkaamalla <1>tätä linkkiä</1>.",
 
     "emails.newUser.subject": "Käyttäjätunnukset AS Ilmokoneeseen",
-    "emails.newUser.created": "Sinulle on luotu admin-tunnukset Ilmokoneeseen.",
+    "emails.newUser.alert": "Kaikki tämä voima, sinun käsissäsi?!",
+    "emails.newUser.created": "Sinulle on luotu admin-tunnukset AS Ilmokoneeseen.",
     "emails.newUser.password": "Salasana",
 
-    "emails.resetPassword.subject": "Salasanasi Ilmokoneeseen on nollattu",
+    "emails.resetPassword.subject": "Salasanasi AS Ilmokoneeseen on nollattu",
+    "emails.resetPassword.alert": "Nollasana salattu",
     "emails.resetPassword.reset": "Salasanasi AS Ilmokoneeseen on nollattu.",
     "emails.resetPassword.newPassword": "Uusi salasana",
 
     "emails.queueMail.subject": "Pääsit varasijalta tapahtumaan {{event}}",
+    "emails.promotedFromQueue.subject": "Pääsit varasijalta tapahtumaan {{event}}",
+    "emails.queueMail.alert": "Pitkä oli jonottajan pinna!",
     "emails.queueMail.accepted": "Olet päässyt mukaan tapahtumaan <1>{{event}}</1> varasijalta.",
 
     "emails.eventDetails": "Tapahtuman tiedot:",
@@ -38,9 +44,6 @@
     "emails.email": "Sähköposti",
     "emails.quota": "Kiintiö",
     "emails.editLink": "Mikäli haluat muokata tai perua ilmoittautumisesi, voit tehdä sen painamalla tätä <1>linkkiä</1>.",
-    "emails.login": "Voit kirjautua sisään osoitteessa <1>{{url}}</1>."
-    "emails.newUser.subject": "Käyttäjätunnukset AS Ilmokoneeseen",
-    "emails.promotedFromQueue.subject": "Pääsit varasijalta tapahtumaan {{event}}",
-    "emails.resetPassword.subject": "Salasanasi AS Ilmokoneeseen on nollattu"
+    "emails.login": "Voit kirjautua sisään osoitteessa <1>{{url}}</1>. Vaihdathan salasanan hallinta-paneelissa pikimiten!"
   }
 }

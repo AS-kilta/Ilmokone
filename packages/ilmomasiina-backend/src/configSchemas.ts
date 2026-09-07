@@ -3,7 +3,8 @@ import z, { ZodType } from "zod";
 
 /** Validation schema for frontend URL configurations.
  *
- * The "default" frontend is always available, whether configured or not. Configurations using FRONTENDS should typically override it.
+ * The "default" frontend is always available, whether configured or not.
+ * Configurations using FRONTENDS should typically override it.
  *
  * If a URL is missing for a frontend, the template in the "default" frontend will be used.
  *
@@ -35,7 +36,8 @@ export const frontendsSchema = z.record(
       .refine((url) => url.includes("{editToken}"), { error: "editSignupUrl must include {editToken}" })
       .nullish(),
 
-    /** URL template for a signup payment completion page. Used for payments. Contains `{id}` and `{editToken}`, may contain `{lang}`.
+    /** URL template for a signup payment completion page. Used for payments.
+     * Contains `{id}` and `{editToken}`, may contain `{lang}`.
      *
      * This is intended for custom frontends; the default is for the frontend included in the repo.
      *

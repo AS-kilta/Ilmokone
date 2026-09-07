@@ -183,7 +183,8 @@ export function validateAnswersAndGetProducts(
             error = SignupFieldError.DUPLICATE_OPTION;
           } else {
             usedOptions.add(optIndex);
-            // Question.prices are normalized to null when they are all zero, so any option prices being set implies prices exist.
+            // Question.prices are normalized to null when they are all zero,
+            // so any option prices being set implies prices exist.
             // Generate a product if the option is known and the question has prices, even if the option is free.
             if (event.paymentsEnabled && question.prices) {
               answerProducts.push({

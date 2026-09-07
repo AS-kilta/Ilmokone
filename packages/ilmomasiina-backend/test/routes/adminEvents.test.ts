@@ -161,32 +161,34 @@ describe("GET /api/admin/events/:id", () => {
       expect(found).toBeTruthy();
       expect(found!.signups.length).toEqual(quota.signups!.length);
       const firstSignup = quota.signups![0];
-      expect(found!.signups).toContainEqual({
-        id: firstSignup.id,
-        firstName: firstSignup.firstName,
-        lastName: firstSignup.lastName,
-        email: firstSignup.email,
-        confirmed: firstSignup.confirmedAt != null,
-        namePublic: firstSignup.namePublic,
-        createdAt: firstSignup.createdAt.toISOString(),
-        answers: expect.any(Array),
-        price: firstSignup.price,
-        currency: firstSignup.currency,
-        status: null,
-        position: null,
-        paymentStatus: SignupPaymentStatus.PENDING,
-        manualPaymentStatus: null,
-        deletedAt: null,
-        emailError: null,
-      });
+      if (firstSignup) {
+        expect(found!.signups).toContainEqual({
+          id: firstSignup.id,
+          firstName: firstSignup.firstName,
+          lastName: firstSignup.lastName,
+          email: firstSignup.email,
+          confirmed: firstSignup.confirmedAt != null,
+          namePublic: firstSignup.namePublic,
+          createdAt: firstSignup.createdAt.toISOString(),
+          answers: expect.any(Array),
+          price: firstSignup.price,
+          currency: firstSignup.currency,
+          status: null,
+          position: null,
+          paymentStatus: firstSignup.price ? SignupPaymentStatus.PENDING : null,
+          manualPaymentStatus: null,
+          deletedAt: null,
+          emailError: null,
+        });
 
-      const foundSignup = found!.signups.find((signup) => signup.id === firstSignup.id);
-      expect(foundSignup!.answers.length).toBe(event.questions!.length);
-      const firstAnswer = firstSignup.answers![0];
-      expect(foundSignup!.answers).toContainEqual({
-        questionId: firstAnswer.questionId,
-        answer: firstAnswer.answer,
-      });
+        const foundSignup = found!.signups.find((signup) => signup.id === firstSignup.id);
+        expect(foundSignup!.answers.length).toBe(event.questions!.length);
+        const firstAnswer = firstSignup.answers![0];
+        expect(foundSignup!.answers).toContainEqual({
+          questionId: firstAnswer.questionId,
+          answer: firstAnswer.answer,
+        });
+      }
     }
   });
 });
@@ -835,7 +837,7 @@ describe("PATCH /api/admin/events/:id", () => {
         fi: {
           title: "",
           description: "",
-          price: "",
+          message: "",
           location: "",
           webpageUrl: "",
           facebookUrl: "",
@@ -914,7 +916,7 @@ describe("PATCH /api/admin/events/:id", () => {
         fi: {
           title: "",
           description: "",
-          price: "",
+          message: "",
           location: "",
           webpageUrl: "",
           facebookUrl: "",

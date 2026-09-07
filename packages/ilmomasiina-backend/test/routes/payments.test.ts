@@ -1001,6 +1001,7 @@ describe("completePayment", () => {
       signup.email,
       `Payment confirmation: ${event.title}`,
       expect.stringContaining("has been received"),
+      expect.anything(),
     );
   });
 
@@ -1159,6 +1160,7 @@ describe("Stripe webhook", () => {
       signup.email,
       `Payment confirmation: ${event.title}`,
       expect.stringContaining("has been received"),
+      expect.anything(),
     );
   });
 
@@ -1254,6 +1256,7 @@ describe("Stripe webhook", () => {
       signup.email,
       `Payment confirmation: ${event.title}`,
       expect.stringContaining("has been received"),
+      expect.anything(),
     );
   });
 
@@ -1542,6 +1545,7 @@ describe("preferredFrontend in payments", () => {
       signup.email,
       expect.any(String),
       expect.stringContaining("https://alt.example.com/signup/"),
+      expect.anything(),
     );
   });
 
@@ -1563,6 +1567,7 @@ describe("preferredFrontend in payments", () => {
       signup.email,
       expect.any(String),
       expect.stringContaining("https://alt.example.com/signup/"),
+      expect.anything(),
     );
   });
 
@@ -1584,6 +1589,7 @@ describe("preferredFrontend in payments", () => {
       signup.email,
       expect.any(String),
       expect.stringContaining(config.frontends.default.editSignupUrl.split("{")[0]),
+      expect.anything(),
     );
   });
 });
