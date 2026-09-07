@@ -4,7 +4,7 @@ import { ManualPaymentStatus, PaymentStatus } from "@tietokilta/ilmomasiina-mode
 import { defineMigration } from "./util";
 
 export default defineMigration({
-  name: "0009-add-payments",
+  name: "0012-add-payments",
   async up({ context: { sequelize, transaction } }) {
     const query = sequelize.getQueryInterface();
     await query.createTable(

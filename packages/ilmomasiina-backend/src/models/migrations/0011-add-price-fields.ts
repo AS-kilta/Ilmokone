@@ -4,7 +4,7 @@ import { PaymentMode } from "@tietokilta/ilmomasiina-models";
 import { defineMigration } from "./util";
 
 export default defineMigration({
-  name: "0008-add-price-fields",
+  name: "0011-add-price-fields",
   async up({ context: { sequelize, transaction } }) {
     const query = sequelize.getQueryInterface();
 
