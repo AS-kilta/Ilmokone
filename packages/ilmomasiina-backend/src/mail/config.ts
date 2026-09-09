@@ -1,19 +1,42 @@
-import nodemailer, { Transporter } from "nodemailer";
-import SMTPTransport from "nodemailer/lib/smtp-transport";
-import mailgun from "nodemailer-mailgun-transport";
+import Mailgun from "mailgun.js";
+import nodemailer, { Transport } from "nodemailer";
+import SMTPPool from "nodemailer/lib/smtp-pool";
 
 import config from "../config";
 
-const mailTransporter: Transporter = (() => {
-  if (process.env.NODE_ENV === "test") {
+export interface EmailAttachment {
+  filename: string;
+  content: Buffer;
+  cid?: string;
+  contentType?: string;
+}
+
+/** Common input values valid for both nodemailer and mailgun.js. */
+export type AbstractMailOptions = {
+  to: string;
+  from: string;
+  subject: string;
+  html: string;
+  attachments?: EmailAttachment[];
+};
+
+/** Base type for the minimal interface we use in nodemailer. */
+export type AbstractTransporter = {
+  sendMail: (options: AbstractMailOptions) => Promise<unknown>;
+  transporter: Pick<Transport, "name">;
+  verify?: (callback: (err: Error | null, success: true) => void) => void;
+};
+
+const mailTransporter: AbstractTransporter = (() => {
+  if (config.nodeEnv === "test") {
     return nodemailer.createTransport({
-      name: "test mail service",
+      name: "console fallback",
       version: "0",
       send(mail, callback) {
-        // Ignore emails in test environment
         const { message } = mail;
         const envelope = message.getEnvelope();
         const messageId = message.messageId();
+        // Completely ignore emails in test environment - mocking is done at EmailService.send before calling this
         setImmediate(() => callback(null, { envelope, messageId } as any));
       },
     });
@@ -26,15 +49,40 @@ const mailTransporter: Transporter = (() => {
     if (!config.mailFrom) {
       console.warn("MAIL_FROM is not set. Outgoing emails may fail or be rejected by recipient mail servers.");
     }
-    return nodemailer.createTransport(
-      mailgun({
-        auth: {
-          api_key: config.mailgunApiKey,
-          domain: config.mailgunDomain,
-        },
-        host: config.mailgunHost,
-      }),
-    );
+    const mailgun = new Mailgun(FormData);
+    const client = mailgun.client({
+      username: "api",
+      key: config.mailgunApiKey,
+      url: config.mailgunHost ? `https://${config.mailgunHost}` : undefined,
+    });
+    return {
+      sendMail: (msg) => {
+        const mailgunMsg: any = {
+          to: msg.to,
+          from: msg.from,
+          subject: msg.subject,
+          html: msg.html,
+        };
+        if (msg.attachments && msg.attachments.length > 0) {
+          mailgunMsg.inline = msg.attachments
+            .filter((att) => att.cid)
+            .map((att) => ({
+              data: att.content,
+              filename: att.filename,
+              contentType: att.contentType,
+            }));
+          mailgunMsg.attachment = msg.attachments
+            .filter((att) => !att.cid)
+            .map((att) => ({
+              data: att.content,
+              filename: att.filename,
+              contentType: att.contentType,
+            }));
+        }
+        return client.messages.create(config.mailgunDomain!, mailgunMsg);
+      },
+      transporter: { name: "Mailgun" },
+    };
   }
 
   if (config.smtpHost) {
@@ -78,7 +126,7 @@ const mailTransporter: Transporter = (() => {
             clientSecret: config.googleClientSecret ?? undefined,
             refreshToken: config.googleRefreshToken,
           },
-        } as SMTPTransport.Options);
+        } as SMTPPool.Options);
       }
     }
 
@@ -94,7 +142,7 @@ const mailTransporter: Transporter = (() => {
         user: config.smtpUser,
         pass: config.smtpPassword,
       },
-    } as SMTPTransport.Options);
+    } as SMTPPool.Options);
   }
 
   console.warn(
@@ -102,7 +150,7 @@ const mailTransporter: Transporter = (() => {
       "Falling back to debug mail service (emails will be logged to console and not sent).",
   );
   return nodemailer.createTransport({
-    name: "debug mail service",
+    name: "console fallback",
     version: "0",
     send(mail, callback) {
       const { message } = mail;

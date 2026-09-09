@@ -17,8 +17,8 @@ import {
   Sequelize,
 } from "sequelize";
 
-import type { QuestionCreate, QuotaCreate } from "@tietokilta/ilmomasiina-models";
-import type { EventAttributes, EventLanguage } from "@tietokilta/ilmomasiina-models/dist/models";
+import { PaymentMode, QuestionCreate, QuotaCreate } from "@tietokilta/ilmomasiina-models";
+import type { QuestionLanguage, QuotaLanguage } from "@tietokilta/ilmomasiina-models/dist/schema";
 import config from "../config";
 import { EventValidationError } from "./errors";
 import type { Question, QuestionCreationAttributes } from "./question";
@@ -26,7 +26,51 @@ import type { Quota, QuotaCreationAttributes } from "./quota";
 import { generateRandomId, RANDOM_ID_LENGTH } from "./randomId";
 import { jsonColumnGetter } from "./util/json";
 
-// Drop updatedAt so we don't need to define it manually in Event.init()
+interface EventPerLanguageAttributes {
+  title: string;
+  description: string | null;
+  message: string | null;
+  location: string | null;
+  webpageUrl: string | null;
+  facebookUrl: string | null;
+  verificationEmail: string | null;
+}
+
+export interface EventLanguage extends EventPerLanguageAttributes {
+  quotas: QuotaLanguage[];
+  questions: QuestionLanguage[];
+}
+
+export interface EventAttributes extends EventPerLanguageAttributes {
+  id: string;
+  slug: string;
+  date: Date | null;
+  endDate: Date | null;
+  registrationStartDate: Date | null;
+  registrationEndDate: Date | null;
+  openQuotaSize: number;
+  category: string;
+  draft: boolean;
+  listed: boolean;
+  signupsPublic: boolean;
+  nameQuestion: boolean;
+  emailQuestion: boolean;
+  payments: PaymentMode;
+  preferredFrontend: string;
+  languages: Record<string, EventLanguage>;
+  defaultLanguage: string;
+  updatedAt: Date;
+  price: string | null;
+  paymentBarcode: string | null;
+  recipient: string | null;
+  dueDate: Date | null;
+  bankId: string | null;
+  showBarcode: boolean;
+}
+
+// Drop updatedAt so we don't need to define it manually in Event.init().
+// updatedAt is in EventAttributes since it's referenced in the adminEventListEventAttrs array, which is
+// type-checked against EventAttributes.
 interface EventManualAttributes extends Omit<EventAttributes, "updatedAt"> {}
 
 export interface EventCreationAttributes extends Optional<
@@ -51,6 +95,7 @@ export interface EventCreationAttributes extends Optional<
   | "nameQuestion"
   | "emailQuestion"
   | "verificationEmail"
+  | "preferredFrontend"
   | "languages"
   | "defaultLanguage"
 > {}
@@ -87,6 +132,8 @@ export class Event extends Model<EventManualAttributes, EventCreationAttributes>
   public nameQuestion!: boolean;
   public emailQuestion!: boolean;
   public verificationEmail!: string | null;
+  public payments!: PaymentMode;
+  public preferredFrontend!: string;
   public languages!: Record<string, EventLanguage>;
   public defaultLanguage!: string;
 
@@ -126,6 +173,10 @@ export class Event extends Model<EventManualAttributes, EventCreationAttributes>
     return endDates.reduce((lhs, rhs) => Math.max(lhs, rhs));
   }
 
+  public get paymentsEnabled(): boolean {
+    return this.payments !== PaymentMode.DISABLED;
+  }
+
   /** Validates that the languages for the event contain match the given questions and quotas.
    *
    * Removes answer options from questions that do not have them defined in the default language.
@@ -158,8 +209,7 @@ export class Event extends Model<EventManualAttributes, EventCreationAttributes>
           throw new EventValidationError(`question ${i} in language ${langKey} has wrong number of options`);
         }
         // Remove options if the question does not have them.
-        // We expect createEvent/updateEvent to remove options from questions that don't support
-        // options before calling this.
+        // We expect Question.normalizeOptions() to remove unnecessary options before this is called.
         if (!question.options) {
           localizedQuestion.options = null;
         }
@@ -278,6 +328,16 @@ export default function setupEventModel(sequelize: Sequelize) {
       },
       verificationEmail: {
         type: DataTypes.TEXT,
+      },
+      payments: {
+        type: DataTypes.ENUM(...Object.values(PaymentMode)),
+        allowNull: false,
+        defaultValue: PaymentMode.DISABLED,
+      },
+      preferredFrontend: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "default",
       },
       languages: {
         type: DataTypes.JSON,

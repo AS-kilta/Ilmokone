@@ -18,7 +18,7 @@ async function fetchAdminEventDetails(event: { id: string }) {
 describe("email error handling", () => {
   test("records email error on signup when mail server rejects confirmation email", async () => {
     const event = await testEvent();
-    const [signup] = await testSignups(event, { count: 1, confirmed: true });
+    const [signup] = await testSignups({ event, count: 1, confirmed: true });
 
     // Mock EmailService.send to simulate an SMTP rejection error (e.g. from Google SMTP)
     const smtpError = new Error("550-5.1.1 The email account that you tried to reach does not exist.");
@@ -42,7 +42,7 @@ describe("email error handling", () => {
 
   test("clears email error on signup when confirmation email subsequently succeeds", async () => {
     const event = await testEvent();
-    const [signup] = await testSignups(event, { count: 1, confirmed: true });
+    const [signup] = await testSignups({ event, count: 1, confirmed: true });
 
     // Set an initial email error
     await signup.update({ emailError: "Previous delivery failure" });
@@ -65,16 +65,18 @@ describe("email error handling", () => {
   test("handles queue promotion email error and stores it on signup", async () => {
     const event = await testEvent({ quotaCount: 1, quotaOverrides: { size: 1 } }, { openQuotaSize: 0 });
     // Create 2 signups: first in quota, second in queue
-    const [first] = await testSignups(
+    const [first] = await testSignups({
       event,
-      { count: 1, confirmed: true },
-      { createdAt: new Date(Date.now() - 60000) },
-    );
-    const [second] = await testSignups(
+      count: 1,
+      confirmed: true,
+      overrides: { createdAt: new Date(Date.now() - 60000) },
+    });
+    const [second] = await testSignups({
       event,
-      { count: 1, confirmed: true },
-      { createdAt: new Date(Date.now() - 30000) },
-    );
+      count: 1,
+      confirmed: true,
+      overrides: { createdAt: new Date(Date.now() - 30000) },
+    });
     await refreshSignupPositions(event);
 
     const reloadedSecond = await Signup.findByPk(second.id);

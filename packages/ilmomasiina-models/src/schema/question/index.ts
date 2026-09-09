@@ -17,9 +17,7 @@ export const questionCreate = questionAttributes;
 export const questionUpdate = Type.Interface(
   [Type.Partial(questionIdentity), questionCreate],
   {},
-  {
-    description: "Set id to reuse an existing question, or leave it empty to create a new one.",
-  },
+  { description: "Set id to reuse an existing question, or leave it empty to create a new one." },
 );
 
 /** Question ID type. Randomly generated alphanumeric string. */

@@ -25,7 +25,10 @@ export type AdminQuotaSignups = QuotaSignups<AdminEventResponse>;
 export type AdminSignupWithQuota = SignupWithQuota<AdminEventResponse>;
 
 // For new signups, the local state has all creation fields initialized (some to null), plus id: null as a tag.
-export type EditorNewSignup = Required<AdminSignupCreateBody> & { id: null; keepEditing: boolean };
+export type EditorNewSignup = Required<AdminSignupCreateBody> & {
+  id: null;
+  keepEditing: boolean;
+};
 // For existing signups, the local state has all update fields initialized from the existing signup,
 // plus id and quotaId.
 export type EditorExistingSignup = Required<AdminSignupUpdateBody> &
@@ -51,6 +54,12 @@ export interface EditorState {
 export interface EditorQuestion extends Omit<QuestionUpdate, "options"> {
   key: QuestionID;
   options: string[];
+  prices: number[];
+  /**
+   * Used as a separate checkbox to enable the pricing inputs for each question. Otherwise the UI looks
+   * horrible if you have a lot of options but don't care about pricing (like most use cases).
+   */
+  hasPrices: boolean;
 }
 
 /** Quota type for event editor */
@@ -59,29 +68,22 @@ export type EditorQuota = QuotaUpdate & {
 };
 
 /** Root form data type for event editor */
-export interface EditorEvent
-  extends
-    Omit<
-      Required<EventUpdateBody>,
-      // Omit fields we'll overwrite for editing states that aren't valid in the API
-      | "quotas"
-      | "questions"
-      | "date"
-      | "endDate"
-      | "dueDate"
-      | "registrationStartDate"
-      | "registrationEndDate"
-      | "openQuotaSize"
-      // Omit fields we want to keep optional
-      | "moveSignupsToQueue"
-    >,
-    // Add optional fields
-    Pick<EventUpdateBody, "moveSignupsToQueue"> {
+export interface EditorEvent extends Omit<
+  Required<EventUpdateBody>,
+  // Omit fields we'll overwrite for editing states that aren't valid in the API
+  | "quotas"
+  | "questions"
+  | "date"
+  | "endDate"
+  | "dueDate"
+  | "registrationStartDate"
+  | "registrationEndDate"
+  | "openQuotaSize"
+> {
   eventType: EditorEventType;
 
   date: Date | null;
   endDate: Date | null;
-
   dueDate: Date | null;
 
   questions: EditorQuestion[];

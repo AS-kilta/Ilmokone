@@ -12,6 +12,10 @@ import _0007_date_include_ms from "./0007-date-include-ms";
 import _0008_json_datatype from "./0008-json-datatype";
 import _0009_add_languages from "./0009-add-languages";
 import _0010_add_signup_email_error from "./0010-add-signup-email-error";
+import _0011_add_price_fields from "./0011-add-price-fields";
+import _0012_add_payments from "./0012-add-payments";
+import _0013_add_preferredFrontend from "./0013-add-preferredFrontend";
+
 
 const migrations: RunnableMigration<Sequelize>[] = [
   _0000_initial,
@@ -25,6 +29,10 @@ const migrations: RunnableMigration<Sequelize>[] = [
   _0008_json_datatype,
   _0009_add_languages,
   _0010_add_signup_email_error,
+  _0011_add_price_fields,
+  _0012_add_payments,
+  _0013_add_preferredFrontend,
+  
 ];
 
 export default migrations;

@@ -17,9 +17,7 @@ export const quotaCreate = quotaAttributes;
 export const quotaUpdate = Type.Interface(
   [Type.Partial(quotaIdentity), quotaCreate],
   {},
-  {
-    description: "Set id to reuse an existing quota, or leave it empty to create a new one.",
-  },
+  { description: "Set id to reuse an existing quota, or leave it empty to create a new one." },
 );
 
 /** Quota ID type. Randomly generated alphanumeric string. */

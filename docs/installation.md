@@ -16,13 +16,18 @@ both for [production](#production) and [development](#development).
 If you want to change any of the following, you'll need to modify the code slightly and
 build your own Docker image (if using Docker):
 
-- Hosting in a subfolder (instead of directly at `https://ilmo.your.domain/`)
-- Colors ([`packages/ilmomasiina-frontend/src/styles/_definitions.scss`](../packages/ilmomasiina-frontend/src/styles/_definitions.scss))
-- Header logo (`packages/ilmomasiina-frontend/src/assets/logo.svg`) (can also be disabled from `_definitions.scss`)
-- Favicon (`packages/ilmomasiina-frontend/public/*.png`)
-- Header title (build args or [`packages/ilmomasiina-frontend/src/branding.ts`](../packages/ilmomasiina-frontend/src/branding.ts))
-- Footer links (build args or [`packages/ilmomasiina-frontend/src/branding.ts`](../packages/ilmomasiina-frontend/src/branding.ts))
-- Translations (`packages/ilmomasiina-*/src/locales/*.json`)
+| What to customize | Where |
+|-|-|
+| Hosting in a subfolder instead of directly at `https://ilmo.your.domain/` | build args |
+| Colors | [`packages/ilmomasiina-frontend/src/styles/_definitions.scss`](../packages/ilmomasiina-frontend/src/styles/_definitions.scss) |
+| Header logo | `packages/ilmomasiina-frontend/src/assets/logo.svg` (can also be disabled from `_definitions.scss`) |
+| Favicon | `packages/ilmomasiina-frontend/public/*.png` |
+| Header title | build args or [`packages/ilmomasiina-frontend/src/branding.ts`](../packages/ilmomasiina-frontend/src/branding.ts) |
+| Footer links | build args or [`packages/ilmomasiina-frontend/src/branding.ts`](../packages/ilmomasiina-frontend/src/branding.ts) |
+| Translations | `packages/ilmomasiina-*/src/locales/*.json` |
+| Timezone | build args |
+| Default language | build args |
+| Payment currency | build args |
 
 You can of course make further UI changes, but that is not documented.
 
@@ -46,19 +51,20 @@ have free Actions time. The repository contains a workflow called
 variables to build and push an image for your organization.
 
 Simply [enable GitHub Actions](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#managing-github-actions-permissions-for-your-repository)
-for your fork and modify the `env` block in `docker-build.yml` as instructed.
-You'll also need to change the repository name in `jobs.docker.if` to ensure the workflow runs -
-it's automatically disabled on forks to avoid unnecessary errors.
+for your fork and modify `docker-build.yml` as instructed in comments:
 
-With the current workflow setup, the following trigger an image build:
-
-- `prod` branch pushes tags `prod` and `latest`
-- `staging` branch pushes tag `staging`
-- tags starting with `v` push semver tags (`major.minor` and full version)
+- Update `env` block as necessary.
+- Change the repository names in `jobs.docker.if` to ensure the workflow runs;
+  it's automatically disabled on forks to avoid unnecessary errors.
+- Change other conditions in `on` and `jobs.docker.if` if you want to build on branch pushes
+  or a different tag pattern. The `docker` is otherwise set up for either approach.
 
 #### Local Docker build
 
 You can of course also build images locally.
+
+Variables in `.env.example` can be passed as build args, though don't include secrets there.
+Anything that *requires frontend rebuild* needs to be passed as a build arg and won't work as a normal env variable.
 
 ```
 docker build \
@@ -99,9 +105,9 @@ generate passwords with at least 32 characters, or e.g. run `openssl rand -hex 3
 ### Database setup
 
 > [!NOTE]
-> Ilmomasiina 3.0 will not support MySQL/MariaDB. Consider using PostgreSQL for new installations.
+> Ilmomasiina 3.0 no longer supports MySQL.
 
-You'll need a MySQL/MariaDB or PostgreSQL database, and a user with full privileges to the DB.
+You'll need a PostgreSQL database, and a user with full privileges to the DB.
 Instructions are provided here for [PostgreSQL in Docker](#postgresql-with-docker),
 and both [MariaDB](#ubuntudebian-mariadb-installation) and [PostgreSQL](#ubuntudebian-postgresql-installation)
 on Linux without Docker.
@@ -127,45 +133,19 @@ Especially for development, running PostgreSQL with Docker may be the easiest op
     ```
 3. If you have the PostgreSQL client installed, try signing in: `psql -h localhost -U ilmo_user ilmomasiina`
 
-#### Ubuntu/Debian MariaDB installation
-
-> [!NOTE]
-> Ilmomasiina 3.0 will not support MySQL/MariaDB. Consider using PostgreSQL for new installations.
-
-If you intend to run your own database, you can follow these instructions to install one on a Ubuntu or Debian system.
-
-1. Install MariaDB with `sudo apt install default-mysql-server`
-2. MariaDB should start automatically. Run `sudo systemctl start mariadb` if necessary.
-3. Open a MariaDB session with `sudo -u root mysql`.
-4. Create the `ilmomasiina` database:
-   ```sql
-   CREATE DATABASE ilmomasiina;
-   ```
-5. Create a new user for Ilmomasiina:
-   ```sql
-   CREATE USER 'ilmo_user'@'localhost' IDENTIFIED BY '<add a password here>';
-   ```
-6. Grant permissions on the new database:
-   ```sql
-   GRANT ALL PRIVILEGES ON ilmomasiina.* TO 'ilmo_user'@'localhost';
-   ```
-7. Exit the MariaDB session with `exit`.
-8. Try signing in with your new user: `mysql -u ilmo_user -p`
-   (don't put your password in the command).
-
 #### Ubuntu/Debian PostgreSQL installation
 
 1. Install PostgreSQL with `sudo apt install postgresql`
 2. PostgreSQL should start automatically. Run `sudo systemctl start postgresql` if necessary.
 3. Open a PostgreSQL session with `sudo -u postgres psql`.
 4. Create a new user for Ilmomasiina:
-   ```sql
-   CREATE USER ilmo_user WITH PASSWORD '<add a password here>';
-   ```
+    ```sql
+    CREATE USER ilmo_user WITH PASSWORD '<add a password here>';
+    ```
 5. Create the `ilmomasiina` database:
-   ```sql
-   CREATE DATABASE ilmomasiina WITH OWNER ilmo_user;
-   ```
+    ```sql
+    CREATE DATABASE ilmomasiina WITH OWNER ilmo_user;
+    ```
 6. Exit the PostgreSQL session with `exit`.
 7. Try signing in with your new user: `psql -h localhost -U ilmo_user ilmomasiina`.
 
@@ -183,7 +163,7 @@ be printed to the console instead. This can be used for debugging.
 
 [Mailgun](https://www.mailgun.com/) is relatively cheap and can be enabled via env variables.
 
-- `MAILGUN_API_KEY` = Mailgun API key (created under _Domain settings_ &rarr; _Sending API keys_)
+- `MAILGUN_API_KEY` = Mailgun API key (created under *Domain settings* &rarr; *Sending API keys*)
 - `MAILGUN_DOMAIN` = Authorized sending domain in Mailgun
 - `MAILGUN_HOST` = `api.eu.mailgun.net` or `api.mailgun.net` depending on region
 
@@ -318,7 +298,7 @@ If you don't want to use Docker Compose, or already have a database, you can run
 You can also set up a production deployment without Docker. **This method is not recommended.**
 
 1. Install a suitable Node version (e.g. using nvm).
-2. Run `npm install -g pnpm@8` to install pnpm. Then run `pnpm install --frozen-lockfile` to setup cross-dependencies
+2. Run `corepack enable`, then `pnpm install --frozen-lockfile` to setup cross-dependencies.
    between packages and install other dependencies.
 3. Create a `.env` file at the root of this repository. You can copy [.env.example](../.env.example) to begin and read the instructions within.
 4. **Optional:** Make [customizations](#customization) in other files if necessary.
@@ -404,8 +384,9 @@ Currently Prettier is not used in the project, so here is a recommended `.vscode
 2. Install a database.
     - See [_Database setup_](#database-setup) for instructions on setting up PostgreSQL.
     - You can also use Docker for a database.
+    - SQLite may also work, but is currently untested.
 3. Create a `.env` file at the root of this repository. You can copy [.env.example](../.env.example) to begin and read the instructions within.
-4. Run `npm install -g pnpm@8` to install pnpm. Then run `pnpm install --frozen-lockfile` to setup cross-dependencies
+4. Run `corepack enable`, then `pnpm install --frozen-lockfile` to setup cross-dependencies.
    between packages and install other dependencies.
 5. Run `npm start` or `pnpm start`. This will start the frontend and backend dev servers in parallel.
     - If you want cleaner output, you can run `npm start` separately in `packages/ilmomasiina-frontend` and
@@ -433,7 +414,7 @@ dependencies, package.json or ESLint configs. You'll also need Node.js and pnpm 
 To run tests, you'll likely want another test database so test data doesn't clutter your manual development database.
 
 1. Follow the same steps as in [the usual database setup](#database-setup), but name the database something different. This example uses `ilmo_test`.
-2. Create a `.env.test` file at the root of this repository. Assuming your test database runs on the same database server, just put this in:
+2. Create a `.env.test` file at the root of this repository. Assuming your test database runs on the same PostgreSQL server, just put this in:
     ```shell
     DB_DATABASE=ilmo_test
     THIS_IS_A_TEST_DB_AND_CAN_BE_WIPED=1
