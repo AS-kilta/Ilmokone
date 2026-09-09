@@ -25,7 +25,7 @@ const SignupStatusAndPosition = () => {
   }
 
   if (status === SignupStatusEnum.IN_OPEN_QUOTA) {
-    return <p>{t("editSignup.position.openQuota", { position: `${position} / ${openQuotaSize}.` })}</p>;
+    return <p>{t("editSignup.position.openQuota", { position: `${position} / ${openQuotaSize}` })}</p>;
   }
 
   return <p>{t("editSignup.position.queue", { position })}</p>;

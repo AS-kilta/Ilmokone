@@ -14,7 +14,7 @@
     "emails.queueNotify": "Jos saat paikan jonosta, sinulle lähetetään ilmoitus sähköpostitse.",
 
     "emails.payment.subject": "Maksuvahvistus: {{event}}",
-    "emails.payment.alert": "Maksu vastaanotettu",
+    "emails.payment.alert": "Rahesi ovat todella arvokkaita!",
     "emails.payment.received": "Maksusi tapahtumaan <1>{{event}}</1> on vastaanotettu.",
     "emails.payment.purchaseDetails": "Maksun tiedot:",
     "emails.payment.total": "Yhteensä",
