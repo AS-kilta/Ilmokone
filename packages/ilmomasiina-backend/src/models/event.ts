@@ -49,6 +49,7 @@ export interface EventAttributes extends EventPerLanguageAttributes {
   registrationStartDate: Date | null;
   registrationEndDate: Date | null;
   openQuotaSize: number;
+  hideQuotaSizes: boolean;
   category: string;
   draft: boolean;
   listed: boolean;
@@ -77,6 +78,7 @@ export interface EventCreationAttributes extends Optional<
   EventManualAttributes,
   | "id"
   | "openQuotaSize"
+  | "hideQuotaSizes"
   | "description"
   | "price"
   | "paymentBarcode"
@@ -114,6 +116,7 @@ export class Event extends Model<EventManualAttributes, EventCreationAttributes>
   public registrationStartDate!: Date | null;
   public registrationEndDate!: Date | null;
   public openQuotaSize!: number;
+  public hideQuotaSizes!: boolean;
   public description!: string | null;
   public price!: string | null;
   public paymentBarcode!: string | null;
@@ -260,6 +263,11 @@ export default function setupEventModel(sequelize: Sequelize) {
           min: 0,
         },
         defaultValue: 0,
+      },
+      hideQuotaSizes: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
       description: {
         type: DataTypes.TEXT,

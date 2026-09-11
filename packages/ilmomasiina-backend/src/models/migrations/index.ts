@@ -15,6 +15,7 @@ import _0010_add_signup_email_error from "./0010-add-signup-email-error";
 import _0011_add_price_fields from "./0011-add-price-fields";
 import _0012_add_payments from "./0012-add-payments";
 import _0013_add_preferredFrontend from "./0013-add-preferredFrontend";
+import _0014_add_hideQuotaSizes from "./0014-add-hideQuotaSizes";
 
 
 const migrations: RunnableMigration<Sequelize>[] = [
@@ -32,6 +33,7 @@ const migrations: RunnableMigration<Sequelize>[] = [
   _0011_add_price_fields,
   _0012_add_payments,
   _0013_add_preferredFrontend,
+  _0014_add_hideQuotaSizes,
   
 ];
 

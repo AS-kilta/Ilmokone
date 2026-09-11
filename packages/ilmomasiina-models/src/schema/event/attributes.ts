@@ -71,6 +71,9 @@ export const publicEventAttributes = Type.Object({
     description: "The size of the open quota, which will be filled with signups overflowing their dedicated quota.",
     minimum: 0,
   }),
+  hideQuotaSizes: Type.Boolean({
+    description: "Whether quota sizes should be hidden from users.",
+  }),
   // Not per language as it's used for filtering events.
   category: Type.String({
     description: "Category tag for the event. Can be used for filtering.",

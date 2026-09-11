@@ -33,6 +33,7 @@ export const defaultEvent = (): EditorEvent => ({
   registrationEndDate: null,
 
   openQuotaSize: 0,
+  hideQuotaSizes: false,
   useOpenQuota: false,
   quotas: [],
 

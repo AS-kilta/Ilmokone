@@ -11,6 +11,18 @@ const QuotaStatus = () => {
   const { t } = useTranslation();
 
   if (!signupsByQuota?.length) return null;
+
+  if (localizedEvent?.hideQuotaSizes) {
+    const queue = signupsByQuota.find((quota) => quota.type === SignupStatus.IN_QUEUE);
+    if (!queue || queue.signupCount <= 0) return null;
+    return (
+      <div className="ilmo--side-widget">
+        <h3>{t("singleEvent.quotaCounts.title")}</h3>
+        <p key={queue.id}>{t("singleEvent.quotaCounts.queue", { count: queue.signupCount })}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="ilmo--side-widget">
       <h3>{t("singleEvent.quotaCounts.title")}</h3>
