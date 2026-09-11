@@ -44,6 +44,16 @@ const QuotasTab = () => {
           formatError={formatError}
         />
       )}
+      <FieldRow
+        name="hideQuotaSizes"
+        label={t("editor.quotas.hideQuotaSizes")}
+        as={Form.Check}
+        type="checkbox"
+        checkAlign
+        checkLabel={t("editor.quotas.hideQuotaSizes.check")}
+        help={t("editor.quotas.hideQuotaSizes.info")}
+        formatError={formatError}
+      />
     </div>
   );
 };

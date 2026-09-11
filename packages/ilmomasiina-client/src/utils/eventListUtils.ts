@@ -38,8 +38,28 @@ export type TableRow = EventRow | QuotaRow;
 
 /** Converts an event to rows to be shown in the event list. */
 export function eventToRows(event: UserEventListItem, { compact }: EventTableOptions = {}) {
-  const { id, slug, title, date, registrationStartDate, registrationEndDate, quotas, openQuotaSize } = event;
+  const {
+    id,
+    slug,
+    title,
+    date,
+    registrationStartDate,
+    registrationEndDate,
+    quotas,
+    openQuotaSize,
+    hideQuotaSizes,
+  } = event;
   const state = signupState(registrationStartDate, registrationEndDate);
+
+  let quotaSize: number | null | undefined;
+  if (!hideQuotaSizes && quotas.length === 1) {
+    quotaSize = quotas[0].size;
+  }
+
+  let totalQuotaSize: number | null = null;
+  if (!hideQuotaSizes && every(quotas, "size")) {
+    totalQuotaSize = sumBy(quotas, "size");
+  }
 
   // Event row
   const rows: TableRow[] = [
@@ -51,9 +71,9 @@ export function eventToRows(event: UserEventListItem, { compact }: EventTableOpt
       title,
       date: date ? new Date(date) : null,
       signupCount: quotas.length < 2 ? sumBy(quotas, "signupCount") : undefined,
-      quotaSize: quotas.length === 1 ? quotas[0].size : undefined,
+      quotaSize,
       totalSignupCount: sumBy(quotas, "signupCount") ?? 0,
-      totalQuotaSize: every(quotas, "size") ? sumBy(quotas, "size") : null,
+      totalQuotaSize,
     },
   ];
 
@@ -67,8 +87,8 @@ export function eventToRows(event: UserEventListItem, { compact }: EventTableOpt
         type: "quota",
         id: quota.id,
         title: quota.title,
-        signupCount: quota.size ? Math.min(quota.signupCount, quota.size) : quota.signupCount,
-        quotaSize: quota.size,
+        signupCount: !hideQuotaSizes && quota.size ? Math.min(quota.signupCount, quota.size) : quota.signupCount,
+        quotaSize: hideQuotaSizes ? null : quota.size,
       }),
     );
   }
@@ -76,7 +96,7 @@ export function eventToRows(event: UserEventListItem, { compact }: EventTableOpt
   const overflow = sumBy(quotas, (quota) => (quota.size ? Math.max(0, quota.signupCount - quota.size) : 0));
 
   // Open quota
-  if (openQuotaSize > 0) {
+  if (!hideQuotaSizes && openQuotaSize > 0) {
     rows.push({
       type: "openquota",
       id: `${event.id} openquota`,

@@ -38,6 +38,7 @@ const tabForField: Record<keyof EditorEvent, EditorTab | null> = {
   registrationEndDate: EditorTab.BASIC_DETAILS,
   useOpenQuota: EditorTab.QUOTAS,
   openQuotaSize: EditorTab.QUOTAS,
+  hideQuotaSizes: EditorTab.QUOTAS,
   category: EditorTab.BASIC_DETAILS,
   description: EditorTab.BASIC_DETAILS,
   price: EditorTab.BASIC_DETAILS,

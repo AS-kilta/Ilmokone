@@ -33,7 +33,7 @@
     "emails.queueMail.subject": "You got into {{event}} from the queue",
     "emails.promotedFromQueue.subject": "You got into {{event}} from the queue",
     "emails.queueMail.alert": "Queueing is a virtue.",
-    "emails.queueMail.accepted": "Your signup to <1>{{event}}</1> was accepted from the queue.",
+    "emails.queueMail.accepted": "Your signup to <1>{{event}}</1> was accepted from the queue. Please remember to cancel your signup before the signup period closes if you cannot attend.",
 
     "emails.eventDetails": "Event details:",
     "emails.event": "Event",

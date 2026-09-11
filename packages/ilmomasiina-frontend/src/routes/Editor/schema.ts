@@ -43,6 +43,7 @@ const editorSchema: ZodType<EditorEvent> = z
     registrationEndDate: z.nullable(z.date()),
     useOpenQuota: z.boolean(),
     openQuotaSize: z.nullable(z.number().min(0)),
+    hideQuotaSizes: z.boolean(),
     category: z.string().max(255),
     description: z.nullable(z.string()),
     price: z.nullable(z.string().max(255)),

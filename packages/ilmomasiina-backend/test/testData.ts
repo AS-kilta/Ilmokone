@@ -53,6 +53,7 @@ export function testEventAttributes({
     registrationStartDate: null,
     registrationEndDate: null,
     openQuotaSize: hasSignup ? faker.number.int({ min: 0, max: 50 }) : 0,
+    hideQuotaSizes: false,
     description: faker.lorem.paragraphs({ min: 1, max: 5 }),
     price: faker.finance.amount(),
     bankId: faker.finance.iban({ formatted: false, countryCode: "FI" }),

@@ -14,18 +14,20 @@ const SignupStatusAndPosition = () => {
   if (!status) return null;
 
   if (status === SignupStatusEnum.IN_QUOTA) {
+    const showSize = !event?.hideQuotaSizes && quota.size;
     return (
       <p>
         {t("editSignup.position.quota", {
           quota: quota.title,
-          position: `${position}${quota.size ? ` / ${quota.size}` : ""}`,
+          position: `${position}${showSize ? ` / ${quota.size}` : ""}`,
         })}
       </p>
     );
   }
 
   if (status === SignupStatusEnum.IN_OPEN_QUOTA) {
-    return <p>{t("editSignup.position.openQuota", { position: `${position} / ${openQuotaSize}` })}</p>;
+    const pos = !event?.hideQuotaSizes ? `${position} / ${openQuotaSize}` : `${position}`;
+    return <p>{t("editSignup.position.openQuota", { position: pos })}</p>;
   }
 
   return <p>{t("editSignup.position.queue", { position })}</p>;
