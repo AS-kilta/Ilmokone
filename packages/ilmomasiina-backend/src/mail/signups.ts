@@ -31,6 +31,10 @@ export const sendPromotedFromQueueMail = sendSynchronouslyInTest(async (signup: 
 
   const lang = signup.language ?? config.defaultLanguage;
 
+  if (signup.price === undefined || signup.manualPaymentStatus === undefined) {
+    await signup.reload();
+  }
+
   // eslint-disable-next-line no-param-reassign
   signup.payments = await signup.getPayments();
   const quota = await signup.getQuota({ attributes: [], include: [Event] });

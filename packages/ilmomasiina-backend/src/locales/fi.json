@@ -33,7 +33,7 @@
     "emails.queueMail.subject": "Pääsit varasijalta tapahtumaan {{event}}",
     "emails.promotedFromQueue.subject": "Pääsit varasijalta tapahtumaan {{event}}",
     "emails.queueMail.alert": "Pitkä oli jonottajan pinna!",
-    "emails.queueMail.accepted": "Olet päässyt mukaan tapahtumaan <1>{{event}}</1> varasijalta.",
+    "emails.queueMail.accepted": "Olet päässyt mukaan tapahtumaan <1>{{event}}</1> varasijalta. Muistathan perua ilmoittautumisesi ennen ilmoittautumisajan päättymistä, mikäli et pääsekään osallistumaan.",
 
     "emails.eventDetails": "Tapahtuman tiedot:",
     "emails.event": "Tapahtuma",

@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
+import { SignupPaymentStatus } from "@tietokilta/ilmomasiina-models";
 import EmailService from "../../src/mail";
 import mailTransporter from "../../src/mail/config";
 
@@ -65,6 +66,23 @@ describe("EmailService", () => {
         date: sampleParams.date,
       }),
     ).rejects.toThrow("ESOCKET: wrong version number");
+  });
+
+  test("sendPromotedFromQueueMail includes pending payment warning when paymentStatus is PENDING", async () => {
+    await EmailService.sendPromotedFromQueueMail("teemu@example.com", "fi", {
+      event: { ...sampleParams.event, payments: "online" },
+      date: sampleParams.date,
+      paymentStatus: SignupPaymentStatus.PENDING,
+      signupLink: "https://ilmo.example.com/edit/123",
+    });
+
+    expect(global.emailSend).toHaveBeenCalledTimes(1);
+    const [to, subject, html] = global.emailSend.mock.calls[0];
+    expect(to).toBe("teemu@example.com");
+    expect(subject).toContain("Testitapahtuma");
+    expect(html).toContain("Ilmoittautumisesi odottaa vielä maksua!");
+    expect(html).toContain("ilmoittautumissivulla");
+    expect(html).toContain("https://ilmo.example.com/edit/123");
   });
 
   test("EmailService.send invokes mailTransporter.sendMail", async () => {

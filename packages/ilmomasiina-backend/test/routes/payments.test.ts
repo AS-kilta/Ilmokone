@@ -384,6 +384,48 @@ describe("startPayment", () => {
     expect(mockStripeCheckoutSessionCreate).not.toHaveBeenCalled();
   });
 
+  test("sends promotion email with pending payment warning when promoted from queue", async () => {
+    // Create event with limited quota to force queue, and quota with price
+    const event = await testEvent(
+      { quotaCount: 1, questionCount: 0, quotaOverrides: { size: 1, price: 1000 } },
+      { payments: PaymentMode.ONLINE, nameQuestion: true, emailQuestion: true, openQuotaSize: 0 },
+    );
+
+    // Create two signups, first to fill the quota, second to be placed in queue
+    const [firstSignup] = await testSignups({
+      event,
+      count: 1,
+      confirmed: true,
+      overrides: { createdAt: new Date(Date.now() - 60000) },
+    });
+    const [queuedSignup] = await testSignups({
+      event,
+      count: 1,
+      confirmed: true,
+      overrides: { createdAt: new Date(Date.now() - 30000) },
+    });
+
+    await refreshSignupPositions(event);
+    await queuedSignup.reload();
+    expect(queuedSignup.status).toBe(SignupStatus.IN_QUEUE);
+    expect(queuedSignup.price).toBe(1000);
+
+    emailSend.mockClear();
+
+    // Delete first signup, promoting the queued signup
+    await firstSignup.destroy();
+    await refreshSignupPositions(event);
+
+    await queuedSignup.reload();
+    expect(queuedSignup.status).toBe(SignupStatus.IN_QUOTA);
+
+    expect(emailSend).toHaveBeenCalledTimes(1);
+    const [to, , html] = emailSend.mock.calls[0];
+    expect(to).toBe(queuedSignup.email);
+    expect(html).toContain("Ilmoittautumisesi odottaa vielä maksua!");
+    expect(html).toContain("ilmoittautumissivulla");
+  });
+
   test("fails when signup status is null", async () => {
     const { signup } = await defaultTestEventAndSignup();
 
